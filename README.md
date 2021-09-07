@@ -1,4 +1,26 @@
-# chartme
+# chartme (temporary working title)
+
+Site for creating charts with books and music.
+
+## Roadmap
+
+### Tier one features
+
+- chart generation with Canvas
+
+- book data from OpenLibrary API
+
+- album data from LastFM API
+
+- add a title to the top of the chart
+
+- customize colors for background, shadow, etc
+
+### Tier two features
+
+- ability to include both books and albums in the same chart
+
+- insert custom subheadings into chart
 
 ## Project setup
 ```
