@@ -1,6 +1,9 @@
 <template>
     <div id="counter">
-      Counter: {{ counter }}
+      <p>Counter: {{ counter }}</p>
+      <button v-on:click="yeet">
+        reset
+      </button>
     </div>
 </template>
 
@@ -11,6 +14,11 @@ export default defineComponent({
   data () {
     return {
       counter: 0
+    }
+  },
+  methods: {
+    yeet () {
+      this.counter = 0
     }
   },
   mounted () {
