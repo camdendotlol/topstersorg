@@ -8,9 +8,9 @@ Site for creating charts with books and music.
 
 - chart generation with Canvas
 
-- book data from OpenLibrary API
+- book data from [OpenLibrary API](https://openlibrary.org/developers/api)
 
-- album data from LastFM API
+- album data from [iTunes API](https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/)
 
 - add a title to the top of the chart
 
@@ -21,6 +21,8 @@ Site for creating charts with books and music.
 - ability to include both books and albums in the same chart
 
 - insert custom subheadings into chart
+
+- movie support (possibly the IMDB API?)
 
 ## Project setup
 ```

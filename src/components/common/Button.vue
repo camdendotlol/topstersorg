@@ -1,8 +1,7 @@
 <template>
     <div id="counter">
-      <p>Counter: {{ counter }}</p>
-      <button v-on:click="yeet">
-        reset
+      <button>
+        {{ label }}
       </button>
     </div>
 </template>
@@ -16,15 +15,9 @@ export default defineComponent({
       counter: 0
     }
   },
-  methods: {
-    yeet () {
-      this.counter = 0
-    }
-  },
-  mounted () {
-    setInterval(() => {
-      this.counter++
-    }, 1000)
-  }
+  props: [
+    'callback',
+    'label'
+  ]
 })
 </script>
