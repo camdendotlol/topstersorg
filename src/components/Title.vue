@@ -1,5 +1,5 @@
 <template>
-  <h1>Chartme</h1>
+  <h1>Chartme 🔥</h1>
 </template>
 
 <script lang="ts">

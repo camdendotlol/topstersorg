@@ -1,17 +1,19 @@
 <template>
-  <Title />
-  <ChartBuilder />
+  <div class="main">
+    <Sidebar />
+    <ChartBuilder />
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Title from './components/Title.vue'
+import Sidebar from './components/Sidebar/index.vue'
 import ChartBuilder from './components/ChartBuilder/index.vue'
 
 export default defineComponent({
   name: 'App',
   components: {
-    Title,
+    Sidebar,
     ChartBuilder
   }
 })
@@ -31,6 +33,35 @@ export default defineComponent({
 
 body {
   background: #e9e9e9;
+  box-sizing: border-box;
+}
+
+.main {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  margin: 0;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  background: gray;
+  border-radius: 10px;
+  font-size: 1.2rem;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+@media screen and (max-width: 1000px) {
+  .main {
+    flex-flow: column;
+  }
 }
 
 </style>

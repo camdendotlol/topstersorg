@@ -1,22 +1,14 @@
 <template>
-    <div id="counter">
-      <button>
-        {{ label }}
-      </button>
-    </div>
+  <button>
+    {{ label }}
+  </button>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  data () {
-    return {
-      counter: 0
-    }
-  },
   props: [
-    'callback',
     'label'
   ]
 })

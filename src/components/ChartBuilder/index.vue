@@ -1,28 +1,50 @@
 <template>
-  <div>
-    <h1>Create a chart</h1>
-    <Button label='hello' />
+  <div class="chart-builder">
+    <div class="chart-builder-contents">
+      <h1>Create a {{ chartType }} chart</h1>
+
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import Button from '../common/Button.vue'
 
 enum ChartTypes {
-  Album,
-  Book
+  Music = 'music',
+  Book = 'book',
+  Movie = 'movie'
 }
 
 export default defineComponent({
   data () {
     return {
       chartType: ChartTypes.Book,
-      chartTypes: ChartTypes
+      header: ChartTypes.Book
     }
   },
-  components: {
-    Button
+  methods: {
+    setHeader (newChartType: ChartTypes) {
+      this.chartType = newChartType
+    }
   }
 })
 </script>
+
+<style scoped>
+.chart-builder {
+  flex-grow: 1;
+  height: 100%;
+  margin: 0;
+}
+
+.chart-builder-contents {
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 1000px) {
+  .chart-builder {
+    width: 100%;
+  }
+}
+</style>
