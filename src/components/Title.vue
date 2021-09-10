@@ -1,11 +1,21 @@
 <template>
-  <h1>Chartme 🔥</h1>
+  <h1>ostrakon</h1>
+  <h3>{{ subtitles[Math.floor(Math.random() * subtitles.length)] }}</h3>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 
 export default defineComponent({
+  data () {
+    return {
+      subtitles: [
+        'a.k.a. Topsters 3?',
+        'over 9000 charts served',
+        'yet another chart site'
+      ]
+    }
+  }
 })
 </script>
 

@@ -1,6 +1,6 @@
-# chartme (temporary working title)
+# Ostrakon
 
-Site for creating charts with books and music.
+A website for creating charts with books, music, and movies.
 
 ## Roadmap
 

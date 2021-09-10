@@ -1,7 +1,7 @@
 <template>
   <div class="chart-builder">
     <div class="chart-builder-contents">
-      <h1>Create a {{ chartType }} chart</h1>
+      <h1>Create a {{ chartType }} chart {{ pickEmoji(chartType) }}</h1>
 
     </div>
   </div>
@@ -26,6 +26,16 @@ export default defineComponent({
   methods: {
     setHeader (newChartType: ChartTypes) {
       this.chartType = newChartType
+    },
+    pickEmoji (chartType: ChartTypes) {
+      switch (chartType) {
+        case ChartTypes.Book:
+          return '📗'
+        case ChartTypes.Music:
+          return '🎼'
+        case ChartTypes.Movie:
+          return '🎬'
+      }
     }
   }
 })

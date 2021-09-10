@@ -11,7 +11,7 @@ import Sidebar from './components/Sidebar/index.vue'
 import ChartBuilder from './components/ChartBuilder/index.vue'
 
 export default defineComponent({
-  name: 'App',
+  name: 'Ostrakon',
   components: {
     Sidebar,
     ChartBuilder
@@ -27,7 +27,7 @@ export default defineComponent({
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #00003f;
   margin-top: 30px;
 }
 
@@ -56,6 +56,14 @@ button {
 
 button:hover {
   cursor: pointer;
+}
+
+input {
+  padding: 10px;
+  font-size: 1rem;
+  border: none;
+  background: #e9e9e9;
+  border-radius: 10px;
 }
 
 @media screen and (max-width: 1000px) {

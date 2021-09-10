@@ -2,8 +2,6 @@
   <div class="sidebar">
     <div class="sidebar-content">
       <Title />
-      <p>Hello.</p>
-      <p>I am a fully responsive sidebar.</p>
       <span class="chart-type-button">
         <Button label='music' @click="setHeader('music')" />
       </span>
@@ -13,6 +11,7 @@
       <span class="chart-type-button">
         <Button label='movies' @click="setHeader('movie')" />
       </span>
+      <AddForm />
     </div>
   </div>
 </template>
@@ -20,10 +19,12 @@
 <script>
 import Title from '../Title.vue'
 import Button from '../common/Button.vue'
+import AddForm from './AddForm.vue'
 export default {
   components: {
     Title,
-    Button
+    Button,
+    AddForm
   }
 }
 </script>
