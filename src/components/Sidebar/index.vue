@@ -19,7 +19,7 @@
 <script>
 import Title from '../Title.vue'
 import Button from '../common/Button.vue'
-import AddForm from './AddForm.vue'
+import AddForm from './SearchForm/index.vue'
 export default {
   components: {
     Title,

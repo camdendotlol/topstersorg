@@ -49,9 +49,10 @@ body {
 button {
   padding: 10px;
   border: none;
-  background: gray;
+  background: #00003f;
   border-radius: 10px;
   font-size: 1.2rem;
+  color: #e9e9e9;
 }
 
 button:hover {
