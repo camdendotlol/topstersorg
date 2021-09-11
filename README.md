@@ -10,19 +10,23 @@ A website for creating charts with books, music, and movies.
 
 - book data from [OpenLibrary API](https://openlibrary.org/developers/api)
 
-- album data from [iTunes API](https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/)
-
 - add a title to the top of the chart
 
 - customize colors for background, shadow, etc
 
 ### Tier two features
 
+- album data from LastFM API (requires a backend)
+
 - ability to include both books and albums in the same chart
 
 - insert custom subheadings into chart
 
-- movie support (possibly the IMDB API?)
+### Tier three featues
+
+- movie support (not sure which API)
+
+- full customization of the chart (unrestricted drag and drop with a grid)
 
 ## Project setup
 ```

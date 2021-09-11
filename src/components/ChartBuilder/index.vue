@@ -2,12 +2,14 @@
   <div class="chart-builder">
     <div class="chart-builder-contents">
       <h1>Create a {{ chartType }} chart {{ pickEmoji(chartType) }}</h1>
+      <ChartCanvas />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ChartCanvas from './ChartCanvas.vue'
 
 enum ChartTypes {
   Music = 'music',
@@ -21,6 +23,9 @@ export default defineComponent({
       chartType: ChartTypes.Book,
       header: ChartTypes.Book
     }
+  },
+  components: {
+    ChartCanvas
   },
   methods: {
     setHeader (newChartType: ChartTypes) {
