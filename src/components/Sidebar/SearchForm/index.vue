@@ -13,7 +13,7 @@
     </div>
     <button type="submit" class="submit-button">
       <BIconArrowRepeat class="loading-icon" v-if="loading" />
-      <BIconArrowRightCircle v-else />
+      <BIconArrowRight v-else />
     </button>
   </form>
   <SearchDropdown :results="results" :resultsType="searchType" />
@@ -23,7 +23,7 @@
 import SearchDropdown from './SearchDropdown.vue'
 import queryOpenLibrary from '../../../api/openlibrary'
 import { defineComponent } from '@vue/runtime-core'
-import { BIconArrowRightCircle, BIconArrowRepeat } from 'bootstrap-icons-vue'
+import { BIconArrowRight, BIconArrowRepeat } from 'bootstrap-icons-vue'
 
 enum SearchTypes {
   Music = 'music',
@@ -40,7 +40,7 @@ interface FormData {
 export default defineComponent({
   components: {
     SearchDropdown,
-    BIconArrowRightCircle,
+    BIconArrowRight,
     BIconArrowRepeat
   },
   data (): FormData {
@@ -90,6 +90,7 @@ export default defineComponent({
 
 #searchbox {
   margin-top: 5px;
+  border: 2px solid #00003f;
 }
 
 .submit-button {
@@ -97,6 +98,7 @@ export default defineComponent({
   height: 40px;
   width: 40px;
   margin-left: 10px;
+  margin-bottom: 2px;
   align-self: flex-end;
 }
 

@@ -4,12 +4,13 @@
   </div>
   <ul v-else-if="resultsType === 'books'">
     <li
-      v-for="(result, index) in filterCoverless(results)"
+      v-for="(result, index) in filterBooks(results)"
       :key="index"
     >
       <img
         :src="`http://covers.openlibrary.org/b/olid/${result.cover_edition_key}-M.jpg`"
         :alt="result.title"
+        @click="addToChart(result)"
       />
     </li>
   </ul>
@@ -19,25 +20,48 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from '@vue/runtime-core'
 /* eslint-disable camelcase */
 
+import { AlbumItem, MovieItem } from '../../../types'
+
 // There's way more stuff from the API but this is all that's relevant here.
-interface Result {
+interface BookResult {
+  title: string,
+  author_name: string,
   cover_edition_key?: string
 }
 
-export default {
+export default defineComponent({
   props: {
     results: Array,
     resultsType: String,
     isLoading: Boolean
   },
   methods: {
-    filterCoverless (results: Result[]): Result[] {
-      return results.filter(result => result.cover_edition_key)
+    filterBooks (results: BookResult[]): BookResult[] {
+      // remove any without a cover and/or an author
+      return results
+        .filter(result => result.cover_edition_key)
+        .filter(result => result.author_name)
+    },
+    addToChart (item: BookResult | AlbumItem | MovieItem): void {
+      switch (this.resultsType) {
+        case 'books':
+        {
+          const bookItem = {
+            title: (item as BookResult).title,
+            coverURL: (item as BookResult).cover_edition_key,
+            author: (item as BookResult).author_name[0]
+          }
+          this.$store.commit('addItem', bookItem)
+          break
+        }
+        // other types not implemented yet
+      }
     }
   }
-}
+})
 
 </script>
 

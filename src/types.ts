@@ -1,17 +1,17 @@
-interface ChartItem {
+export interface ChartItem {
   title: string,
   coverURL: string
 }
 
-interface BookItem extends ChartItem {
+export interface BookItem extends ChartItem {
   author: string,
 }
 
-interface AlbumItem extends ChartItem {
+export interface AlbumItem extends ChartItem {
   artist: string,
 }
 
-interface MovieItem extends ChartItem {
+export interface MovieItem extends ChartItem {
   director: string,
 }
 
@@ -20,8 +20,10 @@ interface ChartSize {
   y: number
 }
 
+export type ChartContent = Array<BookItem | AlbumItem | MovieItem>
+
 export interface Chart {
   title: string,
-  items: Array<BookItem | AlbumItem | MovieItem>,
+  items: ChartContent,
   size: ChartSize
 }

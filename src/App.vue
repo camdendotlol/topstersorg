@@ -17,6 +17,7 @@ export default defineComponent({
     ChartBuilder
   }
 })
+
 </script>
 
 <style>
