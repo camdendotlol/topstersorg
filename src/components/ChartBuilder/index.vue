@@ -2,7 +2,6 @@
   <div class="chart-builder">
     <div class="chart-builder-contents">
       <h1>Create a {{ chartType }} chart {{ pickEmoji(chartType) }}</h1>
-
     </div>
   </div>
 </template>
