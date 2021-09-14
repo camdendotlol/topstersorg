@@ -1,9 +1,6 @@
 <template>
-  <canvas
-    fillstyle="gray"
-    id="chart-canvas"
-  >
-    test
+  <canvas id="chart-canvas">
+    If you can see this, it means your browser doesn't support Canvas. Canvas is pretty important for the function of the site! Sorry!
   </canvas>
 </template>
 
@@ -21,31 +18,32 @@ export default defineComponent({
       console.log('now rendering!')
       const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
 
-      const context = canvas.getContext('2d')
+      const ctx = canvas.getContext('2d')
 
       canvas.width = this.pixelDimensions.x
       canvas.height = this.pixelDimensions.y
 
-      if (!context) {
-        throw new Error('Canvas context not found')
+      if (!ctx) {
+        throw new Error('Canvas ctx not found')
       }
 
-      context.beginPath()
-      context.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.beginPath()
+      ctx.fillStyle = this.color
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-      context.font = '52px Arial'
-      context.fillStyle = '#e9e9e9'
-      context.textAlign = 'center'
-      context.fillText(this.title, canvas.width / 2, 100)
+      ctx.font = '52px Arial'
+      ctx.fillStyle = '#e9e9e9'
+      ctx.textAlign = 'center'
+      ctx.fillText(this.title, canvas.width / 2, 100)
 
-      context.fillStyle = ('#e9e9e9')
+      ctx.fillStyle = ('#e9e9e9')
       const margin = 100
       const gap = Math.floor((canvas.width - margin) / this.size.x)
 
       for (let y = 0; y < this.size.y; y++) {
         const height = (y * 180) + 150
         for (let x = 0; x < this.size.x; x++) {
-          context.fillRect(
+          ctx.fillRect(
             (x * gap) + (gap / 2),
             height,
             100,
@@ -64,6 +62,9 @@ export default defineComponent({
     },
     items () {
       this.renderChart()
+    },
+    color () {
+      this.renderChart()
     }
   },
   computed: mapState({
@@ -76,7 +77,8 @@ export default defineComponent({
       x: ((state as State).chart.size.x * 200) + 200,
       y: ((state as State).chart.size.y * 200) + 200
     }),
-    items: state => (state as State).chart.items
+    items: state => (state as State).chart.items,
+    color: state => (state as State).chart.color
   })
 })
 

@@ -18,7 +18,8 @@ export const store = createStore<State>({
         size: {
           x: 3,
           y: 3
-        }
+        },
+        color: '#000000'
       }
     }
   },
@@ -27,8 +28,10 @@ export const store = createStore<State>({
       state.chart.items.push(item)
     },
     changeTitle (state: State, newTitle: string) {
-      console.log('new title:' + newTitle)
       state.chart.title = newTitle
+    },
+    changeColor (state: State, newColor: string) {
+      state.chart.color = newColor
     }
   }
 })

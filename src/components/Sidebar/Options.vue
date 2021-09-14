@@ -29,7 +29,12 @@
     </div>
     <div class="form-option">
       <label for="background-color">Background color</label>
-      <input type="text" name="background-color" id="background-color">
+      <input
+        type="color"
+        name="background-color"
+        id="background-color"
+        @change="updateColor"
+      >
     </div>
   </div>
 </template>
@@ -41,11 +46,16 @@ import { mapMutations } from 'vuex'
 export default defineComponent({
   methods: {
     ...mapMutations([
-      'changeTitle'
+      'changeTitle',
+      'changeColor'
     ]),
     updateTitle (event: Event): void {
       const title = (event.target as HTMLFormElement).value
       return this.changeTitle(title)
+    },
+    updateColor (event: Event): void {
+      const color = (event.target as HTMLFormElement).value
+      return this.changeColor(color)
     }
   }
 })
@@ -75,6 +85,14 @@ h2 {
   display: flex;
   flex-flow: column;
   gap: 10px;
+}
+
+#background-color {
+  height: 30px;
+  border: 0;
+  padding: 0;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 select {

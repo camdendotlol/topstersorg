@@ -25,5 +25,6 @@ export type ChartContent = Array<BookItem | AlbumItem | MovieItem>
 export interface Chart {
   title: string,
   items: ChartContent,
-  size: ChartSize
+  size: ChartSize,
+  color: string
 }
