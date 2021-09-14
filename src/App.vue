@@ -33,7 +33,7 @@ export default defineComponent({
 }
 
 body {
-  background: #e9e9e9;
+  background: #2a2a2a;
   box-sizing: border-box;
 }
 
@@ -45,19 +45,6 @@ body {
   top: 0px;
   left: 0px;
   margin: 0;
-}
-
-button {
-  padding: 10px;
-  border: none;
-  background: #00003f;
-  border-radius: 10px;
-  font-size: 1.2rem;
-  color: #e9e9e9;
-}
-
-button:hover {
-  cursor: pointer;
 }
 
 input {

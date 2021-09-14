@@ -2,29 +2,18 @@
   <div class="sidebar">
     <div class="sidebar-content">
       <Title />
-      <span class="chart-type-button">
-        <Button label='music' @click="setHeader('music')" />
-      </span>
-      <span class="chart-type-button">
-        <Button label='books' @click="setHeader('book')" />
-      </span>
-      <span class="chart-type-button">
-        <Button label='movies' @click="setHeader('movie')" />
-      </span>
-      <AddForm />
+      <SearchBox />
     </div>
   </div>
 </template>
 
 <script>
 import Title from '../Title.vue'
-import Button from '../common/Button.vue'
-import AddForm from './SearchForm/index.vue'
+import SearchBox from './SearchBox/index.vue'
 export default {
   components: {
     Title,
-    Button,
-    AddForm
+    SearchBox
   }
 }
 </script>
@@ -32,7 +21,7 @@ export default {
 <style scoped>
 .sidebar {
   width: 400px;
-  height: 100%;
+  overflow-y: scroll;
   margin: 0;
   background: peachpuff;
   box-shadow: 2px 0 3px -1px gray;

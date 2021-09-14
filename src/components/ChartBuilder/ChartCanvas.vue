@@ -39,7 +39,6 @@ export default defineComponent({
     for (let y = 0; y < chartsize.y; y++) {
       const height = (y * 180) + 150
       for (let x = 0; x < chartsize.x; x++) {
-        console.log('hi')
         context.fillRect(
           (x * gap) + (gap / 2),
           height,
@@ -80,5 +79,9 @@ export default defineComponent({
 <style scoped>
 #chart-canvas {
   border-radius: 10px;
+}
+
+canvas {
+  width: 90%;
 }
 </style>

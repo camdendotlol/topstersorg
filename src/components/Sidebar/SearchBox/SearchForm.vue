@@ -4,8 +4,6 @@
     @submit.prevent="handleSearch"
   >
     <div>
-      <label for="searchbox">Search</label>
-      <br />
       <input
         id="searchbox"
         ref="searchbox"
@@ -16,43 +14,38 @@
       <BIconArrowRight v-else />
     </button>
   </form>
-  <SearchDropdown :results="results" :resultsType="searchType" />
 </template>
 
 <script lang="ts">
-import SearchDropdown from './SearchDropdown.vue'
 import queryOpenLibrary from '../../../api/openlibrary'
 import { defineComponent } from '@vue/runtime-core'
 import { BIconArrowRight, BIconArrowRepeat } from 'bootstrap-icons-vue'
-
-enum SearchTypes {
-  Music = 'music',
-  Books = 'books',
-  Movies = 'movies'
-}
+import { SearchTypes } from './index.vue'
 
 interface FormData {
   results: unknown[],
-  searchType: SearchTypes,
   loading: boolean
 }
 
 export default defineComponent({
   components: {
-    SearchDropdown,
     BIconArrowRight,
     BIconArrowRepeat
   },
+  props: [
+    'searchType'
+  ],
+  emits: [
+    'updateResults'
+  ],
   data (): FormData {
     return {
       results: [] as FormData[],
-      searchType: SearchTypes.Books,
       loading: false
     }
   },
   methods: {
     async handleSearch (event: Event): Promise<unknown[]> {
-      this.loading = true
       const type = this.searchType
 
       // Horrible hack below to make TypeScript happy
@@ -61,18 +54,20 @@ export default defineComponent({
       switch (type) {
         case SearchTypes.Books:
         {
+          this.loading = true
           const response = await queryOpenLibrary(query)
           // needs error handling
           if (response) {
             this.results = response
+            this.$emit('updateResults', response)
           }
+          this.loading = false
           break
         }
         // add music and books later
         default:
           return []
       }
-      this.loading = false
       return []
     }
   }
@@ -81,7 +76,6 @@ export default defineComponent({
 
 <style scoped>
 .add-form {
-  margin-top: 20px;
   display: flex;
   flex-flow: row;
   justify-content: center;
@@ -89,17 +83,29 @@ export default defineComponent({
 }
 
 #searchbox {
-  margin-top: 5px;
-  border: 2px solid #00003f;
+  margin-top: 16px;
 }
 
 .submit-button {
   border-radius: 50%;
+  border: none;
   height: 40px;
   width: 40px;
   margin-left: 10px;
-  margin-bottom: 2px;
   align-self: flex-end;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 0.2s;
+}
+
+.submit-button:hover {
+  cursor: pointer;
+  filter: brightness(0.9);
+}
+
+.submit-button svg {
+  transform: scale(150%);
 }
 
 .loading-icon {

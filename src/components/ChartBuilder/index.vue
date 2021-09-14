@@ -1,7 +1,6 @@
 <template>
   <div class="chart-builder">
     <div class="chart-builder-contents">
-      <h1>Create a {{ chartType }} chart {{ pickEmoji(chartType) }}</h1>
       <ChartCanvas />
     </div>
   </div>
@@ -48,8 +47,10 @@ export default defineComponent({
 <style scoped>
 .chart-builder {
   flex-grow: 1;
-  height: 100%;
   margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .chart-builder-contents {

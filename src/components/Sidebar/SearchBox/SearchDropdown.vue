@@ -1,5 +1,5 @@
 <template>
-  <div v-if="results.length === 0">
+  <div v-if="results.length === 0" id="empty-results-placeholder">
     <p>Results will appear here.</p>
   </div>
   <ul v-else-if="resultsType === 'books'">
@@ -68,30 +68,31 @@ export default defineComponent({
 <style scoped>
 ul {
   display: flex;
-  margin: 0 auto;
-  margin-top: 20px;
-  width: 95%;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  background: #00003f;
+  gap: 6px;
   flex-wrap: wrap;
-  overflow-x: hidden;
   overflow-y: scroll;
-  height: 50vh;
   padding: 0px;
-  border-radius: 5px;
+  /* TODO: Below is a hack to fix overflow. */
+  /* This component overflows the SearchBox div even though the latter */
+  /* has a set height. Gonna try to look into that at some point. */
+  height: 85%;
 }
 
 li {
   list-style-type: none;
-  width: 100px;
-  height: 160px;
 }
 
 li img {
-  width: 100%;
+  width: 100px;
+}
+
+#empty-results-placeholder {
+  display: flex;
   height: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 </style>
