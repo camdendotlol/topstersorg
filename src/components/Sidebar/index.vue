@@ -3,6 +3,7 @@
     <div class="sidebar-content">
       <Title />
       <SearchBox />
+      <Options />
     </div>
   </div>
 </template>
@@ -10,12 +11,16 @@
 <script>
 import Title from '../Title.vue'
 import SearchBox from './SearchBox/index.vue'
-export default {
+import Options from './Options.vue'
+import { defineComponent } from '@vue/runtime-core'
+
+export default defineComponent({
   components: {
     Title,
-    SearchBox
+    SearchBox,
+    Options
   }
-}
+})
 </script>
 
 <style scoped>
