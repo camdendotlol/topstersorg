@@ -20,7 +20,12 @@
     </div>
     <div class="form-option">
       <label for="title">Title</label>
-      <input type="text" name="title" id="title">
+      <input
+        type="text"
+        name="title"
+        id="title"
+        @change="updateTitle"
+      >
     </div>
     <div class="form-option">
       <label for="background-color">Background color</label>
@@ -29,11 +34,20 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
+import { mapMutations } from 'vuex'
 
 export default defineComponent({
-
+  methods: {
+    ...mapMutations([
+      'changeTitle'
+    ]),
+    updateTitle (event: Event): void {
+      const title = (event.target as HTMLFormElement).value
+      return this.changeTitle(title)
+    }
+  }
 })
 </script>
 

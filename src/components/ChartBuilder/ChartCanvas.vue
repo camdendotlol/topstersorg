@@ -1,7 +1,5 @@
 <template>
   <canvas
-    :width="canvasDimensions.x"
-    :height="canvasDimensions.y"
     fillstyle="gray"
     id="chart-canvas"
   >
@@ -11,67 +9,75 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
+import { mapState } from 'vuex'
+import { State } from '../../store'
 
 export default defineComponent({
   mounted () {
-    const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
+    this.renderChart()
+  },
+  methods: {
+    renderChart () {
+      console.log('now rendering!')
+      const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
 
-    const context = canvas.getContext('2d')
+      const context = canvas.getContext('2d')
 
-    if (!context) {
-      throw new Error('Canvas context not found')
-    }
+      canvas.width = this.pixelDimensions.x
+      canvas.height = this.pixelDimensions.y
 
-    const chartsize = this.$store.state.chart.size
+      if (!context) {
+        throw new Error('Canvas context not found')
+      }
 
-    context.beginPath()
-    context.fillRect(0, 0, canvas.width, canvas.height)
+      context.beginPath()
+      context.fillRect(0, 0, canvas.width, canvas.height)
 
-    context.font = '60px Arial'
-    context.fillStyle = '#e9e9e9'
-    context.textAlign = 'center'
-    context.fillText('My Chart', canvas.width / 2, 100)
+      context.font = '52px Arial'
+      context.fillStyle = '#e9e9e9'
+      context.textAlign = 'center'
+      context.fillText(this.title, canvas.width / 2, 100)
 
-    context.fillStyle = ('#e9e9e9')
-    const margin = 100
-    const gap = Math.floor((canvas.width - margin) / chartsize.x)
+      context.fillStyle = ('#e9e9e9')
+      const margin = 100
+      const gap = Math.floor((canvas.width - margin) / this.size.x)
 
-    for (let y = 0; y < chartsize.y; y++) {
-      const height = (y * 180) + 150
-      for (let x = 0; x < chartsize.x; x++) {
-        context.fillRect(
-          (x * gap) + (gap / 2),
-          height,
-          100,
-          160
-        )
+      for (let y = 0; y < this.size.y; y++) {
+        const height = (y * 180) + 150
+        for (let x = 0; x < this.size.x; x++) {
+          context.fillRect(
+            (x * gap) + (gap / 2),
+            height,
+            100,
+            160
+          )
+        }
       }
     }
   },
-  data () {
-    return {
-      dimensions: {
-        width: 400,
-        height: 400
-      },
-      configCircle: {
-        x: 100,
-        y: 100,
-        radius: 70,
-        fill: 'red',
-        stroke: 'black',
-        strokeWidth: 4
-      }
+  watch: {
+    title () {
+      this.renderChart()
+    },
+    size () {
+      this.renderChart()
+    },
+    items () {
+      this.renderChart()
     }
   },
-  computed: {
-    canvasDimensions () {
-      return {
-        x: (this.$store.state.chart.size.x * 200) + 200,
-        y: (this.$store.state.chart.size.y * 200) + 200
-      }
-    }
-  }
+  computed: mapState({
+    title: state => (state as State).chart.title,
+    size: state => ({
+      x: (state as State).chart.size.x,
+      y: (state as State).chart.size.y
+    }),
+    pixelDimensions: state => ({
+      x: ((state as State).chart.size.x * 200) + 200,
+      y: ((state as State).chart.size.y * 200) + 200
+    }),
+    items: state => (state as State).chart.items
+  })
 })
 
 </script>

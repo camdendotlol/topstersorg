@@ -25,6 +25,10 @@ export const store = createStore<State>({
   mutations: {
     addItem (state: State, item) {
       state.chart.items.push(item)
+    },
+    changeTitle (state: State, newTitle: string) {
+      console.log('new title:' + newTitle)
+      state.chart.title = newTitle
     }
   }
 })
