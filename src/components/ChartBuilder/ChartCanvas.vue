@@ -90,6 +90,7 @@ export default defineComponent({
 }
 
 canvas {
-  width: 90%;
+  max-width: 90%;
+  max-height: 90vh;
 }
 </style>
