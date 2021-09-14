@@ -15,7 +15,7 @@ export interface MovieItem extends ChartItem {
   director: string,
 }
 
-interface ChartSize {
+export interface ChartSize {
   x: number,
   y: number
 }

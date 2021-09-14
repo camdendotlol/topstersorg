@@ -32,6 +32,18 @@ export const store = createStore<State>({
     },
     changeColor (state: State, newColor: string) {
       state.chart.color = newColor
+    },
+    changeSize (state: State, payload: { axis: string, value: number }) {
+      switch (payload.axis) {
+        case 'x':
+          state.chart.size.x = payload.value
+          break
+        case 'y':
+          state.chart.size.y = payload.value
+          break
+        default:
+          state.chart.size = { ...state.chart.size }
+      }
     }
   }
 })

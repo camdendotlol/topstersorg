@@ -15,7 +15,6 @@ export default defineComponent({
   },
   methods: {
     renderChart () {
-      console.log('now rendering!')
       const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
 
       const ctx = canvas.getContext('2d')

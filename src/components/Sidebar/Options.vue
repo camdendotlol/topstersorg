@@ -6,16 +6,20 @@
       <input
         min=1
         max=10
+        value=3
         type="number"
         name="x-axis"
         class="dimension-input"
+        @change="updateSizeX"
       >
       <input
         min=1
         max=10
+        value=3
         type="number"
         name="y-axis"
         class="dimension-input"
+        @change="updateSizeY"
       >
     </div>
     <div class="form-option">
@@ -47,7 +51,8 @@ export default defineComponent({
   methods: {
     ...mapMutations([
       'changeTitle',
-      'changeColor'
+      'changeColor',
+      'changeSize'
     ]),
     updateTitle (event: Event): void {
       const title = (event.target as HTMLFormElement).value
@@ -56,6 +61,14 @@ export default defineComponent({
     updateColor (event: Event): void {
       const color = (event.target as HTMLFormElement).value
       return this.changeColor(color)
+    },
+    updateSizeX (event: Event): void {
+      const value = parseInt((event.target as HTMLFormElement).value)
+      return this.changeSize({ axis: 'x', value })
+    },
+    updateSizeY (event: Event): void {
+      const value = parseInt((event.target as HTMLFormElement).value)
+      return this.changeSize({ axis: 'y', value })
     }
   }
 })
