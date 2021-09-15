@@ -31,31 +31,45 @@ export default defineComponent({
       ctx.fillStyle = this.color
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-      ctx.font = '52px Times New Roman'
+      ctx.font = 'bold 46pt Courier'
       ctx.fillStyle = '#e9e9e9'
       ctx.textAlign = 'center'
       ctx.fillText(this.title, canvas.width / 2, 70)
 
       ctx.fillStyle = ('#e9e9e9')
 
-      const gap = 200
-      this.getCoverImages(ctx, gap)
+      // height/width of each square cell
+      const cellSize = 260
+
+      // gap between cells (pixels)
+      const gap = 10
+      this.getCoverImages(ctx, cellSize, gap)
     },
-    getCoverImages (ctx: CanvasRenderingContext2D, gap: number) {
+    getCoverImages (ctx: CanvasRenderingContext2D, cellSize: number, gap: number) {
       const getScaledDimensions = (img: HTMLImageElement) => {
         let differencePercentage = 1
-        const maxDimension = Math.floor(gap / 2)
-        if (img.width > maxDimension && img.height > maxDimension) {
-          differencePercentage = Math.max((maxDimension / img.width), (maxDimension / img.height))
-        } else if (img.width > maxDimension) {
-          differencePercentage = maxDimension / img.width
-        } else if (img.height > maxDimension) {
-          differencePercentage = maxDimension / img.height
+
+        if (img.width > cellSize && img.height > cellSize) {
+          differencePercentage = Math.min((cellSize / img.width), (cellSize / img.height))
+        } else if (img.width > cellSize) {
+          differencePercentage = cellSize / img.width
+        } else if (img.height > cellSize) {
+          differencePercentage = cellSize / img.height
+        } else if (img.width < cellSize && img.height < cellSize) {
+          differencePercentage = Math.min((cellSize / img.width), (cellSize / img.height))
         }
 
         return {
           height: Math.floor(img.height * differencePercentage),
           width: Math.floor(img.width * differencePercentage)
+        }
+      }
+
+      const findCenteringOffset = (dimension: number) => {
+        if (dimension < cellSize) {
+          return Math.floor((cellSize - dimension) / 2)
+        } else {
+          return 0
         }
       }
 
@@ -73,10 +87,11 @@ export default defineComponent({
         }
 
         const dimensions = getScaledDimensions(item.coverImg)
+
         ctx.drawImage(
           item.coverImg,
-          (coords.x * gap) + (gap / 2),
-          (coords.y * gap) + (gap / 2),
+          ((coords.x * cellSize) + 55 + (coords.x * gap)) + findCenteringOffset(dimensions.width),
+          ((coords.y * cellSize) + 100 + (coords.y * gap)) + findCenteringOffset(dimensions.height),
           dimensions.width,
           dimensions.height
         )
@@ -113,8 +128,9 @@ export default defineComponent({
       y: (state as State).chart.size.y
     }),
     pixelDimensions: state => ({
-      x: ((state as State).chart.size.x * 200) + 100,
-      y: ((state as State).chart.size.y * 200) + 160
+      // room for each cell + 10px gap between cells + margins
+      x: ((state as State).chart.size.x * 270) + 100,
+      y: ((state as State).chart.size.y * 270) + 160
     }),
     items: state => (state as State).chart.items,
     itemCount: state => (state as State).chart.items.length,
