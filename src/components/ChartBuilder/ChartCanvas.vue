@@ -5,6 +5,7 @@
 </template>
 
 <script lang="ts">
+import { ChartItem } from '@/types'
 import { defineComponent } from '@vue/runtime-core'
 import { mapState } from 'vuex'
 import { State } from '../../store'
@@ -58,7 +59,7 @@ export default defineComponent({
         }
       }
 
-      this.items.forEach((item, index) => {
+      const insertImage = (item: ChartItem, index: number) => {
         // Don't overflow outside the bounds of the chart
         // This way, items will be saved if the chart is too big for them
         // and the user can just expand the chart and they'll fill in again
@@ -79,6 +80,13 @@ export default defineComponent({
           dimensions.width,
           dimensions.height
         )
+      }
+
+      this.items.forEach((item: ChartItem, index: number) => {
+        item.coverImg.onload = () => {
+          insertImage(item, index)
+        }
+        insertImage(item, index)
       })
     }
   },

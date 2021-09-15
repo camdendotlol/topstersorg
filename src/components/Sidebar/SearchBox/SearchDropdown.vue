@@ -46,10 +46,7 @@ export default defineComponent({
         .filter(result => result.author_name)
     },
     async addToChart (item: BookResult | AlbumItem | MovieItem): Promise<void> {
-      const getImage = async (url: string | undefined): Promise<HTMLImageElement | null> => {
-        if (!url) {
-          return null
-        }
+      const getImage = async (url: string): Promise<HTMLImageElement> => {
         const response = await fetch(url)
         const blob = await response.blob()
         const cover = new Image()
