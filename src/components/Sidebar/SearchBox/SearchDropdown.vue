@@ -23,8 +23,6 @@
 import { defineComponent } from '@vue/runtime-core'
 /* eslint-disable camelcase */
 
-import { AlbumItem, MovieItem } from '../../../types'
-
 // There's way more stuff from the API but this is all that's relevant here.
 interface BookResult {
   title: string,
@@ -45,8 +43,8 @@ export default defineComponent({
         .filter(result => result.cover_edition_key)
         .filter(result => result.author_name)
     },
-    async addToChart (item: BookResult | AlbumItem | MovieItem): Promise<void> {
-      const getImage = async (url: string): Promise<HTMLImageElement> => {
+    async addToChart (item: BookResult): Promise<void> {
+      const setImage = async (url: string): Promise<HTMLImageElement> => {
         const response = await fetch(url)
         const blob = await response.blob()
         const cover = new Image()
@@ -59,7 +57,7 @@ export default defineComponent({
         {
           const bookItem = {
             title: (item as BookResult).title,
-            coverImg: await getImage(`https://covers.openlibrary.org/b/olid/${(item as BookResult).cover_edition_key}-L.jpg`),
+            coverImg: await setImage(`https://covers.openlibrary.org/b/olid/${(item as BookResult).cover_edition_key}-L.jpg`),
             author: (item as BookResult).author_name[0]
           }
           this.$store.commit('addItem', bookItem)

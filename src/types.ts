@@ -1,18 +1,7 @@
 export interface ChartItem {
   title: string,
+  creator: string,
   coverImg: HTMLImageElement
-}
-
-export interface BookItem extends ChartItem {
-  author: string,
-}
-
-export interface AlbumItem extends ChartItem {
-  artist: string,
-}
-
-export interface MovieItem extends ChartItem {
-  director: string,
 }
 
 export interface ChartSize {
@@ -20,7 +9,7 @@ export interface ChartSize {
   y: number
 }
 
-export type ChartContent = Array<BookItem | AlbumItem | MovieItem>
+export type ChartContent = ChartItem[]
 
 export interface Chart {
   title: string,
