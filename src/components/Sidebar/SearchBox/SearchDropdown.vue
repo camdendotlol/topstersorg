@@ -58,7 +58,7 @@ export default defineComponent({
           const bookItem = {
             title: (item as BookResult).title,
             coverImg: await setImage(`https://covers.openlibrary.org/b/olid/${(item as BookResult).cover_edition_key}-L.jpg`),
-            author: (item as BookResult).author_name[0]
+            creator: (item as BookResult).author_name[0]
           }
           this.$store.commit('addItem', bookItem)
           break
