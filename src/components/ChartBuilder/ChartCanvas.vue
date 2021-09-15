@@ -30,26 +30,56 @@ export default defineComponent({
       ctx.fillStyle = this.color
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-      ctx.font = '52px Arial'
+      ctx.font = '52px Times New Roman'
       ctx.fillStyle = '#e9e9e9'
       ctx.textAlign = 'center'
-      ctx.fillText(this.title, canvas.width / 2, 100)
+      ctx.fillText(this.title, canvas.width / 2, 70)
 
       ctx.fillStyle = ('#e9e9e9')
-      const margin = 100
-      const gap = Math.floor((canvas.width - margin) / this.size.x)
 
-      for (let y = 0; y < this.size.y; y++) {
-        const height = (y * 180) + 150
-        for (let x = 0; x < this.size.x; x++) {
-          ctx.fillRect(
-            (x * gap) + (gap / 2),
-            height,
-            100,
-            160
-          )
+      const gap = 200
+      this.getCoverImages(ctx, gap)
+    },
+    getCoverImages (ctx: CanvasRenderingContext2D, gap: number) {
+      const getScaledDimensions = (img: HTMLImageElement) => {
+        let differencePercentage = 1
+        const maxDimension = Math.floor(gap / 2)
+        if (img.width > maxDimension && img.height > maxDimension) {
+          differencePercentage = Math.max((maxDimension / img.width), (maxDimension / img.height))
+        } else if (img.width > maxDimension) {
+          differencePercentage = maxDimension / img.width
+        } else if (img.height > maxDimension) {
+          differencePercentage = maxDimension / img.height
+        }
+
+        return {
+          height: Math.floor(img.height * differencePercentage),
+          width: Math.floor(img.width * differencePercentage)
         }
       }
+
+      this.items.forEach((item, index) => {
+        // Don't overflow outside the bounds of the chart
+        // This way, items will be saved if the chart is too big for them
+        // and the user can just expand the chart and they'll fill in again
+        if (index + 1 > this.size.x * this.size.y) {
+          return null
+        }
+
+        const coords = {
+          x: index % this.size.x,
+          y: Math.floor(index / this.size.x)
+        }
+
+        const dimensions = getScaledDimensions(item.coverImg)
+        ctx.drawImage(
+          item.coverImg,
+          (coords.x * gap) + (gap / 2),
+          (coords.y * gap) + (gap / 2),
+          dimensions.width,
+          dimensions.height
+        )
+      })
     }
   },
   watch: {
@@ -59,7 +89,9 @@ export default defineComponent({
     size () {
       this.renderChart()
     },
-    items () {
+    // Vue can't watch arrays directly, so this is a
+    // goofy hack to watch the length instead.
+    itemCount () {
       this.renderChart()
     },
     color () {
@@ -73,10 +105,11 @@ export default defineComponent({
       y: (state as State).chart.size.y
     }),
     pixelDimensions: state => ({
-      x: ((state as State).chart.size.x * 200) + 200,
-      y: ((state as State).chart.size.y * 200) + 200
+      x: ((state as State).chart.size.x * 200) + 100,
+      y: ((state as State).chart.size.y * 200) + 160
     }),
     items: state => (state as State).chart.items,
+    itemCount: state => (state as State).chart.items.length,
     color: state => (state as State).chart.color
   })
 })

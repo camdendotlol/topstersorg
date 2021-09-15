@@ -8,7 +8,7 @@
       :key="index"
     >
       <img
-        :src="`http://covers.openlibrary.org/b/olid/${result.cover_edition_key}-M.jpg`"
+        :src="`https://covers.openlibrary.org/b/olid/${result.cover_edition_key}-M.jpg`"
         :alt="result.title"
         @click="addToChart(result)"
       />
@@ -45,13 +45,24 @@ export default defineComponent({
         .filter(result => result.cover_edition_key)
         .filter(result => result.author_name)
     },
-    addToChart (item: BookResult | AlbumItem | MovieItem): void {
+    async addToChart (item: BookResult | AlbumItem | MovieItem): Promise<void> {
+      const getImage = async (url: string | undefined): Promise<HTMLImageElement | null> => {
+        if (!url) {
+          return null
+        }
+        const response = await fetch(url)
+        const blob = await response.blob()
+        const cover = new Image()
+        cover.src = URL.createObjectURL(blob)
+        return cover
+      }
+
       switch (this.resultsType) {
         case 'books':
         {
           const bookItem = {
             title: (item as BookResult).title,
-            coverURL: (item as BookResult).cover_edition_key,
+            coverImg: await getImage(`https://covers.openlibrary.org/b/olid/${(item as BookResult).cover_edition_key}-L.jpg`),
             author: (item as BookResult).author_name[0]
           }
           this.$store.commit('addItem', bookItem)

@@ -1,6 +1,6 @@
 export interface ChartItem {
   title: string,
-  coverURL: string
+  coverImg: HTMLImageElement
 }
 
 export interface BookItem extends ChartItem {
