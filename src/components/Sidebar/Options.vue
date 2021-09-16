@@ -6,7 +6,7 @@
       <input
         min=1
         max=10
-        value=3
+        value=5
         type="number"
         name="x-axis"
         class="dimension-input"
@@ -15,7 +15,7 @@
       <input
         min=1
         max=10
-        value=3
+        value=5
         type="number"
         name="y-axis"
         class="dimension-input"

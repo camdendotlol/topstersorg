@@ -16,8 +16,8 @@ export const store = createStore<State>({
         title: '',
         items: [],
         size: {
-          x: 3,
-          y: 3
+          x: 5,
+          y: 5
         },
         color: '#000000'
       }
