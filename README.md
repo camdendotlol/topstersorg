@@ -6,27 +6,27 @@ A website for creating charts with books, music, and movies.
 
 ### Tier one features
 
-- chart generation with Canvas
+- ~~chart generation with Canvas~~
 
-- book data from [OpenLibrary API](https://openlibrary.org/developers/api)
+- ~~book data from [OpenLibrary](https://openlibrary.org/developers/api)~~
 
-- add a title to the top of the chart
+- ~~add a title to the top of the chart~~
 
 - customize colors for background, shadow, etc
 
 ### Tier two features
 
-- album data from LastFM API (requires a backend)
+- ~~album data from LastFM API (requires a backend)~~
 
-- ability to include both books and albums in the same chart
+- ~~ability to include both books and albums in the same chart~~
 
 - insert custom subheadings into chart
 
+- custom background image
+
 ### Tier three featues
 
-- movie support (not sure which API)
-
-- full customization of the chart (unrestricted drag and drop with a grid)
+- movie data from [TMDB](https://www.themoviedb.org/documentation/api)
 
 ## Project setup
 ```
