@@ -21,6 +21,7 @@ import queryOpenLibrary from '../../../api/openlibrary'
 import { defineComponent } from '@vue/runtime-core'
 import { BIconArrowRight, BIconArrowRepeat } from 'bootstrap-icons-vue'
 import { SearchTypes } from './index.vue'
+import queryLastFM from '../../../api/lastfm'
 
 interface FormData {
   results: unknown[],
@@ -64,7 +65,18 @@ export default defineComponent({
           this.loading = false
           break
         }
-        // add music and books later
+        case SearchTypes.Music:
+        {
+          this.loading = true
+          const response = await queryLastFM(query)
+          if (response) {
+            this.results = response
+            this.$emit('updateResults', response)
+          }
+          this.loading = false
+          break
+        }
+        // add movies later
         default:
           return []
       }

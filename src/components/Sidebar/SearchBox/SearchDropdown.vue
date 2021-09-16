@@ -14,6 +14,18 @@
       />
     </li>
   </ul>
+  <ul v-else-if="resultsType === 'music'">
+    <li
+      v-for="(result, index) in filterMusic(results)"
+      :key="index"
+    >
+      <img
+        :src="result.image[result.image.length - 1]['#text']"
+        :alt="result.name"
+        @click="addToChart(result)"
+      />
+    </li>
+  </ul>
   <div v-else>
     <p>Search for {{ resultsType }} has not been implemented yet.</p>
   </div>
@@ -23,11 +35,20 @@
 import { defineComponent } from '@vue/runtime-core'
 /* eslint-disable camelcase */
 
-// There's way more stuff from the API but this is all that's relevant here.
+// There's way more stuff from the APIs but this is all that's relevant here.
 interface BookResult {
   title: string,
   author_name: string,
   cover_edition_key?: string
+}
+
+interface MusicResult {
+  name: string,
+  artist: string,
+  image: {
+    '#text': string,
+    size: string
+  }[]
 }
 
 export default defineComponent({
@@ -42,6 +63,19 @@ export default defineComponent({
       return results
         .filter(result => result.cover_edition_key)
         .filter(result => result.author_name)
+    },
+    filterMusic (results: MusicResult[]): MusicResult[] {
+      console.log(results)
+      return results
+        .filter(result => {
+          let coverFound = false
+          result.image.forEach(image => {
+            if (image['#text'] !== '') {
+              coverFound = true
+            }
+          })
+          return coverFound
+        })
     },
     async addToChart (item: BookResult): Promise<void> {
       const setImage = async (url: string): Promise<HTMLImageElement> => {
