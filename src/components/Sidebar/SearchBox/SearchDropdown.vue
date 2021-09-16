@@ -65,7 +65,6 @@ export default defineComponent({
         .filter(result => result.author_name)
     },
     filterMusic (results: MusicResult[]): MusicResult[] {
-      console.log(results)
       return results
         .filter(result => {
           let coverFound = false
@@ -77,7 +76,7 @@ export default defineComponent({
           return coverFound
         })
     },
-    async addToChart (item: BookResult): Promise<void> {
+    async addToChart (item: BookResult | MusicResult): Promise<void> {
       const setImage = async (url: string): Promise<HTMLImageElement> => {
         const response = await fetch(url)
         const blob = await response.blob()
@@ -96,6 +95,16 @@ export default defineComponent({
           }
           this.$store.commit('addItem', bookItem)
           break
+        }
+        case 'music':
+        {
+          const largestImageIndex = (item as MusicResult).image.length - 1
+          const musicItem = {
+            title: (item as MusicResult).name,
+            coverImg: await setImage((item as MusicResult).image[largestImageIndex]['#text']),
+            creator: (item as MusicResult).artist
+          }
+          this.$store.commit('addItem', musicItem)
         }
         // other types not implemented yet
       }
