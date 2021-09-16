@@ -137,6 +137,10 @@ li img {
   width: 100px;
 }
 
+li img:hover {
+  cursor: pointer;
+}
+
 #empty-results-placeholder {
   display: flex;
   height: 100%;
