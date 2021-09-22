@@ -26,6 +26,18 @@
       />
     </li>
   </ul>
+  <ul v-else-if="resultsType === 'games'">
+    <li
+      v-for="(result, index) in filterGames(results)"
+      :key="index"
+    >
+      <img
+        :src="result.cover"
+        :alt="result.name"
+        @click="addToChart(result)"
+      >
+    </li>
+  </ul>
   <div v-else>
     <p>Search for {{ resultsType }} has not been implemented yet.</p>
   </div>
@@ -49,6 +61,11 @@ interface MusicResult {
     '#text': string,
     size: string
   }[]
+}
+
+interface GameResult {
+  name: string,
+  cover: string
 }
 
 export default defineComponent({
@@ -76,7 +93,10 @@ export default defineComponent({
           return coverFound
         })
     },
-    async addToChart (item: BookResult | MusicResult): Promise<void> {
+    filterGames (results: GameResult[]): GameResult[] {
+      return results.filter(result => result.cover)
+    },
+    async addToChart (item: BookResult | MusicResult | GameResult): Promise<void> {
       const setImage = async (url: string): Promise<HTMLImageElement> => {
         const response = await fetch(url)
         const blob = await response.blob()
@@ -105,6 +125,16 @@ export default defineComponent({
             creator: (item as MusicResult).artist
           }
           this.$store.commit('addItem', musicItem)
+          break
+        }
+        case 'games':
+        {
+          const gameItem = {
+            title: (item as GameResult).name,
+            coverImg: await setImage((item as GameResult).cover),
+            creator: ''
+          }
+          this.$store.commit('addItem', gameItem)
         }
         // other types not implemented yet
       }
@@ -143,7 +173,7 @@ li img:hover {
 
 #empty-results-placeholder {
   display: flex;
-  height: 100%;
+  height: 85%;
   justify-content: center;
   align-items: center;
 }

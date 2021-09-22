@@ -22,6 +22,7 @@ import { defineComponent } from '@vue/runtime-core'
 import { BIconArrowRight, BIconArrowRepeat } from 'bootstrap-icons-vue'
 import { SearchTypes } from './index.vue'
 import queryLastFM from '../../../api/lastfm'
+import queryIGDB from '@/api/igdb'
 
 interface FormData {
   results: unknown[],
@@ -69,6 +70,17 @@ export default defineComponent({
         {
           this.loading = true
           const response = await queryLastFM(query)
+          if (response) {
+            this.results = response
+            this.$emit('updateResults', response)
+          }
+          this.loading = false
+          break
+        }
+        case SearchTypes.Games:
+        {
+          this.loading = true
+          const response = await queryIGDB(query)
           if (response) {
             this.results = response
             this.$emit('updateResults', response)

@@ -17,3 +17,8 @@ export interface Chart {
   size: ChartSize,
   color: string
 }
+
+export interface IgdbItem {
+  name: string,
+  cover: string
+}

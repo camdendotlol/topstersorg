@@ -1,6 +1,6 @@
 # Ostrakon
 
-A website for creating charts with books, music, and movies.
+A website for creating charts with books, music, and games.
 
 ## Roadmap
 

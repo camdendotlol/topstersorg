@@ -16,11 +16,11 @@
         books
       </button>
       <button
-        id="movies-button"
-        :class="searchType === 'movies' ? 'selected-button' : ''"
-        @click="setSearchType('movies')"
+        id="games-button"
+        :class="searchType === 'games' ? 'selected-button' : ''"
+        @click="setSearchType('games')"
       >
-        movies
+        games
       </button>
     </div>
     <div id="search-body">
@@ -38,7 +38,7 @@ import SearchDropdown from './SearchDropdown.vue'
 export enum SearchTypes {
   Music = 'music',
   Books = 'books',
-  Movies = 'movies'
+  Games = 'games'
 }
 
 export default defineComponent({
@@ -74,7 +74,7 @@ export default defineComponent({
   border-radius: 5px 0 0 0;
 }
 
-#movies-button {
+#games-button {
   border-radius: 0 5px 0 0;
 }
 
