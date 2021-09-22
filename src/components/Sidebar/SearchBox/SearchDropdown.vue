@@ -8,7 +8,7 @@
       :key="index"
     >
       <img
-        :src="`https://covers.openlibrary.org/b/olid/${result.cover_edition_key}-M.jpg`"
+        :src="`https://covers.openlibrary.org/b/olid/${result.cover_edition_key}-L.jpg`"
         :alt="result.title"
         @click="addToChart(result)"
       />
@@ -96,12 +96,10 @@ export default defineComponent({
     filterGames (results: GameResult[]): GameResult[] {
       return results.filter(result => result.cover)
     },
-    async addToChart (item: BookResult | MusicResult | GameResult): Promise<void> {
-      const setImage = async (url: string): Promise<HTMLImageElement> => {
-        const response = await fetch(url)
-        const blob = await response.blob()
+    addToChart (item: BookResult | MusicResult | GameResult): void {
+      const setImage = (url: string): HTMLImageElement => {
         const cover = new Image()
-        cover.src = URL.createObjectURL(blob)
+        cover.src = url
         return cover
       }
 
@@ -110,7 +108,7 @@ export default defineComponent({
         {
           const bookItem = {
             title: (item as BookResult).title,
-            coverImg: await setImage(`https://covers.openlibrary.org/b/olid/${(item as BookResult).cover_edition_key}-L.jpg`),
+            coverImg: setImage(`https://covers.openlibrary.org/b/olid/${(item as BookResult).cover_edition_key}-L.jpg`),
             creator: (item as BookResult).author_name[0]
           }
           this.$store.commit('addItem', bookItem)
@@ -121,7 +119,7 @@ export default defineComponent({
           const largestImageIndex = (item as MusicResult).image.length - 1
           const musicItem = {
             title: (item as MusicResult).name,
-            coverImg: await setImage((item as MusicResult).image[largestImageIndex]['#text']),
+            coverImg: setImage((item as MusicResult).image[largestImageIndex]['#text']),
             creator: (item as MusicResult).artist
           }
           this.$store.commit('addItem', musicItem)
@@ -131,10 +129,11 @@ export default defineComponent({
         {
           const gameItem = {
             title: (item as GameResult).name,
-            coverImg: await setImage((item as GameResult).cover),
+            coverImg: setImage((item as GameResult).cover),
             creator: ''
           }
           this.$store.commit('addItem', gameItem)
+          break
         }
         // other types not implemented yet
       }
