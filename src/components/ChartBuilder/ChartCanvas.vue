@@ -98,9 +98,6 @@ export default defineComponent({
       }
 
       this.items.forEach((item: ChartItem, index: number) => {
-        item.coverImg.onload = () => {
-          insertImage(item, index)
-        }
         insertImage(item, index)
       })
     }
