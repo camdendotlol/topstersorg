@@ -69,7 +69,7 @@ export default defineComponent({
 }
 
 #igdb-logo {
-  filter: invert(100)
+  filter: invert(100);
 }
 
 @media screen and (max-width: 1000px) {

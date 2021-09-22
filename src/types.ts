@@ -9,11 +9,9 @@ export interface ChartSize {
   y: number
 }
 
-export type ChartContent = ChartItem[]
-
 export interface Chart {
   title: string,
-  items: ChartContent,
+  items: ChartItem[],
   size: ChartSize,
   color: string
 }

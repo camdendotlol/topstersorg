@@ -19,7 +19,7 @@ const queryOpenLibrary = async (query: string): Promise<unknown[]> => {
   const jsonRes = await res.json()
 
   if (jsonRes.docs.length === 0) {
-    throw new Error(errorMessages.NoResults)
+    return []
   }
 
   return jsonRes.docs

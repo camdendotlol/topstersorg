@@ -1,8 +1,5 @@
 <template>
-  <div v-if="results.length === 0" id="empty-results-placeholder">
-    <p>Results will appear here.</p>
-  </div>
-  <ul v-else-if="resultsType === 'books'">
+  <ul v-if="resultsType === 'books'">
     <li
       v-for="(result, index) in filterBooks(results)"
       :key="index"

@@ -23,6 +23,10 @@ const queryLastFM = async (query: string): Promise<unknown[]> => {
 
   const jsonRes = await res.json()
 
+  if (jsonRes.results.albummatches.album.length === 0) {
+    return []
+  }
+
   return jsonRes.results.albummatches.album
 }
 
