@@ -129,10 +129,6 @@ export default defineComponent({
             maxTitleWidth = ctx.measureText(name).width + 50
           }
         }
-
-        if (maxTitleWidth > 800) {
-          maxTitleWidth = 800
-        }
       }
 
       return maxTitleWidth

@@ -40,6 +40,7 @@ export default defineComponent({
 <style scoped>
 .sidebar {
   width: 400px;
+  flex-shrink: 0;
   overflow-y: scroll;
   margin: 0;
   background: peachpuff;
