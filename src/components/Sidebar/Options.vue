@@ -2,6 +2,12 @@
   <div id="chart-options">
     <h2>Options</h2>
     <div class="form-option">
+      <label for="display-titles">Display Titles</label>
+      <input
+        type="checkbox"
+        name="display-titles"
+        @change="changeShowTitles"
+      >
       <label for="chart-size">Size</label>
       <input
         min=1
@@ -52,7 +58,8 @@ export default defineComponent({
     ...mapMutations([
       'changeTitle',
       'changeColor',
-      'changeSize'
+      'changeSize',
+      'toggleTitles'
     ]),
     updateTitle (event: Event): void {
       const title = (event.target as HTMLFormElement).value
@@ -69,6 +76,10 @@ export default defineComponent({
     updateSizeY (event: Event): void {
       const value = parseInt((event.target as HTMLFormElement).value)
       return this.changeSize({ axis: 'y', value })
+    },
+    changeShowTitles (event: Event): void {
+      const value: boolean = (event.target as HTMLFormElement).checked
+      return this.toggleTitles(value)
     }
   }
 })

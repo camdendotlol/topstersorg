@@ -17,7 +17,6 @@ export default defineComponent({
   methods: {
     renderChart () {
       const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
-
       const ctx = canvas.getContext('2d')
 
       canvas.width = this.pixelDimensions.x
@@ -31,7 +30,7 @@ export default defineComponent({
       ctx.fillStyle = this.color
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-      ctx.font = 'bold 46pt Courier'
+      ctx.font = 'bold 46pt monospace'
       ctx.fillStyle = '#e9e9e9'
       ctx.textAlign = 'center'
       ctx.fillText(this.title, canvas.width / 2, 70)
@@ -43,9 +42,9 @@ export default defineComponent({
 
       // gap between cells (pixels)
       const gap = 10
-      this.getCoverImages(ctx, cellSize, gap)
+      this.getCoverImages(ctx, cellSize, gap, canvas)
     },
-    getCoverImages (ctx: CanvasRenderingContext2D, cellSize: number, gap: number) {
+    getCoverImages (ctx: CanvasRenderingContext2D, cellSize: number, gap: number, canvas: HTMLCanvasElement) {
       const getScaledDimensions = (img: HTMLImageElement) => {
         let differencePercentage = 1
 
@@ -73,7 +72,30 @@ export default defineComponent({
         }
       }
 
-      const insertImage = (item: ChartItem, index: number) => {
+      const insertImage = (item: ChartItem, index: number, coords: { x: number, y: number }) => {
+        const dimensions = getScaledDimensions(item.coverImg)
+
+        ctx.drawImage(
+          item.coverImg,
+          ((coords.x * cellSize) + 55 + (coords.x * gap)) + findCenteringOffset(dimensions.width),
+          ((coords.y * cellSize) + 100 + (coords.y * gap)) + findCenteringOffset(dimensions.height),
+          dimensions.width,
+          dimensions.height
+        )
+      }
+
+      const insertTitle = (item: ChartItem, index: number, coords: { x: number, y: number }, maxWidth: number) => {
+        const titleString = item.creator ? `${item.creator} - ${item.title}` : item.title
+        ctx.fillText(
+          titleString,
+          canvas.width - maxWidth,
+          (40 * index) + 130 + ((coords.y % (index + 1)) * 50)
+        )
+      }
+
+      const maxWidth = this.maxTitleWidth()
+
+      this.items.forEach((item: ChartItem, index: number) => {
         // Don't overflow outside the bounds of the chart
         // This way, items will be saved if the chart is too big for them
         // and the user can just expand the chart and they'll fill in again
@@ -86,20 +108,34 @@ export default defineComponent({
           y: Math.floor(index / this.size.x)
         }
 
-        const dimensions = getScaledDimensions(item.coverImg)
+        insertImage(item, index, coords)
+        if (this.showTitles) {
+          ctx.font = '19pt monospace'
+          ctx.textAlign = 'left'
+          insertTitle(item, index, coords, maxWidth)
+        }
+      })
+    },
+    maxTitleWidth () {
+      const ctx = (document.getElementById('chart-canvas') as HTMLCanvasElement).getContext('2d') as CanvasRenderingContext2D
+      ctx.font = '19pt monospace'
+      let maxTitleWidth = 0
 
-        ctx.drawImage(
-          item.coverImg,
-          ((coords.x * cellSize) + 55 + (coords.x * gap)) + findCenteringOffset(dimensions.width),
-          ((coords.y * cellSize) + 100 + (coords.y * gap)) + findCenteringOffset(dimensions.height),
-          dimensions.width,
-          dimensions.height
-        )
+      if (this.$store.state.chart.showTitles) {
+        for (let x = 0; x < this.items.length; x++) {
+          const item = this.items[x]
+          const name = item.creator ? `${item.creator} - ${item.title}` : item.title
+          if (maxTitleWidth < ctx.measureText(name).width) {
+            maxTitleWidth = ctx.measureText(name).width + 50
+          }
+        }
+
+        if (maxTitleWidth > 800) {
+          maxTitleWidth = 800
+        }
       }
 
-      this.items.forEach((item: ChartItem, index: number) => {
-        insertImage(item, index)
-      })
+      return maxTitleWidth
     }
   },
   watch: {
@@ -116,6 +152,9 @@ export default defineComponent({
     },
     color () {
       this.renderChart()
+    },
+    showTitles () {
+      this.renderChart()
     }
   },
   computed: mapState({
@@ -124,14 +163,17 @@ export default defineComponent({
       x: (state as State).chart.size.x,
       y: (state as State).chart.size.y
     }),
-    pixelDimensions: state => ({
-      // room for each cell + 10px gap between cells + margins
-      x: ((state as State).chart.size.x * 270) + 100,
-      y: ((state as State).chart.size.y * 270) + 160
-    }),
+    pixelDimensions (state) {
+      return {
+        // room for each cell + 10px gap between cells + margins
+        x: ((state as State).chart.size.x * 270) + 100 + this.maxTitleWidth(),
+        y: ((state as State).chart.size.y * 270) + 160
+      }
+    },
     items: state => (state as State).chart.items,
     itemCount: state => (state as State).chart.items.length,
-    color: state => (state as State).chart.color
+    color: state => (state as State).chart.color,
+    showTitles: state => (state as State).chart.showTitles
   })
 })
 

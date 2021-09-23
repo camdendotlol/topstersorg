@@ -19,7 +19,8 @@ export const store = createStore<State>({
           x: 5,
           y: 5
         },
-        color: '#000000'
+        color: '#000000',
+        showTitles: false
       }
     }
   },
@@ -44,6 +45,9 @@ export const store = createStore<State>({
         default:
           state.chart.size = { ...state.chart.size }
       }
+    },
+    toggleTitles (state: State, showTitles: boolean) {
+      state.chart.showTitles = showTitles
     }
   }
 })

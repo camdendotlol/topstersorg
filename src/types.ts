@@ -1,6 +1,6 @@
 export interface ChartItem {
   title: string,
-  creator: string,
+  creator?: string,
   coverImg: HTMLImageElement
 }
 
@@ -13,7 +13,8 @@ export interface Chart {
   title: string,
   items: ChartItem[],
   size: ChartSize,
-  color: string
+  color: string,
+  showTitles: boolean
 }
 
 export interface IgdbItem {
