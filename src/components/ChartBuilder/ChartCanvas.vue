@@ -72,7 +72,7 @@ export default defineComponent({
         }
       }
 
-      const insertImage = (item: ChartItem, index: number, coords: { x: number, y: number }) => {
+      const insertImage = (item: ChartItem, coords: { x: number, y: number }) => {
         const dimensions = getScaledDimensions(item.coverImg)
 
         ctx.drawImage(
@@ -89,7 +89,7 @@ export default defineComponent({
         ctx.fillText(
           titleString,
           canvas.width - maxWidth,
-          (40 * index) + 130 + ((coords.y % (index + 1)) * 50)
+          (35 * index) + 130 + ((coords.y % (index + 1)) * 50)
         )
       }
 
@@ -108,9 +108,9 @@ export default defineComponent({
           y: Math.floor(index / this.size.x)
         }
 
-        insertImage(item, index, coords)
+        insertImage(item, coords)
         if (this.showTitles) {
-          ctx.font = '19pt monospace'
+          ctx.font = '1.6rem monospace'
           ctx.textAlign = 'left'
           insertTitle(item, index, coords, maxWidth)
         }
@@ -164,10 +164,11 @@ export default defineComponent({
       y: (state as State).chart.size.y
     }),
     pixelDimensions (state) {
+      const topMargin = (state as State).chart.title === '' ? 100 : 180
       return {
         // room for each cell + 10px gap between cells + margins
         x: ((state as State).chart.size.x * 270) + 100 + this.maxTitleWidth(),
-        y: ((state as State).chart.size.y * 270) + 160
+        y: ((state as State).chart.size.y * 270) + topMargin
       }
     },
     items: state => (state as State).chart.items,
