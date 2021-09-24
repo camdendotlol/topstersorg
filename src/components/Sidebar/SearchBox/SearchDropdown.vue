@@ -106,6 +106,7 @@ export default defineComponent({
           const bookItem = {
             title: (item as BookResult).title,
             coverImg: setImage(`https://covers.openlibrary.org/b/olid/${(item as BookResult).cover_edition_key}-L.jpg`),
+            coverURL: `https://covers.openlibrary.org/b/olid/${(item as BookResult).cover_edition_key}-L.jpg`,
             creator: (item as BookResult).author_name[0]
           }
           this.$store.commit('addItem', bookItem)
@@ -117,6 +118,7 @@ export default defineComponent({
           const musicItem = {
             title: (item as MusicResult).name,
             coverImg: setImage((item as MusicResult).image[largestImageIndex]['#text']),
+            coverURL: (item as MusicResult).image[largestImageIndex]['#text'],
             creator: (item as MusicResult).artist
           }
           this.$store.commit('addItem', musicItem)
@@ -127,6 +129,7 @@ export default defineComponent({
           const gameItem = {
             title: (item as GameResult).name,
             coverImg: setImage((item as GameResult).cover),
+            coverURL: (item as GameResult).cover,
             creator: ''
           }
           this.$store.commit('addItem', gameItem)

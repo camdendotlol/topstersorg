@@ -2,171 +2,86 @@
   <canvas id="chart-canvas">
     If you can see this, it means your browser doesn't support Canvas. Canvas is pretty important for the function of the site! Sorry!
   </canvas>
+  <button
+    id="save-button"
+    @click="saveChart"
+  >
+    <BIconFileEarmarkArrowDown />
+    <br>
+    Save
+  </button>
 </template>
 
 <script lang="ts">
-import { ChartItem } from '@/types'
 import { defineComponent } from '@vue/runtime-core'
+import { BIconFileEarmarkArrowDown } from 'bootstrap-icons-vue'
 import { mapState } from 'vuex'
 import { State } from '../../store'
+import topster from 'topster'
+import getChart from '../../api/chartGen'
 
 export default defineComponent({
+  components: {
+    BIconFileEarmarkArrowDown
+  },
   mounted () {
-    this.renderChart()
+    this.insertChart()
   },
   methods: {
-    renderChart () {
-      const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
-      const ctx = canvas.getContext('2d')
+    insertChart () {
+      const canvasElement = document.getElementById('chart-canvas') as HTMLCanvasElement
 
-      canvas.width = this.pixelDimensions.x
-      canvas.height = this.pixelDimensions.y
-
-      if (!ctx) {
-        throw new Error('Canvas ctx not found')
-      }
-
-      ctx.beginPath()
-      ctx.fillStyle = this.color
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-      ctx.font = 'bold 46pt monospace'
-      ctx.fillStyle = '#e9e9e9'
-      ctx.textAlign = 'center'
-      ctx.fillText(this.title, canvas.width / 2, 70)
-
-      ctx.fillStyle = ('#e9e9e9')
-
-      // height/width of each square cell
-      const cellSize = 260
-
-      // gap between cells (pixels)
-      const gap = 10
-      this.getCoverImages(ctx, cellSize, gap, canvas)
+      topster(
+        canvasElement,
+        this.title,
+        this.items,
+        this.size,
+        this.color,
+        this.showTitles
+      )
     },
-    getCoverImages (ctx: CanvasRenderingContext2D, cellSize: number, gap: number, canvas: HTMLCanvasElement) {
-      const getScaledDimensions = (img: HTMLImageElement) => {
-        let differencePercentage = 1
+    async saveChart () {
+      const chart = await getChart(this.chart)
+      const url = window.URL.createObjectURL(chart)
+      const a = document.createElement('a')
 
-        if (img.width > cellSize && img.height > cellSize) {
-          differencePercentage = Math.min((cellSize / img.width), (cellSize / img.height))
-        } else if (img.width > cellSize) {
-          differencePercentage = cellSize / img.width
-        } else if (img.height > cellSize) {
-          differencePercentage = cellSize / img.height
-        } else if (img.width < cellSize && img.height < cellSize) {
-          differencePercentage = Math.min((cellSize / img.width), (cellSize / img.height))
-        }
+      a.style.display = 'none'
+      a.href = url
+      a.download = 'chart.jpg'
 
-        return {
-          height: Math.floor(img.height * differencePercentage),
-          width: Math.floor(img.width * differencePercentage)
-        }
-      }
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
 
-      const findCenteringOffset = (dimension: number) => {
-        if (dimension < cellSize) {
-          return Math.floor((cellSize - dimension) / 2)
-        } else {
-          return 0
-        }
-      }
-
-      const insertImage = (item: ChartItem, coords: { x: number, y: number }) => {
-        const dimensions = getScaledDimensions(item.coverImg)
-
-        ctx.drawImage(
-          item.coverImg,
-          ((coords.x * cellSize) + 55 + (coords.x * gap)) + findCenteringOffset(dimensions.width),
-          ((coords.y * cellSize) + 100 + (coords.y * gap)) + findCenteringOffset(dimensions.height),
-          dimensions.width,
-          dimensions.height
-        )
-      }
-
-      const insertTitle = (item: ChartItem, index: number, coords: { x: number, y: number }, maxWidth: number) => {
-        const titleString = item.creator ? `${item.creator} - ${item.title}` : item.title
-        ctx.fillText(
-          titleString,
-          canvas.width - maxWidth,
-          (35 * index) + 130 + ((coords.y % (index + 1)) * 50)
-        )
-      }
-
-      const maxWidth = this.maxTitleWidth()
-
-      this.items.forEach((item: ChartItem, index: number) => {
-        // Don't overflow outside the bounds of the chart
-        // This way, items will be saved if the chart is too big for them
-        // and the user can just expand the chart and they'll fill in again
-        if (index + 1 > this.size.x * this.size.y) {
-          return null
-        }
-
-        const coords = {
-          x: index % this.size.x,
-          y: Math.floor(index / this.size.x)
-        }
-
-        insertImage(item, coords)
-        if (this.showTitles) {
-          ctx.font = '1.6rem monospace'
-          ctx.textAlign = 'left'
-          insertTitle(item, index, coords, maxWidth)
-        }
-      })
-    },
-    maxTitleWidth () {
-      const ctx = (document.getElementById('chart-canvas') as HTMLCanvasElement).getContext('2d') as CanvasRenderingContext2D
-      ctx.font = '19pt monospace'
-      let maxTitleWidth = 0
-
-      if (this.$store.state.chart.showTitles) {
-        for (let x = 0; x < this.items.length; x++) {
-          const item = this.items[x]
-          const name = item.creator ? `${item.creator} - ${item.title}` : item.title
-          if (maxTitleWidth < ctx.measureText(name).width) {
-            maxTitleWidth = ctx.measureText(name).width + 50
-          }
-        }
-      }
-
-      return maxTitleWidth
+      window.URL.revokeObjectURL(url)
     }
   },
   watch: {
     title () {
-      this.renderChart()
+      this.insertChart()
     },
     size () {
-      this.renderChart()
+      this.insertChart()
     },
     // Vue can't watch arrays directly, so this is a
     // goofy hack to watch the length instead.
     itemCount () {
-      this.renderChart()
+      this.insertChart()
     },
     color () {
-      this.renderChart()
+      this.insertChart()
     },
     showTitles () {
-      this.renderChart()
+      this.insertChart()
     }
   },
   computed: mapState({
+    chart: state => (state as State).chart,
     title: state => (state as State).chart.title,
     size: state => ({
       x: (state as State).chart.size.x,
       y: (state as State).chart.size.y
     }),
-    pixelDimensions (state) {
-      const topMargin = (state as State).chart.title === '' ? 100 : 180
-      return {
-        // room for each cell + 10px gap between cells + margins
-        x: ((state as State).chart.size.x * 270) + 100 + this.maxTitleWidth(),
-        y: ((state as State).chart.size.y * 270) + topMargin
-      }
-    },
     items: state => (state as State).chart.items,
     itemCount: state => (state as State).chart.items.length,
     color: state => (state as State).chart.color,
@@ -179,6 +94,32 @@ export default defineComponent({
 <style scoped>
 #chart-canvas {
   border-radius: 10px;
+}
+
+#save-button {
+  display: block;
+  margin: 0 auto;
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 50%;
+  border: 2px solid #e9e9e9;
+  background: transparent;
+  color: #e9e9e9;
+  height: 5rem;
+  width: 5rem;
+  font-size: 0.8rem;
+  transition: 0.2s;
+}
+
+#save-button:hover {
+  cursor: pointer;
+  background: #e9e9e9;
+  color: #00003f;
+}
+
+#save-button svg {
+  height: 1.8rem;
+  width: 1.8rem;
 }
 
 canvas {
