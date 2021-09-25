@@ -1,7 +1,7 @@
 import { Chart } from 'topster'
 import { errorMessages } from './errors'
 
-const getChart = async (data: Chart) => {
+const getChart = async (data: Chart): Promise<Blob> => {
   let url
   if (process.env.NODE_ENV === 'development') {
     url = 'http://localhost:42069/api/chart/gen'
