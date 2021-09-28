@@ -21,15 +21,11 @@ export default defineComponent({
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
-
 #app {
-  font-family: "Work Sans", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu Mono", monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #00003f;
-  margin-top: 30px;
 }
 
 body {

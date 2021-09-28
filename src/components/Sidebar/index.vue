@@ -45,6 +45,7 @@ export default defineComponent({
   margin: 0;
   background: peachpuff;
   box-shadow: 2px 0 3px -1px gray;
+  text-align: center;
 }
 
 .sidebar-content {
