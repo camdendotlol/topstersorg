@@ -11,7 +11,7 @@
   "dependencies": {
     "bootstrap-icons-vue": "^0.7.0",
     "core-js": "^3.6.5",
-    "topster": "^1.0.4",
+    "topster": "^1.0.11",
     "vue": "^3.0.0",
     "vuex": "^4.0.2"
   },
