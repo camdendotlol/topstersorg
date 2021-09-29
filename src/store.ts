@@ -48,6 +48,9 @@ export const store = createStore<State>({
     },
     toggleTitles (state: State, showTitles: boolean) {
       state.chart.showTitles = showTitles
+    },
+    setEntireChart (state: State, payload: Chart) {
+      state.chart = payload
     }
   }
 })

@@ -19,12 +19,33 @@ import { mapState } from 'vuex'
 import { State } from '../../store'
 import topster from 'topster'
 import getChart from '../../api/chartGen'
+import { Chart, SavedChart } from '@/types'
 
 export default defineComponent({
   components: {
     BIconFileEarmarkArrowDown
   },
   mounted () {
+    // check for saved chart in local storage
+    const savedCharts: SavedChart[] = JSON.parse(localStorage.getItem('charts') || '[]')
+
+    if (savedCharts) {
+      const activeChart = savedCharts.find(chart => chart.currentlyActive)
+      if (activeChart) {
+        for (const item of activeChart.data.items) {
+          const img = new Image()
+          img.src = item.coverURL
+          item.coverImg = img
+
+          // make sure they all load in
+          img.onload = () => {
+            this.insertChart()
+          }
+        }
+        this.$store.commit('setEntireChart', activeChart.data)
+      }
+    }
+
     this.insertChart()
   },
   methods: {
@@ -39,6 +60,34 @@ export default defineComponent({
         this.color,
         this.showTitles
       )
+
+      this.saveToLocalStorage(this.chart)
+    },
+    saveToLocalStorage (chart: Chart) {
+      const savedCharts: SavedChart[] = JSON.parse(localStorage.getItem('charts') || '[]')
+
+      // if the chart's already saved
+      if (savedCharts) {
+        const activeChart = savedCharts.find(chart => chart.currentlyActive)
+        if (activeChart) {
+          const updatedChart = {
+            ...activeChart,
+            data: chart
+          }
+          const newChartArray = savedCharts.filter(chart => chart !== activeChart).concat(updatedChart)
+          return localStorage.setItem('charts', JSON.stringify(newChartArray))
+        }
+      }
+
+      // if it's new
+      const newChartArray = [
+        {
+          name: 'first',
+          data: chart,
+          currentlyActive: true
+        }
+      ]
+      return localStorage.setItem('charts', JSON.stringify(newChartArray))
     },
     async saveChart () {
       const chart = await getChart(this.chart)

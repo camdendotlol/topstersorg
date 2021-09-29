@@ -23,11 +23,8 @@ export interface IgdbItem {
   cover: string
 }
 
-export interface BrowserStore {
-  activeTab: 'music' | 'books' | 'games',
-  charts: {
-    name?: string,
-    chart: Chart[],
-    currentlyActive: boolean
-  }[]
+export interface SavedChart {
+  name?: string,
+  data: Chart,
+  currentlyActive: boolean
 }

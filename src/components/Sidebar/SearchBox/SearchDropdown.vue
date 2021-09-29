@@ -129,8 +129,7 @@ export default defineComponent({
           const gameItem = {
             title: (item as GameResult).name,
             coverImg: setImage((item as GameResult).cover),
-            coverURL: (item as GameResult).cover,
-            creator: ''
+            coverURL: (item as GameResult).cover
           }
           this.$store.commit('addItem', gameItem)
           break
