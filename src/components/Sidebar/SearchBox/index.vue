@@ -46,6 +46,12 @@ export default defineComponent({
     SearchForm,
     SearchDropdown
   },
+  beforeMount () {
+    const storedTab = localStorage.getItem('activeTab')
+    if (storedTab && ['music', 'books', 'games'].includes(storedTab)) {
+      this.setSearchType(storedTab)
+    }
+  },
   data () {
     return {
       searchType: 'books',
@@ -56,6 +62,7 @@ export default defineComponent({
     setSearchType (type: string) {
       this.results = []
       this.searchType = type
+      localStorage.setItem('activeTab', type)
     },
     updateResults (newResults: []) {
       this.results = newResults

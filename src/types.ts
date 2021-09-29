@@ -22,3 +22,12 @@ export interface IgdbItem {
   name: string,
   cover: string
 }
+
+export interface BrowserStore {
+  activeTab: 'music' | 'books' | 'games',
+  charts: {
+    name?: string,
+    chart: Chart[],
+    currentlyActive: boolean
+  }[]
+}
