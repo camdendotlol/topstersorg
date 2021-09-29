@@ -54,11 +54,7 @@ export default defineComponent({
 
       topster(
         canvasElement,
-        this.title,
-        this.items,
-        this.size,
-        this.color,
-        this.showTitles
+        this.chart
       )
 
       this.saveToLocalStorage(this.chart)
