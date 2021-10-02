@@ -38,18 +38,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.sidebar {
-  width: 400px;
-  flex-shrink: 0;
-  overflow-y: scroll;
-  margin: 0;
-  background: peachpuff;
-  box-shadow: 2px 0 3px -1px gray;
-  text-align: center;
-}
-
 .sidebar-content {
-  margin: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .chart-type-button {
@@ -77,7 +68,6 @@ export default defineComponent({
 @media screen and (max-width: 1000px) {
   .sidebar {
     width: 100%;
-    height: 400px;
   }
 }
 

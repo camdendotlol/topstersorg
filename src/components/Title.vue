@@ -22,6 +22,7 @@ export default defineComponent({
 <style scoped>
 h1 {
   margin: 0 auto;
+  margin-top: 20px;
   font-size: 3rem;
 }
 </style>
