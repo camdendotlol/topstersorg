@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div class='sidebar-div'>
+    <div class="sidebar-div">
       <button type="button" id="mobile-burger-toggle" @click="toggleSidebarDisplay">
         <BIconGearFill />
       </button>
@@ -130,6 +130,8 @@ input {
 
   .invisible-sidebar {
     transform: translateX(0vw);
+    height: 100vh;
+    overflow: hidden;
   }
 
   .visible-sidebar {
