@@ -6,6 +6,7 @@
       <input
         type="checkbox"
         name="display-titles"
+        id="display-titles"
         @change="changeShowTitles"
       >
       <label for="chart-size">Size</label>
@@ -15,6 +16,7 @@
         value=5
         type="number"
         name="x-axis"
+        id="x-axis"
         class="dimension-input"
         @change="updateSizeX"
       >
@@ -24,6 +26,7 @@
         value=5
         type="number"
         name="y-axis"
+        id="y-axis"
         class="dimension-input"
         @change="updateSizeY"
       >
@@ -73,6 +76,8 @@
 </template>
 
 <script lang="ts">
+import { initialState } from '@/store'
+import { Chart, SavedChart } from '@/types'
 import { defineComponent } from '@vue/runtime-core'
 import { mapMutations } from 'vuex'
 
@@ -81,6 +86,9 @@ export default defineComponent({
     return {
       gap: 0
     }
+  },
+  mounted () {
+    this.setupFromLocalstorage()
   },
   methods: {
     ...mapMutations([
@@ -117,7 +125,34 @@ export default defineComponent({
       return this.toggleTitles(value)
     },
     resetState (): void {
+      this.populateForm(initialState.chart)
       return this.reset()
+    },
+    setupFromLocalstorage (): void {
+      const savedCharts: SavedChart[] = JSON.parse(localStorage.getItem('charts') || '[]')
+
+      let activeChart
+
+      if (savedCharts) {
+        activeChart = savedCharts.find(chart => chart.currentlyActive)
+      }
+
+      if (activeChart) {
+        this.populateForm(activeChart.data)
+      }
+    },
+    populateForm (chart: Chart): void {
+      (document.getElementById('display-titles') as HTMLFormElement).checked = chart.showTitles;
+
+      (document.getElementById('x-axis') as HTMLFormElement).value = chart.size.x;
+      (document.getElementById('y-axis') as HTMLFormElement).value = chart.size.y;
+
+      (document.getElementById('title') as HTMLFormElement).value = chart.title;
+
+      (document.getElementById('background-color') as HTMLFormElement).value = chart.color;
+
+      (document.getElementById('gap') as HTMLFormElement).value = chart.gap
+      this.gap = chart.gap
     }
   }
 })

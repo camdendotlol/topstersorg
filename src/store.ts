@@ -9,7 +9,7 @@ export interface State {
 // define injection key
 export const key: InjectionKey<Store<State>> = Symbol('store')
 
-const initialState = {
+export const initialState = {
   chart: {
     title: '',
     items: [],
