@@ -9,20 +9,23 @@ export interface State {
 // define injection key
 export const key: InjectionKey<Store<State>> = Symbol('store')
 
+const initialState = {
+  chart: {
+    title: '',
+    items: [],
+    size: {
+      x: 5,
+      y: 5
+    },
+    color: '#000000',
+    showTitles: false,
+    gap: 0
+  }
+}
+
 export const store = createStore<State>({
   state () {
-    return {
-      chart: {
-        title: '',
-        items: [],
-        size: {
-          x: 5,
-          y: 5
-        },
-        color: '#000000',
-        showTitles: false
-      }
-    }
+    return { ...initialState }
   },
   mutations: {
     addItem (state: State, item) {
@@ -46,11 +49,17 @@ export const store = createStore<State>({
           state.chart.size = { ...state.chart.size }
       }
     },
+    changeGap (state: State, newGap: number) {
+      state.chart.gap = newGap
+    },
     toggleTitles (state: State, showTitles: boolean) {
       state.chart.showTitles = showTitles
     },
     setEntireChart (state: State, payload: Chart) {
       state.chart = payload
+    },
+    reset (state: State) {
+      state.chart = { ...initialState.chart }
     }
   }
 })

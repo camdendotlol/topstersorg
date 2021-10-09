@@ -46,6 +46,29 @@
         @change="updateColor"
       >
     </div>
+    <div class="form-option">
+      <label for="gap">Gap</label>
+      <p class="gap-amount">
+        {{ gap }}px
+      </p>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value="0"
+        name="gap"
+        id="gap"
+        @input="updateGap"
+      >
+    </div>
+    <div class="form-option">
+      <button
+        id="reset"
+        @click="resetState"
+      >
+        Reset (temporary dev option)
+      </button>
+    </div>
   </div>
 </template>
 
@@ -54,12 +77,19 @@ import { defineComponent } from '@vue/runtime-core'
 import { mapMutations } from 'vuex'
 
 export default defineComponent({
+  data () {
+    return {
+      gap: 0
+    }
+  },
   methods: {
     ...mapMutations([
       'changeTitle',
       'changeColor',
       'changeSize',
-      'toggleTitles'
+      'changeGap',
+      'toggleTitles',
+      'reset'
     ]),
     updateTitle (event: Event): void {
       const title = (event.target as HTMLFormElement).value
@@ -77,9 +107,17 @@ export default defineComponent({
       const value = parseInt((event.target as HTMLFormElement).value)
       return this.changeSize({ axis: 'y', value })
     },
+    updateGap (event: Event): void {
+      const value = parseInt((event.target as HTMLFormElement).value)
+      this.gap = value
+      return this.changeGap(value)
+    },
     changeShowTitles (event: Event): void {
       const value: boolean = (event.target as HTMLFormElement).checked
       return this.toggleTitles(value)
+    },
+    resetState (): void {
+      return this.reset()
     }
   }
 })
@@ -125,5 +163,9 @@ select {
   border: 2px solid #00003f;
   border-radius: 5px;
   background: #e9e9e9;
+}
+
+.gap-amount {
+  margin: 0;
 }
 </style>

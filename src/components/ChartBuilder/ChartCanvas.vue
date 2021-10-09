@@ -1,6 +1,6 @@
 <template>
   <canvas id="chart-canvas">
-    If you can see this, it means your browser doesn't support Canvas. Canvas is pretty important for the function of the site! Sorry!
+    TODO: text mode charts
   </canvas>
   <button
     id="save-button"
@@ -17,7 +17,7 @@ import { defineComponent } from '@vue/runtime-core'
 import { BIconFileEarmarkArrowDown } from 'bootstrap-icons-vue'
 import { mapState } from 'vuex'
 import { State } from '../../store'
-import topster from 'topster'
+import generateChart from 'topster'
 import getChart from '../../api/chartGen'
 import { Chart, SavedChart } from '@/types'
 
@@ -39,20 +39,20 @@ export default defineComponent({
 
           // make sure they all load in
           img.onload = () => {
-            this.insertChart()
+            this.renderChart()
           }
         }
         this.$store.commit('setEntireChart', activeChart.data)
       }
     }
 
-    this.insertChart()
+    this.renderChart()
   },
   methods: {
-    insertChart () {
+    renderChart () {
       const canvasElement = document.getElementById('chart-canvas') as HTMLCanvasElement
 
-      topster(
+      generateChart(
         canvasElement,
         this.chart
       )
@@ -103,21 +103,24 @@ export default defineComponent({
   },
   watch: {
     title () {
-      this.insertChart()
+      this.renderChart()
     },
     size () {
-      this.insertChart()
+      this.renderChart()
     },
     // Vue can't watch arrays directly, so this is a
     // goofy hack to watch the length instead.
     itemCount () {
-      this.insertChart()
+      this.renderChart()
     },
     color () {
-      this.insertChart()
+      this.renderChart()
     },
     showTitles () {
-      this.insertChart()
+      this.renderChart()
+    },
+    gap () {
+      this.renderChart()
     }
   },
   computed: mapState({
@@ -130,7 +133,8 @@ export default defineComponent({
     items: state => (state as State).chart.items,
     itemCount: state => (state as State).chart.items.length,
     color: state => (state as State).chart.color,
-    showTitles: state => (state as State).chart.showTitles
+    showTitles: state => (state as State).chart.showTitles,
+    gap: state => (state as State).chart.gap
   })
 })
 
@@ -138,7 +142,7 @@ export default defineComponent({
 
 <style scoped>
 #chart-canvas {
-  border-radius: 10px;
+  border-radius: 5px;
 }
 
 #save-button {

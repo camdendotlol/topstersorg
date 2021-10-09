@@ -15,7 +15,8 @@ export interface Chart {
   items: ChartItem[],
   size: ChartSize,
   color: string,
-  showTitles: boolean
+  showTitles: boolean,
+  gap: number
 }
 
 export interface IgdbItem {

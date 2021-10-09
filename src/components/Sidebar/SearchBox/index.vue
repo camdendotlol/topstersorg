@@ -54,7 +54,7 @@ export default defineComponent({
   },
   data () {
     return {
-      searchType: 'books',
+      searchType: 'music',
       results: []
     }
   },
