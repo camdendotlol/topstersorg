@@ -1,6 +1,6 @@
 <template>
   <canvas id="chart-canvas">
-    TODO: text mode charts
+    TODO: text mode charts for accessibility
   </canvas>
   <button
     id="save-button"

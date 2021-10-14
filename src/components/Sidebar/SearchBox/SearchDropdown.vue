@@ -4,9 +4,9 @@
       v-for="(result, index) in filterBooks(results)"
       :key="index"
     >
-      <img
-        :src="`https://covers.openlibrary.org/b/olid/${result.cover_edition_key}-L.jpg`"
-        :alt="result.title"
+      <ResultItem
+        :imageSrc="`https://covers.openlibrary.org/b/olid/${result.cover_edition_key}-L.jpg`"
+        :altText="result.title"
         @click="addToChart(result)"
       />
     </li>
@@ -16,9 +16,9 @@
       v-for="(result, index) in filterMusic(results)"
       :key="index"
     >
-      <img
-        :src="result.image[result.image.length - 1]['#text']"
-        :alt="result.name"
+      <ResultItem
+        :imageSrc="result.image[result.image.length - 1]['#text']"
+        :altText="result.name"
         @click="addToChart(result)"
       />
     </li>
@@ -28,11 +28,11 @@
       v-for="(result, index) in filterGames(results)"
       :key="index"
     >
-      <img
-        :src="result.cover"
-        :alt="result.name"
+      <ResultItem
+        :imageSrc="result.cover"
+        :altText="result.name"
         @click="addToChart(result)"
-      >
+      />
     </li>
   </ul>
   <div v-else>
@@ -42,6 +42,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
+import ResultItem from './ResultItem.vue'
 /* eslint-disable camelcase */
 
 // There's way more stuff from the APIs but this is all that's relevant here.
@@ -66,6 +67,9 @@ interface GameResult {
 }
 
 export default defineComponent({
+  components: {
+    ResultItem
+  },
   props: {
     results: Array,
     resultsType: String,
