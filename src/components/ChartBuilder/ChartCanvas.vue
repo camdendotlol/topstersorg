@@ -1,5 +1,8 @@
 <template>
-  <canvas id="chart-canvas">
+  <canvas
+    id="chart-canvas"
+    @click="checkDroppability"
+  >
     TODO: text mode charts for accessibility
   </canvas>
   <button
@@ -20,6 +23,7 @@ import { State } from '../../store'
 import generateChart from 'topster'
 import getChart from '../../api/chartGen'
 import { Chart, SavedChart } from '@/types'
+import { isDroppable } from './lib'
 
 export default defineComponent({
   components: {
@@ -99,6 +103,31 @@ export default defineComponent({
       document.body.removeChild(a)
 
       window.URL.revokeObjectURL(url)
+    },
+    checkDroppability (event: MouseEvent) {
+      const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
+
+      const chartTitleMargin = this.chart.title === '' ? 0 : 60
+
+      const chartPixelDimensions = {
+        x: (this.chart.size.x * (260 + this.chart.gap)) + this.chart.gap,
+        y: (this.chart.size.y * (260 + this.chart.gap)) + this.chart.gap + chartTitleMargin
+      }
+
+      const scaleRatio = canvas.clientHeight / chartPixelDimensions.y
+
+      console.log(isDroppable(
+        this.chart,
+        scaleRatio,
+        {
+          x: event.clientX,
+          y: event.clientY
+        },
+        {
+          x: canvas.offsetLeft,
+          y: canvas.offsetTop
+        }
+      ))
     }
   },
   watch: {
