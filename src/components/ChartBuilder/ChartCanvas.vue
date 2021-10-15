@@ -1,7 +1,6 @@
 <template>
   <canvas
     id="chart-canvas"
-    @click="checkDroppability"
     @mousemove="updateCursor"
     @mouseleave="resetCursor"
   >
