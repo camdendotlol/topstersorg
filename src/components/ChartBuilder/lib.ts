@@ -23,11 +23,9 @@ export const isDroppable = (
     return (coord % (scaledItemSize + scaledGap)) > scaledGap && (coord < (scaledItemSize + scaledGap) * chart.size.x + scaledGap)
   }
 
-  // Doesn't work right when chart title is shown
-  // The math involved in handling that has had me stumped for an hour
-  // so I will return with a clear head later.
+  // scaledChartTitleMargin accounts for the space taken up by the title if there is one.
   const isYValid = (coord: number): boolean => {
-    return (coord % (scaledItemSize + scaledGap)) > scaledGap
+    return ((coord - scaledChartTitleMargin) % (scaledItemSize + scaledGap)) > scaledGap
   }
 
   if (isXValid(coordsOnCanvas.x) && isYValid(coordsOnCanvas.y)) {
