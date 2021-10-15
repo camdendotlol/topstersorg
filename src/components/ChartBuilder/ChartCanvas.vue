@@ -2,6 +2,8 @@
   <canvas
     id="chart-canvas"
     @click="checkDroppability"
+    @mousemove="updateCursor"
+    @mouseleave="resetCursor"
   >
     TODO: text mode charts for accessibility
   </canvas>
@@ -116,7 +118,7 @@ export default defineComponent({
 
       const scaleRatio = canvas.clientHeight / chartPixelDimensions.y
 
-      console.log(isDroppable(
+      const droppable = isDroppable(
         this.chart,
         scaleRatio,
         {
@@ -127,7 +129,25 @@ export default defineComponent({
           x: canvas.offsetLeft,
           y: canvas.offsetTop
         }
-      ))
+      )
+
+      if (droppable) {
+        return true
+      } else {
+        return false
+      }
+    },
+    updateCursor (event: MouseEvent) {
+      const isSelectable = this.checkDroppability(event)
+
+      if (isSelectable) {
+        document.body.style.cursor = 'pointer'
+      } else {
+        document.body.style.cursor = 'default'
+      }
+    },
+    resetCursor () {
+      document.body.style.cursor = 'default'
     }
   },
   watch: {

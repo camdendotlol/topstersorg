@@ -9,9 +9,9 @@ export const isDroppable = (
   // Both chartTitleMargin and the item size (260x260) are hardcoded.
   // In the future this function will need to be updated if/when
   // those values become configurable.
-  const scaledChartTitleMargin = chart.title === '' ? 0 : Math.floor(60 * scalingRatio)
-  const scaledGap = Math.floor(chart.gap * scalingRatio)
-  const scaledItemSize = Math.floor(260 * scalingRatio)
+  const scaledChartTitleMargin = chart.title === '' ? 0 : Math.ceil(60 * scalingRatio)
+  const scaledGap = Math.ceil(chart.gap * scalingRatio)
+  const scaledItemSize = Math.ceil(260 * scalingRatio)
 
   const coordsOnCanvas = {
     x: mouseCoords.x - canvasOffset.x,
