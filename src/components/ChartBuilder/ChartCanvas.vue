@@ -38,13 +38,16 @@ export default defineComponent({
       const activeChart = savedCharts.find(chart => chart.currentlyActive)
       if (activeChart) {
         for (const item of activeChart.data.items) {
-          const img = new Image()
-          img.src = item.coverURL
-          item.coverImg = img
+          // Make sure the item isn't null
+          if (item) {
+            const img = new Image()
+            img.src = item.coverURL
+            item.coverImg = img
 
-          // make sure they all load in
-          img.onload = () => {
-            this.renderChart()
+            // make sure they all load in
+            img.onload = () => {
+              this.renderChart()
+            }
           }
         }
         this.$store.commit('setEntireChart', activeChart.data)
@@ -156,9 +159,7 @@ export default defineComponent({
     size () {
       this.renderChart()
     },
-    // Vue can't watch arrays directly, so this is a
-    // goofy hack to watch the length instead.
-    itemCount () {
+    items () {
       this.renderChart()
     },
     color () {
@@ -179,7 +180,6 @@ export default defineComponent({
       y: (state as State).chart.size.y
     }),
     items: state => (state as State).chart.items,
-    itemCount: state => (state as State).chart.items.length,
     color: state => (state as State).chart.color,
     showTitles: state => (state as State).chart.showTitles,
     gap: state => (state as State).chart.gap

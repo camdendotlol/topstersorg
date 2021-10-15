@@ -104,6 +104,9 @@ export default defineComponent({
         return cover
       }
 
+      // Get the index of the first null chart slot
+      const firstEmptyIndex = this.$store.state.chart.items.indexOf(null)
+
       switch (this.resultsType) {
         case 'books':
         {
@@ -113,7 +116,7 @@ export default defineComponent({
             coverURL: `https://covers.openlibrary.org/b/olid/${(item as BookResult).cover_edition_key}-L.jpg`,
             creator: (item as BookResult).author_name[0]
           }
-          this.$store.commit('addItem', bookItem)
+          this.$store.commit('addItem', { item: bookItem, index: firstEmptyIndex })
           break
         }
         case 'music':
@@ -125,7 +128,7 @@ export default defineComponent({
             coverURL: (item as MusicResult).image[largestImageIndex]['#text'],
             creator: (item as MusicResult).artist
           }
-          this.$store.commit('addItem', musicItem)
+          this.$store.commit('addItem', { item: musicItem, index: firstEmptyIndex })
           break
         }
         case 'games':
@@ -135,7 +138,7 @@ export default defineComponent({
             coverImg: setImage((item as GameResult).cover),
             coverURL: (item as GameResult).cover
           }
-          this.$store.commit('addItem', gameItem)
+          this.$store.commit('addItem', { item: gameItem, index: firstEmptyIndex })
           break
         }
         // other types not implemented yet

@@ -12,7 +12,7 @@ export interface ChartSize {
 
 export interface Chart {
   title: string,
-  items: ChartItem[],
+  items: Array<ChartItem | null>,
   size: ChartSize,
   color: string,
   showTitles: boolean,

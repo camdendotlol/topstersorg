@@ -12,7 +12,7 @@
     "bootstrap-icons-vue": "^0.7.0",
     "core-js": "^3.6.5",
     "konva": "^8.2.2",
-    "topster": "^3.0.0",
+    "topster": "^3.1.0",
     "vue": "^3.0.0",
     "vue-konva": "github:konvajs/vue-konva#pull/133/head",
     "vuex": "^4.0.2"

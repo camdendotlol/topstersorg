@@ -1,6 +1,6 @@
 import { InjectionKey } from 'vue'
 import { createStore, useStore as baseUseStore, Store } from 'vuex'
-import { Chart } from './types'
+import { Chart, ChartItem } from './types'
 
 export interface State {
   chart: Chart
@@ -12,14 +12,14 @@ export const key: InjectionKey<Store<State>> = Symbol('store')
 export const initialState = {
   chart: {
     title: '',
-    items: [],
+    items: Array(100).fill(null),
     size: {
       x: 5,
       y: 5
     },
     color: '#000000',
     showTitles: false,
-    gap: 0
+    gap: 20
   }
 }
 
@@ -28,8 +28,10 @@ export const store = createStore<State>({
     return { ...initialState }
   },
   mutations: {
-    addItem (state: State, item) {
-      state.chart.items.push(item)
+    addItem (state: State, payload: { item: ChartItem, index: number }) {
+      const itemsArray = state.chart.items
+      itemsArray[payload.index] = payload.item
+      state.chart.items = [...itemsArray]
     },
     changeTitle (state: State, newTitle: string) {
       state.chart.title = newTitle

@@ -57,7 +57,7 @@
       <input
         type="range"
         min="0"
-        max="250"
+        max="150"
         value="0"
         name="gap"
         id="gap"

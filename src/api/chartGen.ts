@@ -1,4 +1,4 @@
-import { Chart } from 'topster'
+import { Chart } from 'topster/dist/common'
 import { errorMessages } from './errors'
 
 const getChart = async (data: Chart): Promise<Blob> => {
