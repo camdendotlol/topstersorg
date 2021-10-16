@@ -43,17 +43,27 @@ export default defineComponent({
 
       const chart = await getChart(this.chart)
       const url = window.URL.createObjectURL(chart)
-      const a = document.createElement('a')
 
-      a.style.display = 'none'
-      a.href = url
-      a.download = 'chart.jpg'
+      // If on a mobile browser, use the native share functionality.
+      // Otherwise, use the normal download trick.
+      if (navigator.share) {
+        navigator.share({
+          title: 'Chart',
+          url
+        })
+      } else {
+        const a = document.createElement('a')
 
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
+        a.style.display = 'none'
+        a.href = url
+        a.download = 'chart.jpg'
 
-      window.URL.revokeObjectURL(url)
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+
+        window.URL.revokeObjectURL(url)
+      }
 
       this.loading = false
     }
