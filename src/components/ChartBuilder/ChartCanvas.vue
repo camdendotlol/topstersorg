@@ -3,6 +3,7 @@
     id="chart-canvas"
     @mousemove="updateCursor"
     @mouseleave="resetCursor"
+    @mousedown="grabItem"
   >
     TODO: text mode charts for accessibility
   </canvas>
@@ -24,7 +25,7 @@ import { State } from '../../store'
 import generateChart from 'topster'
 import getChart from '../../api/chartGen'
 import { Chart, SavedChart } from '@/types'
-import { isDroppable } from './lib'
+import { getCanvasInfo, isDroppable } from './lib'
 
 export default defineComponent({
   components: {
@@ -111,26 +112,12 @@ export default defineComponent({
     checkDroppability (event: MouseEvent) {
       const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
 
-      const chartTitleMargin = this.chart.title === '' ? 0 : 60
-
-      const chartPixelDimensions = {
-        x: (this.chart.size.x * (260 + this.chart.gap)) + this.chart.gap,
-        y: (this.chart.size.y * (260 + this.chart.gap)) + this.chart.gap + chartTitleMargin
-      }
-
-      const scaleRatio = canvas.clientHeight / chartPixelDimensions.y
+      const canvasInfo = getCanvasInfo(canvas, this.chart)
 
       const droppable = isDroppable(
+        canvasInfo,
         this.chart,
-        scaleRatio,
-        {
-          x: event.clientX,
-          y: event.clientY
-        },
-        {
-          x: canvas.offsetLeft,
-          y: canvas.offsetTop
-        }
+        this.getMouseCoords(event, { x: canvas.offsetLeft, y: canvas.offsetTop })
       )
 
       if (droppable) {
@@ -150,6 +137,37 @@ export default defineComponent({
     },
     resetCursor () {
       document.body.style.cursor = 'default'
+    },
+    getMouseCoords (event: MouseEvent, canvasOffset: { x: number, y: number }) {
+      return {
+        x: event.clientX - canvasOffset.x,
+        y: event.clientY - canvasOffset.y
+      }
+    },
+    grabItem (event: MouseEvent) {
+      // Ignore if the spot doesn't contain a movable item
+      if (!this.checkDroppability(event)) {
+        return null
+      }
+
+      const getItemIndex = () => {
+        const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
+        const canvasInfo = getCanvasInfo(canvas, this.chart)
+
+        const mouseCoords = this.getMouseCoords(event, { x: canvas.offsetLeft, y: canvas.offsetTop })
+
+        const titleHeight = this.chart.title ? 60 * canvasInfo.scaleRatio : 0
+
+        // Gets the coordinates on the chart (i.e. 4x3, not pixels)
+        const xCoord = Math.floor(mouseCoords.x / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
+        const yCoord = Math.floor((mouseCoords.y - titleHeight) / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
+
+        // All we need is the index in the chart.items array
+        const itemsAbove = yCoord * this.chart.size.x
+        return itemsAbove + xCoord
+      }
+
+      console.log(getItemIndex())
     }
   },
   watch: {
