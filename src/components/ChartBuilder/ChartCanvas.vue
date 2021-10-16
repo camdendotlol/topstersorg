@@ -67,7 +67,7 @@ export default defineComponent({
       )
 
       // Insert placeholders for empty squares
-      this.chart.items.forEach((item, index) => {
+      this.chart.items.slice(0, this.chart.size.x * this.chart.size.y).forEach((item, index) => {
         if (!item) {
           insertPlaceholder(canvasElement, this.chart, index)
         }
