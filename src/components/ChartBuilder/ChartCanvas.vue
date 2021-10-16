@@ -7,30 +7,17 @@
   >
     TODO: text mode charts for accessibility
   </canvas>
-  <button
-    id="save-button"
-    @click="saveChart"
-  >
-    <BIconFileEarmarkArrowDown />
-    <br>
-    Save
-  </button>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
-import { BIconFileEarmarkArrowDown } from 'bootstrap-icons-vue'
 import { mapState } from 'vuex'
 import { State } from '../../store'
 import generateChart from 'topster'
-import getChart from '../../api/chartGen'
 import { Chart, SavedChart } from '@/types'
 import { getCanvasInfo, insertPlaceholder, isDroppable } from './lib'
 
 export default defineComponent({
-  components: {
-    BIconFileEarmarkArrowDown
-  },
   mounted () {
     // check for saved chart in local storage
     const savedCharts: SavedChart[] = JSON.parse(localStorage.getItem('charts') || '[]')
@@ -100,21 +87,6 @@ export default defineComponent({
         }
       ]
       return localStorage.setItem('charts', JSON.stringify(newChartArray))
-    },
-    async saveChart () {
-      const chart = await getChart(this.chart)
-      const url = window.URL.createObjectURL(chart)
-      const a = document.createElement('a')
-
-      a.style.display = 'none'
-      a.href = url
-      a.download = 'chart.jpg'
-
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-
-      window.URL.revokeObjectURL(url)
     },
     checkDroppability (event: MouseEvent) {
       const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
@@ -245,7 +217,14 @@ export default defineComponent({
 }
 
 canvas {
-  max-width: 90%;
+  max-width: calc(100vw - 400px);
   max-height: 90vh;
+  margin-top: 20px;
+}
+
+@media screen and (max-width: 1000px) {
+  canvas {
+    max-width: 100%;
+  }
 }
 </style>

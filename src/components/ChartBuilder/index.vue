@@ -1,6 +1,7 @@
 <template>
   <div class="chart-builder">
     <div class="chart-builder-contents">
+      <TopBar />
       <ChartCanvas />
     </div>
   </div>
@@ -9,10 +10,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ChartCanvas from './ChartCanvas.vue'
+import TopBar from './TopBar.vue'
 
 export default defineComponent({
   components: {
-    ChartCanvas
+    ChartCanvas,
+    TopBar
   }
 })
 </script>
@@ -21,14 +24,13 @@ export default defineComponent({
 .chart-builder {
   flex-grow: 1;
   margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   text-align: center;
+  padding: 0;
 }
 
 .chart-builder-contents {
   margin: 0 auto;
+  padding: 0;
 }
 
 @media screen and (max-width: 1000px) {
