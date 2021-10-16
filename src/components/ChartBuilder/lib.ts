@@ -55,3 +55,36 @@ export const isDroppable = (
     return false
   }
 }
+
+export const insertPlaceholder = (canvas: HTMLCanvasElement, chart: Chart, index: number): void => {
+  const ctx = canvas.getContext('2d')
+
+  if (!ctx) {
+    throw new Error('Canvas rendering context not found, something has gone horribly wrong.')
+  }
+
+  const coords = {
+    x: (index % chart.size.x),
+    y: Math.floor(index / chart.size.x)
+  }
+
+  const cellSize = 260
+  const chartTitleMargin = chart.title === '' ? 0 : 60
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
+  // No need for scaled dimensions here, we're working on the original Canvas.
+  ctx.fillRect(
+    (coords.x * (cellSize + chart.gap)) + chart.gap,
+    (coords.y * (cellSize + chart.gap)) + chart.gap + chartTitleMargin,
+    260,
+    260
+  )
+
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)'
+  ctx.strokeRect(
+    (coords.x * (cellSize + chart.gap)) + chart.gap,
+    (coords.y * (cellSize + chart.gap)) + chart.gap + chartTitleMargin,
+    260,
+    260
+  )
+}

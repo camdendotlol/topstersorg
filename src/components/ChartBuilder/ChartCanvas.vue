@@ -25,7 +25,7 @@ import { State } from '../../store'
 import generateChart from 'topster'
 import getChart from '../../api/chartGen'
 import { Chart, SavedChart } from '@/types'
-import { getCanvasInfo, isDroppable } from './lib'
+import { getCanvasInfo, insertPlaceholder, isDroppable } from './lib'
 
 export default defineComponent({
   components: {
@@ -65,6 +65,13 @@ export default defineComponent({
         canvasElement,
         this.chart
       )
+
+      // Insert placeholders for empty squares
+      this.chart.items.forEach((item, index) => {
+        if (!item) {
+          insertPlaceholder(canvasElement, this.chart, index)
+        }
+      })
 
       this.saveToLocalStorage(this.chart)
     },
