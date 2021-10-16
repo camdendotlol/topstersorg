@@ -63,7 +63,7 @@ export default defineComponent({
           )
         ]
 
-        await typescriptAnnoying.share({
+        typescriptAnnoying.share({
           files,
           title: 'Chart',
           text: 'My topster chart from ostrakon.xyz'
