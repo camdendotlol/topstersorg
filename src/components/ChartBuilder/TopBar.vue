@@ -1,11 +1,19 @@
 <template>
   <div id="top-bar">
     <button
+      v-if="!loading"
       id="save-button"
       @click="saveChart"
     >
       <BIconFileEarmarkArrowDown id="save-icon" />
       Download chart
+    </button>
+    <button
+      v-else
+      id="save-button"
+    >
+      <BIconArrowRepeat id="loading-icon" />
+      loading...
     </button>
   </div>
 </template>
@@ -15,14 +23,24 @@ import { defineComponent } from '@vue/runtime-core'
 import { mapState } from 'vuex'
 import getChart from '../../api/chartGen'
 import { State } from '../../store'
-import { BIconFileEarmarkArrowDown } from 'bootstrap-icons-vue'
+import { BIconFileEarmarkArrowDown, BIconArrowRepeat } from 'bootstrap-icons-vue'
 
 export default defineComponent({
   components: {
-    BIconFileEarmarkArrowDown
+    BIconFileEarmarkArrowDown,
+    BIconArrowRepeat
+  },
+  data () {
+    return {
+      // Keep track of loading so the user knows why it's taking a while.
+      // Also, we can prevent the user from spamming the button to generate multiple requests.
+      loading: false
+    }
   },
   methods: {
     async saveChart () {
+      this.loading = true
+
       const chart = await getChart(this.chart)
       const url = window.URL.createObjectURL(chart)
       const a = document.createElement('a')
@@ -36,6 +54,8 @@ export default defineComponent({
       document.body.removeChild(a)
 
       window.URL.revokeObjectURL(url)
+
+      this.loading = false
     }
   },
   computed: mapState({
@@ -71,6 +91,23 @@ export default defineComponent({
 #save-icon {
   position: relative;
   top: 2px;
+}
+
+#loading-icon {
+  position: relative;
+  top: 2px;
+  animation: rotation 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
 }
 
 @media screen and (max-width: 1000px) {
