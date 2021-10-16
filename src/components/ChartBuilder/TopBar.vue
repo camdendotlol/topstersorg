@@ -67,7 +67,7 @@ export default defineComponent({
           files,
           title: 'Chart',
           text: 'My topster chart from ostrakon.xyz'
-        })
+        }).then(this.loading = false)
       } else {
         const a = document.createElement('a')
 
@@ -80,9 +80,9 @@ export default defineComponent({
         document.body.removeChild(a)
 
         window.URL.revokeObjectURL(url)
-      }
 
-      this.loading = false
+        this.loading = false
+      }
     }
   },
   computed: mapState({
