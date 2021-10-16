@@ -44,9 +44,14 @@ export default defineComponent({
       const chart = await getChart(this.chart)
       const url = window.URL.createObjectURL(chart)
 
+      // TypeScript doesn't know the navigator.share types yet.
+      // So let's just make it stop being annoying.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const typescriptAnnoying: any = navigator
+
       // If on a mobile browser, use the native share functionality.
       // Otherwise, use the normal download trick.
-      if (navigator.canShare) {
+      if (typescriptAnnoying.canShare) {
         const files = [
           new File(
             [chart],
@@ -58,7 +63,7 @@ export default defineComponent({
           )
         ]
 
-        await navigator.share({
+        await typescriptAnnoying.share({
           files,
           title: 'Chart',
           text: 'My topster chart from ostrakon.xyz'
