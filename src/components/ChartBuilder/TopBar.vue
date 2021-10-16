@@ -46,10 +46,22 @@ export default defineComponent({
 
       // If on a mobile browser, use the native share functionality.
       // Otherwise, use the normal download trick.
-      if (navigator.share) {
-        navigator.share({
+      if (navigator.canShare) {
+        const files = [
+          new File(
+            [chart],
+            'chart.jpg',
+            {
+              type: 'image/jpeg',
+              lastModified: new Date().getTime()
+            }
+          )
+        ]
+
+        await navigator.share({
+          files,
           title: 'Chart',
-          url
+          text: 'My topster chart from ostrakon.xyz'
         })
       } else {
         const a = document.createElement('a')
