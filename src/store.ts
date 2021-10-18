@@ -31,31 +31,31 @@ export const store = createStore<State>({
     addItem (state: State, payload: { item: ChartItem, index: number }) {
       const itemsArray = state.chart.items
       itemsArray[payload.index] = payload.item
-      state.chart.items = [...itemsArray]
+      state.chart = { ...state.chart, items: [...itemsArray] }
     },
     changeTitle (state: State, newTitle: string) {
-      state.chart.title = newTitle
+      state.chart = { ...state.chart, title: newTitle }
     },
     changeColor (state: State, newColor: string) {
-      state.chart.color = newColor
+      state.chart = { ...state.chart, color: newColor }
     },
     changeSize (state: State, payload: { axis: string, value: number }) {
       switch (payload.axis) {
         case 'x':
-          state.chart.size.x = payload.value
+          state.chart = { ...state.chart, size: { y: state.chart.size.y, x: payload.value } }
           break
         case 'y':
-          state.chart.size.y = payload.value
+          state.chart = { ...state.chart, size: { x: state.chart.size.x, y: payload.value } }
           break
         default:
-          state.chart.size = { ...state.chart.size }
+          state.chart = { ...state.chart }
       }
     },
     changeGap (state: State, newGap: number) {
-      state.chart.gap = newGap
+      state.chart = { ...state.chart, gap: newGap }
     },
-    toggleTitles (state: State, showTitles: boolean) {
-      state.chart.showTitles = showTitles
+    toggleTitles (state: State, newValue: boolean) {
+      state.chart = { ...state.chart, showTitles: newValue }
     },
     setEntireChart (state: State, payload: Chart) {
       state.chart = payload

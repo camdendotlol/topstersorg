@@ -150,36 +150,12 @@ export default defineComponent({
     }
   },
   watch: {
-    title () {
-      this.renderChart()
-    },
-    size () {
-      this.renderChart()
-    },
-    items () {
-      this.renderChart()
-    },
-    color () {
-      this.renderChart()
-    },
-    showTitles () {
-      this.renderChart()
-    },
-    gap () {
+    chart () {
       this.renderChart()
     }
   },
   computed: mapState({
-    chart: state => (state as State).chart,
-    title: state => (state as State).chart.title,
-    size: state => ({
-      x: (state as State).chart.size.x,
-      y: (state as State).chart.size.y
-    }),
-    items: state => (state as State).chart.items,
-    color: state => (state as State).chart.color,
-    showTitles: state => (state as State).chart.showTitles,
-    gap: state => (state as State).chart.gap
+    chart: state => (state as State).chart
   })
 })
 
