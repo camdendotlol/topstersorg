@@ -180,11 +180,26 @@ export default defineComponent({
 
       const newIndex = this.getItemIndexFromCoords(event)
 
-      this.$store.commit('insertItem', {
-        item: this.grabbedItem.itemObject,
-        oldIndex: this.grabbedItem.originalIndex,
-        newIndex: newIndex
-      })
+      if (!this.chart.items[newIndex]) {
+        // If the selected slot is empty, just move the item there
+        this.$store.commit('addItem', {
+          item: this.grabbedItem.itemObject,
+          index: newIndex
+        })
+        // ...and remove it from its old spot
+        this.$store.commit('addItem', {
+          item: null,
+          index: this.grabbedItem.originalIndex
+        })
+      } else {
+        // If there's an item in the new slot, adjust the array
+        // without deleting anything.
+        this.$store.commit('insertItem', {
+          item: this.grabbedItem.itemObject,
+          oldIndex: this.grabbedItem.originalIndex,
+          newIndex: newIndex
+        })
+      }
 
       this.grabbedItem = null
 

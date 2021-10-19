@@ -28,8 +28,8 @@ export const store = createStore<State>({
     return { ...initialState }
   },
   mutations: {
-    // For appending an item
-    addItem (state: State, payload: { item: ChartItem, index: number }) {
+    // For overriding the existing item (e.g. adding to a null slot, or removing an item)
+    addItem (state: State, payload: { item: ChartItem | null, index: number }) {
       const itemsArray = state.chart.items
       itemsArray[payload.index] = payload.item
       state.chart = { ...state.chart, items: [...itemsArray] }
