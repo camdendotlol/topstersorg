@@ -57,11 +57,9 @@ export const isDroppable = (
 }
 
 // Draws a light-gray placeholder box to show that there's a slot when there's no item
-export const insertPlaceholder = (canvas: HTMLCanvasElement, chart: Chart, index: number): void => {
-  const ctx = canvas.getContext('2d')
-
-  if (!ctx) {
-    throw new Error('Canvas rendering context not found, something has gone horribly wrong.')
+export const insertPlaceholder = (drawingContext: CanvasRenderingContext2D | null, chart: Chart, index: number): void => {
+  if (!drawingContext) {
+    throw new Error('Rendering context not found!')
   }
 
   const coords = {
@@ -72,9 +70,9 @@ export const insertPlaceholder = (canvas: HTMLCanvasElement, chart: Chart, index
   const cellSize = 260
   const chartTitleMargin = chart.title === '' ? 0 : 60
 
-  ctx.fillStyle = 'rgba(230, 230, 230)'
+  drawingContext.fillStyle = 'rgba(230, 230, 230)'
   // No need for scaled dimensions here, we're working on the original Canvas.
-  ctx.fillRect(
+  drawingContext.fillRect(
     (coords.x * (cellSize + chart.gap)) + chart.gap,
     (coords.y * (cellSize + chart.gap)) + chart.gap + chartTitleMargin,
     260,

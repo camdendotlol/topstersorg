@@ -64,7 +64,7 @@ export default defineComponent({
       // Insert placeholders for empty squares
       this.chart.items.slice(0, this.chart.size.x * this.chart.size.y).forEach((item, index) => {
         if (!item) {
-          insertPlaceholder(this.canvas, this.chart, index)
+          insertPlaceholder(this.drawingCtx, this.chart, index)
         }
       })
 
@@ -112,9 +112,7 @@ export default defineComponent({
       }
     },
     drawImageAtMouse (image: HTMLImageElement, coords: { x: number, y: number }) {
-      const ctx = this.canvas.getContext('2d')
-
-      if (!ctx) {
+      if (!this.drawingCtx) {
         throw new Error('Canvas context not found, the canvas must have loaded incorrectly.')
       }
 
@@ -122,11 +120,11 @@ export default defineComponent({
       const scaledDimensions = getScaledDimensions(image, 260)
 
       // Dividing by the scale ratio to get the canvas's original pixel size back.
-      ctx.drawImage(
+      this.drawingCtx.drawImage(
         image,
         // Subtract half the image size from each coordinate, so image is centered on the mouse.
-        Math.floor(coords.x / canvasInfo.scaleRatio) - Math.floor(scaledDimensions.width / 2),
-        Math.floor(coords.y / canvasInfo.scaleRatio) - Math.floor(scaledDimensions.height / 2),
+        Math.floor((coords.x / canvasInfo.scaleRatio) - (scaledDimensions.width / 2)),
+        Math.floor((coords.y / canvasInfo.scaleRatio) - (scaledDimensions.height / 2)),
         scaledDimensions.width,
         scaledDimensions.height
       )
@@ -145,7 +143,7 @@ export default defineComponent({
         // If we don't re-render, the dragged item from the previous frame remains visible and
         // it looks like that old Windows 95 bug with the window movement artifacts.
         this.renderChart()
-        insertPlaceholder(this.canvas, this.chart, this.grabbedItem.originalIndex)
+        insertPlaceholder(this.drawingCtx, this.chart, this.grabbedItem.originalIndex)
 
         const coords = this.getMouseCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
         this.drawImageAtMouse(this.grabbedItem.itemObject.coverImg, coords)
@@ -213,7 +211,7 @@ export default defineComponent({
       this.renderChart()
 
       // Cover up the original spot since we're moving it
-      insertPlaceholder(this.canvas, this.chart, itemIndex)
+      insertPlaceholder(this.drawingCtx, this.chart, itemIndex)
 
       // Draw the item at the center of the mouse cursor
       const coords = this.getMouseCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
@@ -275,9 +273,19 @@ export default defineComponent({
       this.renderChart()
     }
   },
-  computed: mapState({
-    chart: state => (state as State).chart
-  })
+  computed: {
+    drawingCtx (): CanvasRenderingContext2D | null {
+      const ctx = this.canvas.getContext('2d', { alpha: false })
+      if (!ctx) {
+        return null
+      }
+
+      return ctx
+    },
+    ...mapState({
+      chart: state => (state as State).chart
+    })
+  }
 })
 
 </script>
