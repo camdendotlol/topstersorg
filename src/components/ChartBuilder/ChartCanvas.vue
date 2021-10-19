@@ -152,6 +152,16 @@ export default defineComponent({
     resetCursor (event: MouseEvent) {
       document.body.style.cursor = 'default'
       this.dropItem(event)
+
+      if (this.grabbedItem) {
+        // Remove the item from the chart.
+        // This is so users can remove an item by dragging it off the chart.
+        this.$store.commit('addItem', {
+          item: null,
+          index: this.grabbedItem.originalIndex
+        })
+      }
+
       this.grabbedItem = null
 
       // Clear the placeholder for the dragged item
