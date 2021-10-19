@@ -17,6 +17,7 @@ import { State } from '../../store'
 import generateChart from 'topster'
 import { Chart, ChartItem, SavedChart } from '@/types'
 import { getCanvasInfo, insertPlaceholder, isDroppable } from './lib'
+import { getScaledDimensions } from 'topster/dist/common'
 
 export default defineComponent({
   mounted () {
@@ -118,15 +119,16 @@ export default defineComponent({
       }
 
       const canvasInfo = getCanvasInfo(this.canvas, this.chart)
+      const scaledDimensions = getScaledDimensions(image, 260)
 
       // Dividing by the scale ratio to get the canvas's original pixel size back.
       ctx.drawImage(
         image,
         // Subtract half the image size from each coordinate, so image is centered on the mouse.
-        (coords.x / canvasInfo.scaleRatio) - 130,
-        (coords.y / canvasInfo.scaleRatio) - 130,
-        260,
-        260
+        Math.floor(coords.x / canvasInfo.scaleRatio) - Math.floor(scaledDimensions.width / 2),
+        Math.floor(coords.y / canvasInfo.scaleRatio) - Math.floor(scaledDimensions.height / 2),
+        scaledDimensions.width,
+        scaledDimensions.height
       )
     },
     updateCursor (event: MouseEvent) {
