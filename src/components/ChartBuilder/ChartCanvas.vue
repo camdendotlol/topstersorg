@@ -151,7 +151,6 @@ export default defineComponent({
     },
     resetCursor (event: MouseEvent) {
       document.body.style.cursor = 'default'
-      this.dropItem(event)
 
       if (this.grabbedItem) {
         // Remove the item from the chart.
@@ -161,6 +160,8 @@ export default defineComponent({
           index: this.grabbedItem.originalIndex
         })
       }
+
+      this.dropItem(event)
 
       this.grabbedItem = null
 
@@ -218,8 +219,14 @@ export default defineComponent({
       this.drawImageAtMouse(this.grabbedItem.itemObject.coverImg, coords)
     },
     dropItem (event: MouseEvent) {
-      // Ignore if the spot doesn't contain a movable item
-      if (!this.checkDroppability(event) || !this.grabbedItem) {
+      // If the spot doesn't contain a movable item, just put the item back where it came from.
+      if (!this.checkDroppability(event)) {
+        this.grabbedItem = null
+        this.renderChart()
+        return null
+      }
+
+      if (!this.grabbedItem) {
         return null
       }
 
