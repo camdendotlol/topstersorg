@@ -5,8 +5,7 @@
       :key="index"
     >
       <ResultItem
-        :imageSrc="`https://covers.openlibrary.org/b/olid/${result.cover_edition_key}-L.jpg`"
-        :altText="result.title"
+        :imageData="{ src: `https://covers.openlibrary.org/b/olid/${result.cover_edition_key}-L.jpg`, alt: result.title }"
         @click="addToChart(result)"
       />
     </li>
@@ -17,8 +16,7 @@
       :key="index"
     >
       <ResultItem
-        :imageSrc="result.image[result.image.length - 1]['#text']"
-        :altText="result.name"
+        :imageData="{ src: result.image[result.image.length - 1]['#text'], alt: result.name }"
         @click="addToChart(result)"
       />
     </li>
@@ -29,8 +27,7 @@
       :key="index"
     >
       <ResultItem
-        :imageSrc="result.cover"
-        :altText="result.name"
+        :imageData="{ src: result.cover, alt: result.name }"
         @click="addToChart(result)"
       />
     </li>

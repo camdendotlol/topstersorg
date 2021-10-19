@@ -1,7 +1,7 @@
 <template>
   <img
-    :src="this.src"
-    :alt="this.alt"
+    :src="this.imageData.src"
+    :alt="this.imageData.alt"
   >
 </template>
 
@@ -9,15 +9,8 @@
 import { defineComponent } from '@vue/runtime-core'
 export default defineComponent({
   props: [
-    'imageSrc',
-    'altText'
-  ],
-  data () {
-    return {
-      src: this.imageSrc,
-      alt: this.altText
-    }
-  }
+    'imageData'
+  ]
 })
 </script>
 
