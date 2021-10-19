@@ -189,19 +189,6 @@ export default defineComponent({
       const itemsAbove = yCoord * this.chart.size.x
       return itemsAbove + xCoord
     },
-    drawItemAtMouse (coords: { x: number, y: number }, image: HTMLImageElement) {
-      const ctx = this.canvas.getContext('2d')
-
-      if (!ctx) {
-        throw new Error('Canvas not found :(')
-      }
-
-      ctx.drawImage(
-        image,
-        coords.x,
-        coords.y
-      )
-    },
     pickUpItem (event: MouseEvent) {
       // Ignore if the spot doesn't contain a movable item
       if (!this.checkDroppability(event)) {
@@ -225,6 +212,10 @@ export default defineComponent({
 
       // Cover up the original spot since we're moving it
       insertPlaceholder(this.canvas, this.chart, itemIndex)
+
+      // Draw the item at the center of the mouse cursor
+      const coords = this.getMouseCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
+      this.drawImageAtMouse(this.grabbedItem.itemObject.coverImg, coords)
     },
     dropItem (event: MouseEvent) {
       // Ignore if the spot doesn't contain a movable item
