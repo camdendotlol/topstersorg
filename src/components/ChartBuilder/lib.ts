@@ -8,15 +8,17 @@ export interface CanvasInfo {
   scaledPixelDimensions: { x: number, y: number },
 }
 
+// This is a constant (for now)
+const ITEM_SIZE = 260
+
 // Gets useful client-size information about the Canvas, especially related to scaling.
 // The Canvas is scaled down to fit the screen if it's too large, so we need these for mouse events.
 export const getCanvasInfo = (canvas: HTMLCanvasElement, chart: Chart): CanvasInfo => {
-  const ITEM_SIZE = 260
   const chartTitleMargin = chart.title === '' ? 0 : 60
 
   const originalPixelDimensions = {
-    x: (chart.size.x * (260 + chart.gap)) + chart.gap,
-    y: (chart.size.y * (260 + chart.gap)) + chart.gap + chartTitleMargin
+    x: (chart.size.x * (ITEM_SIZE + chart.gap)) + chart.gap,
+    y: (chart.size.y * (ITEM_SIZE + chart.gap)) + chart.gap + chartTitleMargin
   }
 
   // The ratio by which the Canvas is scaled down in the browser
@@ -67,15 +69,14 @@ export const insertPlaceholder = (drawingContext: CanvasRenderingContext2D | nul
     y: Math.floor(index / chart.size.x)
   }
 
-  const cellSize = 260
   const chartTitleMargin = chart.title === '' ? 0 : 60
 
   drawingContext.fillStyle = 'rgba(230, 230, 230)'
   // No need for scaled dimensions here, we're working on the original Canvas.
   drawingContext.fillRect(
-    (coords.x * (cellSize + chart.gap)) + chart.gap,
-    (coords.y * (cellSize + chart.gap)) + chart.gap + chartTitleMargin,
-    260,
-    260
+    (coords.x * (ITEM_SIZE + chart.gap)) + chart.gap,
+    (coords.y * (ITEM_SIZE + chart.gap)) + chart.gap + chartTitleMargin,
+    ITEM_SIZE,
+    ITEM_SIZE
   )
 }
