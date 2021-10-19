@@ -1,6 +1,6 @@
 import { Chart } from '@/types'
 
-interface CanvasInfo {
+export interface CanvasInfo {
   scaleRatio: number,
   scaledGap: number,
   scaledTitleHeight: number,

@@ -20,6 +20,14 @@ import { getCanvasInfo, insertPlaceholder, isDroppable } from './lib'
 
 export default defineComponent({
   mounted () {
+    const canvas = document.getElementById('chart-canvas')
+
+    if (!canvas) {
+      throw new Error('Couldn\'t find canvas. Something must have gone wrong with page loading, please refresh.')
+    }
+
+    this.canvas = canvas as HTMLCanvasElement
+
     // check for saved chart in local storage
     const savedCharts: SavedChart[] = JSON.parse(localStorage.getItem('charts') || '[]')
 
@@ -47,17 +55,15 @@ export default defineComponent({
   },
   methods: {
     renderChart () {
-      const canvasElement = document.getElementById('chart-canvas') as HTMLCanvasElement
-
       generateChart(
-        canvasElement,
+        this.canvas,
         this.chart
       )
 
       // Insert placeholders for empty squares
       this.chart.items.slice(0, this.chart.size.x * this.chart.size.y).forEach((item, index) => {
         if (!item) {
-          insertPlaceholder(canvasElement, this.chart, index)
+          insertPlaceholder(this.canvas, this.chart, index)
         }
       })
 
@@ -90,14 +96,12 @@ export default defineComponent({
       return localStorage.setItem('charts', JSON.stringify(newChartArray))
     },
     checkDroppability (event: MouseEvent) {
-      const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
-
-      const canvasInfo = getCanvasInfo(canvas, this.chart)
+      const canvasInfo = getCanvasInfo(this.canvas, this.chart)
 
       const droppable = isDroppable(
         canvasInfo,
         this.chart,
-        this.getMouseCoords(event, { x: canvas.offsetLeft, y: canvas.offsetTop })
+        this.getMouseCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
       )
 
       if (droppable) {
@@ -106,13 +110,43 @@ export default defineComponent({
         return false
       }
     },
+    drawImageAtMouse (image: HTMLImageElement, coords: { x: number, y: number }) {
+      const ctx = this.canvas.getContext('2d')
+
+      if (!ctx) {
+        throw new Error('Canvas context not found, the canvas must have loaded incorrectly.')
+      }
+
+      const canvasInfo = getCanvasInfo(this.canvas, this.chart)
+
+      // Dividing by the scale ratio to get the canvas's original pixel size back.
+      ctx.drawImage(
+        image,
+        // Subtract half the image size from each coordinate, so image is centered on the mouse.
+        (coords.x / canvasInfo.scaleRatio) - 130,
+        (coords.y / canvasInfo.scaleRatio) - 130,
+        260,
+        260
+      )
+    },
     updateCursor (event: MouseEvent) {
       const isSelectable = this.checkDroppability(event)
 
       if (isSelectable) {
         document.body.style.cursor = 'pointer'
-      } else {
+      } else if (!isSelectable && !this.grabbedItem) {
         document.body.style.cursor = 'default'
+      }
+
+      if (this.grabbedItem) {
+        document.body.style.cursor = 'grab'
+        // If we don't re-render, the dragged item from the previous frame remains visible and
+        // it looks like that old Windows 95 bug with the window movement artifacts.
+        this.renderChart()
+        insertPlaceholder(this.canvas, this.chart, this.grabbedItem.originalIndex)
+
+        const coords = this.getMouseCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
+        this.drawImageAtMouse(this.grabbedItem.itemObject.coverImg, coords)
       }
     },
     resetCursor (event: MouseEvent) {
@@ -131,10 +165,9 @@ export default defineComponent({
     },
     // Calculate the index of the chart item in the chart array from its position on the chart
     getItemIndexFromCoords (event: MouseEvent) {
-      const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
-      const canvasInfo = getCanvasInfo(canvas, this.chart)
+      const canvasInfo = getCanvasInfo(this.canvas, this.chart)
 
-      const mouseCoords = this.getMouseCoords(event, { x: canvas.offsetLeft, y: canvas.offsetTop })
+      const mouseCoords = this.getMouseCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
 
       const titleHeight = this.chart.title ? 60 * canvasInfo.scaleRatio : 0
 
@@ -146,13 +179,24 @@ export default defineComponent({
       const itemsAbove = yCoord * this.chart.size.x
       return itemsAbove + xCoord
     },
+    drawItemAtMouse (coords: { x: number, y: number }, image: HTMLImageElement) {
+      const ctx = this.canvas.getContext('2d')
+
+      if (!ctx) {
+        throw new Error('Canvas not found :(')
+      }
+
+      ctx.drawImage(
+        image,
+        coords.x,
+        coords.y
+      )
+    },
     pickUpItem (event: MouseEvent) {
       // Ignore if the spot doesn't contain a movable item
       if (!this.checkDroppability(event)) {
         return null
       }
-
-      const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
 
       const itemIndex = this.getItemIndexFromCoords(event)
       const item = this.chart.items[itemIndex]
@@ -170,7 +214,7 @@ export default defineComponent({
       this.renderChart()
 
       // Cover up the original spot since we're moving it
-      insertPlaceholder(canvas, this.chart, itemIndex)
+      insertPlaceholder(this.canvas, this.chart, itemIndex)
     },
     dropItem (event: MouseEvent) {
       // Ignore if the spot doesn't contain a movable item
@@ -181,7 +225,7 @@ export default defineComponent({
       const newIndex = this.getItemIndexFromCoords(event)
 
       if (!this.chart.items[newIndex]) {
-        // If the selected slot is empty, just move the item there
+        // If the selected slot is empty, just move the item there...
         this.$store.commit('addItem', {
           item: this.grabbedItem.itemObject,
           index: newIndex
@@ -203,6 +247,9 @@ export default defineComponent({
 
       this.grabbedItem = null
 
+      // Gets rid of the 'grab' cursor now that we're not holding the item anymore.
+      this.updateCursor(event)
+
       this.renderChart()
     }
   },
@@ -212,10 +259,12 @@ export default defineComponent({
       grabbedItem: {
           originalIndex: number,
           itemObject: ChartItem
-        } | null
-        } {
+        } | null,
+      canvas: HTMLCanvasElement
+      } {
     return {
-      grabbedItem: null
+      grabbedItem: null,
+      canvas: document.getElementById('chart-canvas') as HTMLCanvasElement
     }
   },
   watch: {
