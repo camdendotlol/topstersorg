@@ -3,8 +3,8 @@
     id="chart-canvas"
     @mousemove="updateCursor"
     @mouseleave="resetCursor"
-    @mousedown="pickUpItem"
-    @mouseup="dropItem"
+    @mousedown.left="pickUpItem"
+    @mouseup.left="dropItem"
   >
     TODO: text mode charts for accessibility
   </canvas>
