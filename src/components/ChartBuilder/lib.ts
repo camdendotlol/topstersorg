@@ -71,8 +71,19 @@ export const insertPlaceholder = (canvas: HTMLCanvasElement, chart: Chart, index
   const cellSize = 260
   const chartTitleMargin = chart.title === '' ? 0 : 60
 
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
+  // Start by drawing a non-transparent black box to hide anything
+  // below it. This is because we use it to cover up an item that's being
+  // dragged-and-dropped by the user.
+  ctx.fillStyle = 'rgba(0, 0, 0)'
   // No need for scaled dimensions here, we're working on the original Canvas.
+  ctx.fillRect(
+    (coords.x * (cellSize + chart.gap)) + chart.gap,
+    (coords.y * (cellSize + chart.gap)) + chart.gap + chartTitleMargin,
+    260,
+    260
+  )
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
   ctx.fillRect(
     (coords.x * (cellSize + chart.gap)) + chart.gap,
     (coords.y * (cellSize + chart.gap)) + chart.gap + chartTitleMargin,

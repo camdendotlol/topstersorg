@@ -3,7 +3,8 @@
     id="chart-canvas"
     @mousemove="updateCursor"
     @mouseleave="resetCursor"
-    @mousedown="grabItem"
+    @mousedown="pickUpItem"
+    @mouseup="dropItem"
   >
     TODO: text mode charts for accessibility
   </canvas>
@@ -14,7 +15,7 @@ import { defineComponent } from '@vue/runtime-core'
 import { mapState } from 'vuex'
 import { State } from '../../store'
 import generateChart from 'topster'
-import { Chart, SavedChart } from '@/types'
+import { Chart, ChartItem, SavedChart } from '@/types'
 import { getCanvasInfo, insertPlaceholder, isDroppable } from './lib'
 
 export default defineComponent({
@@ -114,8 +115,13 @@ export default defineComponent({
         document.body.style.cursor = 'default'
       }
     },
-    resetCursor () {
+    resetCursor (event: MouseEvent) {
       document.body.style.cursor = 'default'
+      this.dropItem(event)
+      this.grabbedItem = null
+
+      // Clear the placeholder for the dragged item
+      this.renderChart()
     },
     getMouseCoords (event: MouseEvent, canvasOffset: { x: number, y: number }) {
       return {
@@ -123,30 +129,78 @@ export default defineComponent({
         y: event.clientY - canvasOffset.y
       }
     },
-    grabItem (event: MouseEvent) {
+    // Calculate the index of the chart item in the chart array from its position on the chart
+    getItemIndexFromCoords (event: MouseEvent) {
+      const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
+      const canvasInfo = getCanvasInfo(canvas, this.chart)
+
+      const mouseCoords = this.getMouseCoords(event, { x: canvas.offsetLeft, y: canvas.offsetTop })
+
+      const titleHeight = this.chart.title ? 60 * canvasInfo.scaleRatio : 0
+
+      // Gets the coordinates on the chart (i.e. 4x3, not pixels)
+      const xCoord = Math.floor(mouseCoords.x / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
+      const yCoord = Math.floor((mouseCoords.y - titleHeight) / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
+
+      // All we need is the index in the chart.items array
+      const itemsAbove = yCoord * this.chart.size.x
+      return itemsAbove + xCoord
+    },
+    pickUpItem (event: MouseEvent) {
       // Ignore if the spot doesn't contain a movable item
       if (!this.checkDroppability(event)) {
         return null
       }
 
-      const getItemIndex = () => {
-        const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
-        const canvasInfo = getCanvasInfo(canvas, this.chart)
+      const canvas = document.getElementById('chart-canvas') as HTMLCanvasElement
 
-        const mouseCoords = this.getMouseCoords(event, { x: canvas.offsetLeft, y: canvas.offsetTop })
+      const itemIndex = this.getItemIndexFromCoords(event)
+      const item = this.chart.items[itemIndex]
 
-        const titleHeight = this.chart.title ? 60 * canvasInfo.scaleRatio : 0
-
-        // Gets the coordinates on the chart (i.e. 4x3, not pixels)
-        const xCoord = Math.floor(mouseCoords.x / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
-        const yCoord = Math.floor((mouseCoords.y - titleHeight) / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
-
-        // All we need is the index in the chart.items array
-        const itemsAbove = yCoord * this.chart.size.x
-        return itemsAbove + xCoord
+      // This will trigger when the user tries to drag an empty placeholder slot
+      if (!item) {
+        return null
       }
 
-      console.log(getItemIndex())
+      this.grabbedItem = {
+        originalIndex: itemIndex,
+        itemObject: item
+      }
+
+      this.renderChart()
+
+      // Cover up the original spot since we're moving it
+      insertPlaceholder(canvas, this.chart, itemIndex)
+    },
+    dropItem (event: MouseEvent) {
+      // Ignore if the spot doesn't contain a movable item
+      if (!this.checkDroppability(event) || !this.grabbedItem) {
+        return null
+      }
+
+      const newIndex = this.getItemIndexFromCoords(event)
+
+      this.$store.commit('insertItem', {
+        item: this.grabbedItem.itemObject,
+        oldIndex: this.grabbedItem.originalIndex,
+        newIndex: newIndex
+      })
+
+      this.grabbedItem = null
+
+      this.renderChart()
+    }
+  },
+  data (): {
+      // wow this is really ugly but hey, it's typed
+      // eslint complains if I change the formatting from this
+      grabbedItem: {
+          originalIndex: number,
+          itemObject: ChartItem
+        } | null
+        } {
+    return {
+      grabbedItem: null
     }
   },
   watch: {

@@ -28,9 +28,22 @@ export const store = createStore<State>({
     return { ...initialState }
   },
   mutations: {
+    // For appending an item
     addItem (state: State, payload: { item: ChartItem, index: number }) {
       const itemsArray = state.chart.items
       itemsArray[payload.index] = payload.item
+      state.chart = { ...state.chart, items: [...itemsArray] }
+    },
+    // For changing the place of a current item
+    insertItem (state: State, payload: { item: ChartItem, oldIndex: number, newIndex: number }) {
+      const itemsArray = [...state.chart.items]
+
+      // Remove the item from its old index
+      itemsArray.splice(payload.oldIndex, 1)
+
+      // Add the item at its new index
+      itemsArray.splice(payload.newIndex, 0, payload.item)
+
       state.chart = { ...state.chart, items: [...itemsArray] }
     },
     changeTitle (state: State, newTitle: string) {
