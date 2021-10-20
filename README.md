@@ -2,6 +2,8 @@
 
 A website for creating charts with books, music, and games.
 
+![screenshot of the app](/screenshot.jpg)
+
 ## Roadmap
 
 ### Tier one features
