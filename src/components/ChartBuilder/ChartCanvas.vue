@@ -16,7 +16,7 @@ import { mapState } from 'vuex'
 import { State } from '../../store'
 import generateChart from 'topster'
 import { Chart, ChartItem, SavedChart } from '@/types'
-import { getCanvasInfo, insertPlaceholder, isDroppable } from './lib'
+import { demoChart, getCanvasInfo, insertPlaceholder, isDroppable } from './lib'
 import { getScaledDimensions } from 'topster/dist/common'
 
 export default defineComponent({
@@ -29,8 +29,14 @@ export default defineComponent({
 
     this.canvas = canvas as HTMLCanvasElement
 
-    // check for saved chart in local storage
-    const savedCharts: SavedChart[] = JSON.parse(localStorage.getItem('charts') || '[]')
+    let savedCharts: SavedChart[]
+    // Using the #demo URL hash to show off Ostrakon to potential employers with an auto-populated example chart.
+    if (window.location.hash === '#demo') {
+      savedCharts = [JSON.parse(demoChart)]
+    } else {
+      // check for saved chart in local storage
+      savedCharts = JSON.parse(localStorage.getItem('charts') || '[]')
+    }
 
     if (savedCharts) {
       const activeChart = savedCharts.find(chart => chart.currentlyActive)
