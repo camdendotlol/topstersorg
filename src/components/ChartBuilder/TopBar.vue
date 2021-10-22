@@ -6,7 +6,7 @@
       @click="saveChart"
     >
       <BIconFileEarmarkArrowDown id="save-icon" />
-      Download chart
+      Download
     </button>
     <button
       v-else
@@ -93,13 +93,14 @@ export default defineComponent({
 
 <style>
 #top-bar {
-  width: calc(100vw - 400px);
+  width: calc(100vw - 420px);
   height: 40px;
-  background: #00003f;
+  background: #AAE5CA;
   position: relative;
+  display: block;
   top: 0;
-  right: 0;
-  margin: 0;
+  border-radius: 0 0 8px 8px;
+  margin: 0 auto;
   padding: 0;
   display: flex;
   flex-flow: row-reverse;
@@ -113,6 +114,7 @@ export default defineComponent({
   height: 30px;
   align-self: center;
   margin-right: 20px;
+  width: 100px;
 }
 
 #save-icon {
@@ -139,7 +141,8 @@ export default defineComponent({
 
 @media screen and (max-width: 1000px) {
   #top-bar {
-    width: 100%;
+    width: 100vw;
+    border-radius: 0;
   }
 }
 </style>

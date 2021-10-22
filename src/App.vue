@@ -93,7 +93,7 @@ body {
   width: 400px;
   flex-shrink: 0;
   overflow-y: scroll;
-  background: peachpuff;
+  background: #AAE5CA;
   box-shadow: 2px 0 3px -1px gray;
   text-align: center;
 }
@@ -125,7 +125,7 @@ input {
     transition: 0.2s;
     padding: 0;
     margin: 0;
-    background: peachpuff;
+    background: #AAE5CA;
   }
 
   .invisible-sidebar {
