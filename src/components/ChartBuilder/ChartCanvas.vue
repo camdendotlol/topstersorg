@@ -5,6 +5,10 @@
     @mouseleave="resetCursor"
     @mousedown.left="pickUpItem"
     @mouseup.left="dropItem"
+    @touchstart="pickUpItem"
+    @touchmove="updateCursor"
+    @touchend="dropItem"
+    @touchleave="resetCursor"
   >
     TODO: text mode charts for accessibility
   </canvas>
@@ -16,8 +20,11 @@ import { mapState } from 'vuex'
 import { State } from '../../store'
 import generateChart from 'topster'
 import { Chart, ChartItem, SavedChart } from '@/types'
-import { demoChart, getCanvasInfo, insertPlaceholder, isDroppable } from './lib'
+import { demoChart, getCanvasInfo, insertPlaceholder, isDroppable, isTouchEvent } from './lib'
 import { getScaledDimensions } from 'topster/dist/common'
+
+// Ostrakon supports drag and drop for both mouse and touch events.
+type InteractionEvent = MouseEvent | TouchEvent
 
 export default defineComponent({
   mounted () {
@@ -102,13 +109,13 @@ export default defineComponent({
       ]
       return localStorage.setItem('charts', JSON.stringify(newChartArray))
     },
-    checkDroppability (event: MouseEvent) {
+    checkDroppability (event: InteractionEvent) {
       const canvasInfo = getCanvasInfo(this.canvas, this.chart)
 
       const droppable = isDroppable(
         canvasInfo,
         this.chart,
-        this.getMouseCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
+        this.getInteractionCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
       )
 
       if (droppable) {
@@ -135,28 +142,42 @@ export default defineComponent({
         scaledDimensions.height
       )
     },
-    updateCursor (event: MouseEvent) {
+    updateCursor (event: InteractionEvent) {
       const isSelectable = this.checkDroppability(event)
+      const touchEvent = isTouchEvent(event)
 
-      if (isSelectable) {
-        document.body.style.cursor = 'pointer'
-      } else if (!isSelectable && !this.grabbedItem) {
-        document.body.style.cursor = 'default'
+      if (!touchEvent) {
+        if (isSelectable) {
+          document.body.style.cursor = 'pointer'
+        } else if (!isSelectable && !this.grabbedItem) {
+          document.body.style.cursor = 'default'
+        }
+      }
+
+      if (isTouchEvent(event) && event.type !== 'touchend') {
+        this.lastTouch = {
+          x: event.touches[0].clientX,
+          y: event.touches[0].clientY
+        }
       }
 
       if (this.grabbedItem) {
-        document.body.style.cursor = 'grab'
+        if (!touchEvent) {
+          document.body.style.cursor = 'grab'
+        }
         // If we don't re-render, the dragged item from the previous frame remains visible and
         // it looks like that old Windows 95 bug with the window movement artifacts.
         this.renderChart()
         insertPlaceholder(this.drawingCtx, this.chart, this.grabbedItem.originalIndex)
 
-        const coords = this.getMouseCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
+        const coords = this.getInteractionCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
         this.drawImageAtMouse(this.grabbedItem.itemObject.coverImg, coords)
       }
     },
-    resetCursor (event: MouseEvent) {
-      document.body.style.cursor = 'default'
+    resetCursor (event: InteractionEvent) {
+      if (!isTouchEvent(event)) {
+        document.body.style.cursor = 'default'
+      }
 
       if (this.grabbedItem) {
         // Remove the item from the chart.
@@ -174,29 +195,44 @@ export default defineComponent({
       // Clear the placeholder for the dragged item
       this.renderChart()
     },
-    getMouseCoords (event: MouseEvent, canvasOffset: { x: number, y: number }) {
-      return {
-        x: event.clientX - canvasOffset.x,
-        y: event.clientY - canvasOffset.y
+    getInteractionCoords (event: InteractionEvent, canvasOffset: { x: number, y: number }) {
+      if (isTouchEvent(event)) {
+        if (event.type === 'touchend') {
+          return {
+            x: this.lastTouch.x - canvasOffset.x,
+            y: this.lastTouch.y - canvasOffset.y
+          }
+        } else {
+          return {
+            x: event.touches[0].clientX - canvasOffset.x,
+            y: event.touches[0].clientY - canvasOffset.y
+          }
+        }
+      } else {
+        // handle mouse event
+        return {
+          x: event.clientX - canvasOffset.x,
+          y: event.clientY - canvasOffset.y
+        }
       }
     },
     // Calculate the index of the chart item in the chart array from its position on the chart
-    getItemIndexFromCoords (event: MouseEvent) {
+    getItemIndexFromCoords (event: InteractionEvent) {
       const canvasInfo = getCanvasInfo(this.canvas, this.chart)
 
-      const mouseCoords = this.getMouseCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
+      const interactionCoords = this.getInteractionCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
 
       const titleHeight = this.chart.title ? 60 * canvasInfo.scaleRatio : 0
 
       // Gets the coordinates on the chart (i.e. 4x3, not pixels)
-      const xCoord = Math.floor(mouseCoords.x / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
-      const yCoord = Math.floor((mouseCoords.y - titleHeight) / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
+      const xCoord = Math.floor(interactionCoords.x / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
+      const yCoord = Math.floor((interactionCoords.y - titleHeight) / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
 
       // All we need is the index in the chart.items array
       const itemsAbove = yCoord * this.chart.size.x
       return itemsAbove + xCoord
     },
-    pickUpItem (event: MouseEvent) {
+    pickUpItem (event: InteractionEvent) {
       // Ignore if the spot doesn't contain a movable item
       if (!this.checkDroppability(event)) {
         return null
@@ -210,6 +246,13 @@ export default defineComponent({
         return null
       }
 
+      if (isTouchEvent(event)) {
+        this.lastTouch = {
+          x: event.touches[0].clientX,
+          y: event.touches[0].clientY
+        }
+      }
+
       this.grabbedItem = {
         originalIndex: itemIndex,
         itemObject: item
@@ -221,10 +264,10 @@ export default defineComponent({
       insertPlaceholder(this.drawingCtx, this.chart, itemIndex)
 
       // Draw the item at the center of the mouse cursor
-      const coords = this.getMouseCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
+      const coords = this.getInteractionCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
       this.drawImageAtMouse(this.grabbedItem.itemObject.coverImg, coords)
     },
-    dropItem (event: MouseEvent) {
+    dropItem (event: InteractionEvent) {
       // If the spot doesn't contain a movable item, just put the item back where it came from.
       if (!this.checkDroppability(event)) {
         this.grabbedItem = null
@@ -239,12 +282,13 @@ export default defineComponent({
       const newIndex = this.getItemIndexFromCoords(event)
 
       if (!this.chart.items[newIndex]) {
-        // If the selected slot is empty, just move the item there...
+        // If the selected slot is empty, just
+        // 1) move the item there
         this.$store.commit('addItem', {
           item: this.grabbedItem.itemObject,
           index: newIndex
         })
-        // ...and remove it from its old spot
+        // 2) and remove it from its old spot
         this.$store.commit('addItem', {
           item: null,
           index: this.grabbedItem.originalIndex
@@ -274,11 +318,14 @@ export default defineComponent({
           originalIndex: number,
           itemObject: ChartItem
         } | null,
-      canvas: HTMLCanvasElement
+      canvas: HTMLCanvasElement,
+      lastTouch: { x: number, y: number }
       } {
     return {
       grabbedItem: null,
-      canvas: document.getElementById('chart-canvas') as HTMLCanvasElement
+      canvas: document.getElementById('chart-canvas') as HTMLCanvasElement,
+      // We need to store the most recent touch position because the touchend event doesn't provide coordinates.
+      lastTouch: { x: 0, y: 0 }
     }
   },
   watch: {
@@ -306,6 +353,7 @@ export default defineComponent({
 <style scoped>
 #chart-canvas {
   border-radius: 5px;
+  touch-action: none;
 }
 
 #save-button {

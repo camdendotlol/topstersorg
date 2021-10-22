@@ -81,6 +81,15 @@ export const insertPlaceholder = (drawingContext: CanvasRenderingContext2D | nul
   )
 }
 
+// Type guard to see whether the user interaction is from a mouse or a touch screen
+export const isTouchEvent = (event: MouseEvent | TouchEvent): event is TouchEvent => {
+  if ((event as TouchEvent).touches) {
+    return true
+  } else {
+    return false
+  }
+}
+
 // This is an example chart that will auto-populate when the user visits ostrakon with the #demo hash.
 // Specifically, this URL: https://www.ostrakon.xyz/#demo
 // I made this to quickly show off the site to potential employers.
