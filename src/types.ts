@@ -24,8 +24,10 @@ export interface IgdbItem {
   cover: string
 }
 
-export interface SavedChart {
-  name?: string,
+// Charts stored in localStorage
+export interface StoredChart {
+  timestamp: number,
+  name: string | null,
   data: Chart,
   currentlyActive: boolean
 }

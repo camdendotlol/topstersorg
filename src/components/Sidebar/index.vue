@@ -68,6 +68,7 @@ export default defineComponent({
 @media screen and (max-width: 1000px) {
   .sidebar {
     width: 100%;
+    z-index: 10000;
   }
 }
 

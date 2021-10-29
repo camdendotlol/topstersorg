@@ -1,8 +1,21 @@
 <template>
   <div id="top-bar">
+    <div class="switcher-menu">
+      <button
+        @click="deleteCurrentChart"
+      >
+        -
+      </button>
+      <Switcher />
+      <button
+        @click="startNewChart"
+      >
+        +
+      </button>
+    </div>
     <button
       v-if="!loading"
-      id="save-button"
+      class="download-button"
       @click="saveChart"
     >
       <BIconFileEarmarkArrowDown id="save-icon" />
@@ -10,7 +23,7 @@
     </button>
     <button
       v-else
-      id="save-button"
+      class="download-button"
     >
       <BIconArrowRepeat id="loading-icon" />
       loading...
@@ -22,11 +35,15 @@
 import { defineComponent } from '@vue/runtime-core'
 import { mapState } from 'vuex'
 import getChart from '../../api/chartGen'
-import { State } from '../../store'
+import { initialState, State } from '../../store'
 import { BIconFileEarmarkArrowDown, BIconArrowRepeat } from 'bootstrap-icons-vue'
+import Switcher from './Switcher.vue'
+import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
+import { StoredChart } from '@/types'
 
 export default defineComponent({
   components: {
+    Switcher,
     BIconFileEarmarkArrowDown,
     BIconArrowRepeat
   },
@@ -83,6 +100,22 @@ export default defineComponent({
 
         this.loading = false
       }
+    },
+    startNewChart () {
+      const storedCharts = getStoredCharts()
+
+      const newStoredChartsArray = storedCharts.map(chart => chart.currentlyActive ? { ...chart, currentlyActive: false } : chart)
+
+      const newChart: StoredChart = {
+        timestamp: new Date().getTime(),
+        name: null,
+        data: initialState.chart,
+        currentlyActive: true
+      }
+
+      setStoredCharts([...newStoredChartsArray, newChart])
+
+      this.$store.commit('reset')
     }
   },
   computed: mapState({
@@ -102,19 +135,19 @@ export default defineComponent({
   border-radius: 0 0 8px 8px;
   margin: 0 auto;
   padding: 0;
-  display: flex;
-  flex-flow: row-reverse;
   gap: 50px;
   color: white;
   box-shadow: 0 1px 2px #00003f;
 }
 
-#save-button {
-  font-family: "Ubuntu Mono", monospace;
+.download-button {
   height: 30px;
-  align-self: center;
   margin-right: 20px;
   width: 100px;
+  bottom: 35px;
+  float: right;
+  position: relative;
+  font-family: "Ubuntu Mono", monospace;
 }
 
 #save-icon {
@@ -128,6 +161,17 @@ export default defineComponent({
   animation: rotation 1.5s;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
+}
+
+.switcher-menu {
+  width: auto;
+  height: 40px;
+  color: #00003f;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  align-items: center;
 }
 
 @keyframes rotation {

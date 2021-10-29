@@ -76,8 +76,9 @@
 </template>
 
 <script lang="ts">
+import { getStoredCharts } from '@/helpers/localStorage'
 import { initialState } from '@/store'
-import { Chart, SavedChart } from '@/types'
+import { Chart } from '@/types'
 import { defineComponent } from '@vue/runtime-core'
 import { mapMutations } from 'vuex'
 
@@ -129,11 +130,11 @@ export default defineComponent({
       return this.reset()
     },
     setupFromLocalstorage (): void {
-      const savedCharts: SavedChart[] = JSON.parse(localStorage.getItem('charts') || '[]')
+      const savedCharts = getStoredCharts()
 
       let activeChart
 
-      if (savedCharts) {
+      if (savedCharts.length > 0) {
         activeChart = savedCharts.find(chart => chart.currentlyActive)
       }
 

@@ -66,7 +66,7 @@ body {
 #mobile-burger-toggle {
   display: none;
   position: absolute;
-  top: 20px;
+  bottom: 20px;
   right: 20px;
   border-radius: 50%;
   border: none;

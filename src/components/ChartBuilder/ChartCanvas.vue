@@ -19,9 +19,10 @@ import { defineComponent } from '@vue/runtime-core'
 import { mapState } from 'vuex'
 import { State } from '../../store'
 import generateChart from 'topster'
-import { Chart, ChartItem, SavedChart } from '@/types'
+import { Chart, ChartItem, StoredChart } from '@/types'
 import { demoChart, getCanvasInfo, insertPlaceholder, isDroppable, isTouchEvent } from './lib'
 import { getScaledDimensions } from 'topster/dist/common'
+import { getStoredCharts, setStoredCharts } from '@/helpers/localStorage'
 
 // Ostrakon supports drag and drop for both mouse and touch events.
 type InteractionEvent = MouseEvent | TouchEvent
@@ -36,33 +37,32 @@ export default defineComponent({
 
     this.canvas = canvas as HTMLCanvasElement
 
-    let savedCharts: SavedChart[]
-    // Using the #demo URL hash to show off Ostrakon to potential employers with an auto-populated example chart.
+    let savedCharts: StoredChart[]
+    // Use the #demo URL hash to show off Ostrakon to potential employers with an auto-populated example chart.
     if (window.location.hash === '#demo') {
-      savedCharts = [JSON.parse(demoChart)]
+      savedCharts = [demoChart]
     } else {
       // check for saved chart in local storage
-      savedCharts = JSON.parse(localStorage.getItem('charts') || '[]')
+      savedCharts = getStoredCharts()
     }
 
-    if (savedCharts) {
-      const activeChart = savedCharts.find(chart => chart.currentlyActive)
-      if (activeChart) {
-        for (const item of activeChart.data.items) {
-          // Make sure the item isn't null
-          if (item) {
-            const img = new Image()
-            img.src = item.coverURL
-            item.coverImg = img
+    const activeChart = savedCharts.find(chart => chart.currentlyActive === true)
 
-            // make sure they all load in
-            img.onload = () => {
-              this.renderChart()
-            }
+    if (activeChart) {
+      for (const item of activeChart.data.items) {
+        // Make sure the item isn't null
+        if (item) {
+          const img = new Image()
+          img.src = item.coverURL
+          item.coverImg = img
+
+          // make sure they all load in
+          img.onload = () => {
+            this.renderChart()
           }
         }
-        this.$store.commit('setEntireChart', activeChart.data)
       }
+      this.$store.commit('setEntireChart', activeChart.data)
     }
 
     this.renderChart()
@@ -84,30 +84,37 @@ export default defineComponent({
       this.saveToLocalStorage(this.chart)
     },
     saveToLocalStorage (chart: Chart) {
-      const savedCharts: SavedChart[] = JSON.parse(localStorage.getItem('charts') || '[]')
+      const savedCharts = getStoredCharts()
 
-      // if the chart's already saved
-      if (savedCharts) {
-        const activeChart = savedCharts.find(chart => chart.currentlyActive)
-        if (activeChart) {
-          const updatedChart = {
-            ...activeChart,
-            data: chart
+      const activeChart = savedCharts.find(chart => chart.currentlyActive)
+
+      if (!activeChart) {
+        const newChartArray = [
+          {
+            timestamp: new Date().getTime(),
+            name: null,
+            data: chart,
+            currentlyActive: true
           }
-          const newChartArray = savedCharts.filter(chart => chart !== activeChart).concat(updatedChart)
-          return localStorage.setItem('charts', JSON.stringify(newChartArray))
-        }
+        ]
+
+        return setStoredCharts(newChartArray)
       }
 
-      // if it's new
-      const newChartArray = [
-        {
-          name: 'first',
-          data: chart,
-          currentlyActive: true
+      const updatedChart = {
+        ...activeChart,
+        data: chart
+      }
+
+      const updatedArray = savedCharts.map(savedChart => {
+        if (savedChart.currentlyActive) {
+          return updatedChart
+        } else {
+          return savedChart
         }
-      ]
-      return localStorage.setItem('charts', JSON.stringify(newChartArray))
+      })
+
+      setStoredCharts(updatedArray)
     },
     checkDroppability (event: InteractionEvent) {
       const canvasInfo = getCanvasInfo(this.canvas, this.chart)
