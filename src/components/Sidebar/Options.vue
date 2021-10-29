@@ -12,7 +12,7 @@
       <label for="chart-size">Size</label>
       <input
         min=1
-        max=10
+        max=12
         value=5
         type="number"
         name="x-axis"
@@ -22,7 +22,7 @@
       >
       <input
         min=1
-        max=10
+        max=12
         value=5
         type="number"
         name="y-axis"
