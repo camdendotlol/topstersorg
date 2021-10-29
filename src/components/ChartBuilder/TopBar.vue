@@ -2,7 +2,7 @@
   <div id="top-bar">
     <div class="switcher-menu">
       <button
-        @click="deleteCurrentChart"
+        @click="deleteChart"
       >
         -
       </button>
@@ -40,6 +40,7 @@ import { BIconFileEarmarkArrowDown, BIconArrowRepeat } from 'bootstrap-icons-vue
 import Switcher from './Switcher.vue'
 import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
 import { StoredChart } from '@/types'
+import { addImgElements, initializeFirstRun } from '@/helpers/chart'
 
 export default defineComponent({
   components: {
@@ -116,6 +117,32 @@ export default defineComponent({
       setStoredCharts([...newStoredChartsArray, newChart])
 
       this.$store.commit('reset')
+    },
+    deleteChart () {
+      const storedCharts = getStoredCharts()
+
+      const warningPopup = confirm('Are you sure you want to delete this chart? There\'s no way to recover it!')
+
+      if (warningPopup === false) {
+        return null
+      }
+
+      setStoredCharts(storedCharts.filter(chart => chart.currentlyActive === false))
+
+      const newStoredCharts = getStoredCharts()
+
+      if (newStoredCharts.length < 1) {
+        // We've just deleted the only saved chart, so let's re-initialize.
+        initializeFirstRun()
+        this.$store.commit('reset')
+      } else {
+        // Fall back to the first chart in the array.
+        newStoredCharts[0].currentlyActive = true
+        setStoredCharts(newStoredCharts)
+
+        addImgElements(newStoredCharts[0].data)
+        this.$store.commit('setEntireChart', newStoredCharts[0].data)
+      }
     }
   },
   computed: mapState({

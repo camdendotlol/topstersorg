@@ -12,7 +12,7 @@ export const key: InjectionKey<Store<State>> = Symbol('store')
 export const initialState = {
   chart: {
     title: '',
-    items: Array(100).fill(null),
+    items: Array(144).fill(null),
     size: {
       x: 5,
       y: 5
