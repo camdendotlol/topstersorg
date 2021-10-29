@@ -18,7 +18,7 @@
 import { defineComponent } from '@vue/runtime-core'
 import { mapState } from 'vuex'
 import { State } from '../../store'
-import generateChart from 'topster'
+import generateChart from 'topster/dist/browser'
 import { Chart, ChartItem, StoredChart } from '@/types'
 import { demoChart, getCanvasInfo, insertPlaceholder, isDroppable, isTouchEvent } from './lib'
 import { getScaledDimensions } from 'topster/dist/common'
