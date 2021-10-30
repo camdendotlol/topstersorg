@@ -7,6 +7,7 @@
       <ResultItem
         :imageData="{ src: `https://covers.openlibrary.org/b/olid/${result.cover_edition_key}-L.jpg`, alt: result.title }"
         @click="addToChart(result)"
+        draggable="true"
       />
     </li>
   </ul>
@@ -18,6 +19,7 @@
       <ResultItem
         :imageData="{ src: result.image[result.image.length - 1]['#text'], alt: result.name }"
         @click="addToChart(result)"
+        draggable="true"
       />
     </li>
   </ul>
@@ -29,6 +31,7 @@
       <ResultItem
         :imageData="{ src: result.cover, alt: result.name }"
         @click="addToChart(result)"
+        draggable="true"
       />
     </li>
   </ul>
@@ -38,30 +41,10 @@
 </template>
 
 <script lang="ts">
+import { createChartItem } from '@/helpers/chart'
+import { BookResult, GameResult, MusicResult, Result } from '@/types'
 import { defineComponent } from '@vue/runtime-core'
 import ResultItem from './ResultItem.vue'
-/* eslint-disable camelcase */
-
-// There's way more stuff from the APIs but this is all that's relevant here.
-interface BookResult {
-  title: string,
-  author_name: string,
-  cover_edition_key?: string
-}
-
-interface MusicResult {
-  name: string,
-  artist: string,
-  image: {
-    '#text': string,
-    size: string
-  }[]
-}
-
-interface GameResult {
-  name: string,
-  cover: string
-}
 
 export default defineComponent({
   components: {
@@ -80,6 +63,7 @@ export default defineComponent({
         .filter(result => result.author_name)
     },
     filterMusic (results: MusicResult[]): MusicResult[] {
+      // remove music without a cover image
       return results
         .filter(result => {
           let coverFound = false
@@ -92,53 +76,19 @@ export default defineComponent({
         })
     },
     filterGames (results: GameResult[]): GameResult[] {
+      // remove games without a cover image
       return results.filter(result => result.cover)
     },
-    addToChart (item: BookResult | MusicResult | GameResult): void {
-      const setImage = (url: string): HTMLImageElement => {
-        const cover = new Image()
-        cover.src = url
-        return cover
-      }
-
+    addToChart (item: Result): void {
       // Get the index of the first null chart slot
       const firstEmptyIndex = this.$store.state.chart.items.indexOf(null)
 
-      switch (this.resultsType) {
-        case 'books':
-        {
-          const bookItem = {
-            title: (item as BookResult).title,
-            coverImg: setImage(`https://covers.openlibrary.org/b/olid/${(item as BookResult).cover_edition_key}-L.jpg`),
-            coverURL: `https://covers.openlibrary.org/b/olid/${(item as BookResult).cover_edition_key}-L.jpg`,
-            creator: (item as BookResult).author_name[0]
-          }
-          this.$store.commit('addItem', { item: bookItem, index: firstEmptyIndex })
-          break
-        }
-        case 'music':
-        {
-          const largestImageIndex = (item as MusicResult).image.length - 1
-          const musicItem = {
-            title: (item as MusicResult).name,
-            coverImg: setImage((item as MusicResult).image[largestImageIndex]['#text']),
-            coverURL: (item as MusicResult).image[largestImageIndex]['#text'],
-            creator: (item as MusicResult).artist
-          }
-          this.$store.commit('addItem', { item: musicItem, index: firstEmptyIndex })
-          break
-        }
-        case 'games':
-        {
-          const gameItem = {
-            title: (item as GameResult).name,
-            coverImg: setImage((item as GameResult).cover),
-            coverURL: (item as GameResult).cover
-          }
-          this.$store.commit('addItem', { item: gameItem, index: firstEmptyIndex })
-          break
-        }
-        // other types not implemented yet
+      const totalSlots = this.$store.state.chart.size.x * this.$store.state.chart.size.y
+
+      // Don't add an item if there's no visible slot
+      if (firstEmptyIndex < totalSlots) {
+        const newItem = createChartItem(item)
+        this.$store.commit('addItem', { item: newItem, index: firstEmptyIndex })
       }
     }
   }
