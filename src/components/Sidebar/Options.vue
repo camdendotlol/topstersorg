@@ -77,10 +77,10 @@
 
 <script lang="ts">
 import { getStoredCharts } from '@/helpers/localStorage'
-import { initialState } from '@/store'
+import { initialState, State } from '@/store'
 import { Chart } from '@/types'
 import { defineComponent } from '@vue/runtime-core'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 
 export default defineComponent({
   data () {
@@ -155,6 +155,16 @@ export default defineComponent({
       (document.getElementById('gap') as HTMLFormElement).value = chart.gap
       this.gap = chart.gap
     }
+  },
+  watch: {
+    chart () {
+      this.populateForm(this.chart)
+    }
+  },
+  computed: {
+    ...mapState({
+      chart: state => (state as State).chart
+    })
   }
 })
 </script>
