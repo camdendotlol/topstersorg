@@ -68,8 +68,6 @@ export default defineComponent({
       const chartData = { ...this.chart }
       const downloadableChart = await createDownloadableChart(chartData)
 
-      typescriptAnnoying.canShare = true
-
       // If on a mobile browser, use the native share functionality.
       // Otherwise, use the normal download trick.
       if (typescriptAnnoying.canShare) {
