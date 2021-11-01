@@ -55,6 +55,7 @@ export default defineComponent({
           const img = new Image()
           img.src = item.coverURL
           item.coverImg = img
+          // img.crossOrigin = 'Anonymous'
 
           // make sure they all load in
           img.onload = () => {

@@ -16,7 +16,7 @@
     <button
       v-if="!loading"
       class="download-button"
-      @click="saveChart"
+      @click="downloadChart"
     >
       <BIconFileEarmarkArrowDown id="save-icon" />
       Download
@@ -34,7 +34,7 @@
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
 import { mapState } from 'vuex'
-import getChart from '../../api/chartGen'
+import { createDownloadableChart, saveChart } from '../../api/chartGen'
 import { initialState, State } from '../../store'
 import { BIconFileEarmarkArrowDown, BIconArrowRepeat } from 'bootstrap-icons-vue'
 import Switcher from './Switcher.vue'
@@ -56,26 +56,31 @@ export default defineComponent({
     }
   },
   methods: {
-    async saveChart () {
-      this.loading = true
-
-      const chart = await getChart(this.chart)
-      const url = window.URL.createObjectURL(chart)
-
+    async downloadChart () {
       // TypeScript doesn't know the navigator.share types yet.
       // So let's just make it stop being annoying.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const typescriptAnnoying: any = navigator
 
+      this.loading = true
+
+      // Clone the chart data so we don't mutate state
+      const chartData = { ...this.chart }
+      const downloadableChart = await createDownloadableChart(chartData)
+
+      typescriptAnnoying.canShare = true
+
       // If on a mobile browser, use the native share functionality.
       // Otherwise, use the normal download trick.
       if (typescriptAnnoying.canShare) {
+        const chartFile = await fetch(downloadableChart.toDataURL())
+        const blob = await chartFile.blob()
         const files = [
           new File(
-            [chart],
-            'chart.jpg',
+            [blob],
+            'chart.png',
             {
-              type: 'image/jpeg',
+              type: 'image/png',
               lastModified: new Date().getTime()
             }
           )
@@ -87,20 +92,10 @@ export default defineComponent({
           text: 'My topster chart from ostrakon.xyz'
         }).then(this.loading = false)
       } else {
-        const a = document.createElement('a')
-
-        a.style.display = 'none'
-        a.href = url
-        a.download = 'chart.jpg'
-
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-
-        window.URL.revokeObjectURL(url)
-
-        this.loading = false
+        saveChart(downloadableChart)
       }
+
+      this.loading = false
     },
     startNewChart () {
       const storedCharts = getStoredCharts()

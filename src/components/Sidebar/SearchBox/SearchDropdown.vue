@@ -8,6 +8,7 @@
         :imageData="{ src: `https://covers.openlibrary.org/b/olid/${result.cover_edition_key}-L.jpg`, alt: result.title }"
         @click="addToChart(result)"
         draggable="true"
+        @dragstart="(event) => initDrag(event, result)"
       />
     </li>
   </ul>
@@ -85,10 +86,18 @@ export default defineComponent({
 
       const totalSlots = this.$store.state.chart.size.x * this.$store.state.chart.size.y
 
-      // Don't add an item if there's no visible slot
+      // Only add an item if there's a visible slot
       if (firstEmptyIndex < totalSlots) {
         const newItem = createChartItem(item)
         this.$store.commit('addItem', { item: newItem, index: firstEmptyIndex })
+      }
+    },
+    initDrag (event: DragEvent, result: Result): void {
+      const itemString = JSON.stringify(createChartItem(result))
+      // Some null-checking is needed here to satisfy TS
+      if (event.dataTransfer) {
+        // Put the item object into the the payload
+        event.dataTransfer.setData('application/json', itemString)
       }
     }
   }
