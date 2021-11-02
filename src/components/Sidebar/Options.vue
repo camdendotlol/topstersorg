@@ -150,7 +150,7 @@ export default defineComponent({
 
       (document.getElementById('title') as HTMLFormElement).value = chart.title;
 
-      (document.getElementById('background-color') as HTMLFormElement).value = chart.color;
+      (document.getElementById('background-color') as HTMLFormElement).value = chart.background.value;
 
       (document.getElementById('gap') as HTMLFormElement).value = chart.gap
       this.gap = chart.gap

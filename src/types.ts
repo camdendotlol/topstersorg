@@ -12,11 +12,19 @@ export interface ChartSize {
   y: number
 }
 
+export enum BackgroundTypes {
+  Color = 'color',
+  Image = 'image'
+}
+
 export interface Chart {
   title: string,
   items: Array<ChartItem | null>,
   size: ChartSize,
-  color: string,
+  background: {
+    type: BackgroundTypes,
+    value: string
+  }
   showTitles: boolean,
   gap: number
 }

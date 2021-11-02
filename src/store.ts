@@ -1,6 +1,6 @@
 import { InjectionKey } from 'vue'
 import { createStore, useStore as baseUseStore, Store } from 'vuex'
-import { Chart, ChartItem } from './types'
+import { BackgroundTypes, Chart, ChartItem } from './types'
 
 export interface State {
   chart: Chart
@@ -17,7 +17,10 @@ export const initialState = {
       x: 5,
       y: 5
     },
-    color: '#000000',
+    background: {
+      type: BackgroundTypes.Color,
+      value: '#000000'
+    },
     showTitles: false,
     gap: 20
   }
@@ -50,7 +53,13 @@ export const store = createStore<State>({
       state.chart = { ...state.chart, title: newTitle }
     },
     changeColor (state: State, newColor: string) {
-      state.chart = { ...state.chart, color: newColor }
+      state.chart = {
+        ...state.chart,
+        background: {
+          type: BackgroundTypes.Color,
+          value: newColor
+        }
+      }
     },
     changeSize (state: State, payload: { axis: string, value: number }) {
       switch (payload.axis) {
