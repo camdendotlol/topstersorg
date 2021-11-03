@@ -208,19 +208,19 @@ export default defineComponent({
         if (event.type === 'touchend') {
           return {
             x: this.lastTouch.x - canvasOffset.x,
-            y: this.lastTouch.y - canvasOffset.y
+            y: this.lastTouch.y - canvasOffset.y + window.scrollY
           }
         } else {
           return {
             x: event.touches[0].clientX - canvasOffset.x,
-            y: event.touches[0].clientY - canvasOffset.y
+            y: event.touches[0].clientY - canvasOffset.y + window.scrollY
           }
         }
       } else {
         // handle mouse event
         return {
           x: event.clientX - canvasOffset.x,
-          y: event.clientY - canvasOffset.y
+          y: event.clientY - canvasOffset.y + window.scrollY
         }
       }
     },
