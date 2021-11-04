@@ -65,7 +65,7 @@ body {
 
 #mobile-burger-toggle {
   display: none;
-  position: absolute;
+  position: fixed;
   bottom: 20px;
   right: 20px;
   border-radius: 50%;
@@ -114,11 +114,11 @@ input {
 
   #mobile-burger-toggle {
     display: initial;
-    z-index: 1000;
+    z-index: 1001;
   }
 
   .sidebar-visiblity-manager {
-    transition: 0.2s;
+    transition: transform 0.2s;
     width: 100%;
     position: absolute;
     right: -100vw;
@@ -130,13 +130,16 @@ input {
 
   .invisible-sidebar {
     transform: translateX(0vw);
+    opacity: 0;
     height: 100vh;
     overflow: hidden;
   }
 
   .visible-sidebar {
     display: initial;
+    opacity: 1;
     transform: translateX(-100vw);
+    z-index: 1000;
   }
 }
 

@@ -146,12 +146,13 @@ export default defineComponent({
 
 <style>
 #top-bar {
-  width: calc(100vw - 420px);
+  width: calc(100% - 420px);
   height: 40px;
   background: #AAE5CA;
-  position: relative;
+  position: absolute;
   display: block;
   top: 0;
+  left: 410px;
   border-radius: 0 0 8px 8px;
   margin: 0 auto;
   padding: 0;
@@ -205,8 +206,9 @@ export default defineComponent({
 
 @media screen and (max-width: 1000px) {
   #top-bar {
-    width: 100vw;
+    width: 100%;
     border-radius: 0;
+    left: 0;
   }
 }
 </style>

@@ -1,17 +1,17 @@
 <template>
-  <canvas
-    id="chart-canvas"
-    @mousemove="updateCursor"
-    @mouseleave="resetCursor"
-    @mousedown.left="pickUpItem"
-    @mouseup.left="dropItem"
-    @touchstart="pickUpItem"
-    @touchmove="updateCursor"
-    @touchend="dropItem"
-    @touchleave="resetCursor"
-  >
-    TODO: text mode charts for accessibility
-  </canvas>
+    <canvas
+      id="chart-canvas"
+      @mousemove="updateCursor"
+      @mouseleave="resetCursor"
+      @mousedown.left="pickUpItem"
+      @mouseup.left="dropItem"
+      @touchstart="pickUpItem"
+      @touchmove="updateCursor"
+      @touchend="dropItem"
+      @touchleave="resetCursor"
+    >
+      TODO: text mode charts for accessibility
+    </canvas>
 </template>
 
 <script lang="ts">
@@ -391,14 +391,15 @@ export default defineComponent({
 }
 
 canvas {
-  max-width: calc(100vw - 400px);
-  max-height: 90vh;
-  margin-top: 20px;
+  max-width: 95%;
+  max-height: 85vh;
+  margin: auto;
+  margin-top: 50px;
 }
 
 @media screen and (max-width: 1000px) {
   canvas {
-    max-width: 100%;
+    max-width: 98%;
   }
 }
 </style>
