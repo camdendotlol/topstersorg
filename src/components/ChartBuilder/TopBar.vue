@@ -146,13 +146,13 @@ export default defineComponent({
 
 <style>
 #top-bar {
-  width: calc(100% - 420px);
+  width: calc(100% - 500px);
   height: 40px;
   background: #AAE5CA;
   position: absolute;
   display: block;
   top: 0;
-  left: 410px;
+  left: 450px;
   border-radius: 0 0 8px 8px;
   margin: 0 auto;
   padding: 0;

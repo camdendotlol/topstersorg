@@ -37,17 +37,39 @@
         type="text"
         name="title"
         id="title"
-        @change="updateTitle"
+        @input="updateTitle"
       >
     </div>
     <div class="form-option">
-      <label for="background-color">Background color</label>
-      <input
-        type="color"
-        name="background-color"
-        id="background-color"
-        @change="updateColor"
+      <label for="background-type">Background type</label>
+      <select
+        name="background-type"
+        id="background-type"
+        @change="changeBackgroundType"
       >
+        <option value="color">Color</option>
+        <option value="image">Image</option>
+      </select>
+    </div>
+    <div class="form-option">
+      <div :class="backgroundType === 'color' ? '' : 'hidden'">
+        <label for="background-color">Background color</label>
+        <input
+          type="color"
+          name="background-color"
+          id="background-color"
+          @change="updateColor"
+        >
+      </div>
+      <div :class="backgroundType === 'image' ? '' : 'hidden'">
+        <label for="background-image">Background image</label>
+        <input
+          type="text"
+          name="background-image"
+          id="background-image"
+          @change="updateBackgroundImage"
+        >
+      </div>
     </div>
     <div class="form-option">
       <label for="gap">Gap</label>
@@ -78,23 +100,26 @@
 <script lang="ts">
 import { getStoredCharts } from '@/helpers/localStorage'
 import { initialState, State } from '@/store'
-import { Chart } from '@/types'
+import { BackgroundTypes, Chart } from '@/types'
 import { defineComponent } from '@vue/runtime-core'
 import { mapMutations, mapState } from 'vuex'
 
 export default defineComponent({
   data () {
     return {
-      gap: 0
+      gap: 0,
+      backgroundType: BackgroundTypes.Image
     }
   },
   mounted () {
+    this.backgroundType = this.chart.background.type
     this.setupFromLocalstorage()
   },
   methods: {
     ...mapMutations([
       'changeTitle',
       'changeColor',
+      'setBackgroundImage',
       'changeSize',
       'changeGap',
       'toggleTitles',
@@ -150,14 +175,31 @@ export default defineComponent({
 
       (document.getElementById('title') as HTMLFormElement).value = chart.title;
 
-      (document.getElementById('background-color') as HTMLFormElement).value = chart.background.value;
+      (document.getElementById('background-type') as HTMLFormElement).value = chart.background.type
+
+      if (chart.background.type === BackgroundTypes.Color) {
+        (document.getElementById('background-color') as HTMLFormElement).value = chart.background.value
+      } else if (chart.background.type === BackgroundTypes.Image) {
+        (document.getElementById('background-image') as HTMLFormElement).value = chart.background.value
+      }
 
       (document.getElementById('gap') as HTMLFormElement).value = chart.gap
       this.gap = chart.gap
+    },
+    changeBackgroundType (event: Event): void {
+      const newType = ((event.target as HTMLFormElement).value)
+      if (newType === BackgroundTypes.Color || newType === BackgroundTypes.Image) {
+        this.backgroundType = newType
+      }
+    },
+    updateBackgroundImage (event: Event): void {
+      const url = ((event.target as HTMLFormElement).value)
+      this.setBackgroundImage(url)
     }
   },
   watch: {
     chart () {
+      this.backgroundType = this.chart.background.type
       this.populateForm(this.chart)
     }
   },
@@ -213,5 +255,9 @@ select {
 
 .gap-amount {
   margin: 0;
+}
+
+.hidden {
+  display: none;
 }
 </style>

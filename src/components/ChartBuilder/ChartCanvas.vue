@@ -18,10 +18,10 @@
 import { defineComponent } from '@vue/runtime-core'
 import { mapState } from 'vuex'
 import { State } from '../../store'
-import generateChart from 'topster/dist/browser'
-import { Chart, ChartItem, StoredChart } from '@/types'
+import generateChart from 'topster'
+import { BackgroundTypes, Chart, ChartItem, StoredChart } from '@/types'
 import { demoChart, getCanvasInfo, insertPlaceholder, isDroppable, isTouchEvent } from './lib'
-import { getScaledDimensions } from 'topster/dist/common'
+import { getScaledDimensions } from 'topster/dist/lib'
 import { getStoredCharts, setStoredCharts } from '@/helpers/localStorage'
 
 // Ostrakon supports drag and drop for both mouse and touch events.
@@ -49,13 +49,21 @@ export default defineComponent({
     const activeChart = savedCharts.find(chart => chart.currentlyActive === true)
 
     if (activeChart) {
+      if (activeChart.data.background.type === BackgroundTypes.Image) {
+        const bgImg = new Image()
+        bgImg.src = activeChart.data.background.value
+        bgImg.onload = () => {
+          this.renderChart()
+        }
+        activeChart.data.background.img = bgImg
+      }
+
       for (const item of activeChart.data.items) {
         // Make sure the item isn't null
         if (item) {
           const img = new Image()
           img.src = item.coverURL
           item.coverImg = img
-          // img.crossOrigin = 'Anonymous'
 
           // make sure they all load in
           img.onload = () => {
@@ -70,6 +78,17 @@ export default defineComponent({
   },
   methods: {
     renderChart () {
+      // The image will be stored in localStorage as an empty object :(
+      // This fills it back in as an img element if that happens.
+      if (this.chart.background.type === BackgroundTypes.Image && !this.chart.background.img?.src) {
+        const bgImg = new Image()
+        bgImg.src = this.chart.background.value
+        bgImg.onload = () => {
+          this.renderChart()
+        }
+        this.chart.background.img = bgImg
+      }
+
       generateChart(
         this.canvas,
         this.chart

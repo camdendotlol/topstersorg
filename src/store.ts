@@ -19,7 +19,8 @@ export const initialState = {
     },
     background: {
       type: BackgroundTypes.Color,
-      value: '#000000'
+      value: '#000000',
+      img: null
     },
     showTitles: false,
     gap: 20
@@ -57,7 +58,20 @@ export const store = createStore<State>({
         ...state.chart,
         background: {
           type: BackgroundTypes.Color,
-          value: newColor
+          value: newColor,
+          img: null
+        }
+      }
+    },
+    setBackgroundImage (state: State, url: string) {
+      const image = new Image()
+      image.src = url
+      state.chart = {
+        ...state.chart,
+        background: {
+          type: BackgroundTypes.Image,
+          value: url,
+          img: image
         }
       }
     },

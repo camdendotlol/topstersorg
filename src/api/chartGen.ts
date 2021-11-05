@@ -1,6 +1,6 @@
 import { Chart } from '../types'
 import fetchImageURL from './fetchImage'
-import generateChart from 'topster/dist/browser'
+import generateChart from 'topster'
 
 // Hacky way to make sure all images are loaded in before saving the chart
 const fillInItems = async (chart: Chart) => {

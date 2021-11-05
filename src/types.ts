@@ -23,7 +23,8 @@ export interface Chart {
   size: ChartSize,
   background: {
     type: BackgroundTypes,
-    value: string
+    value: string,
+    img: HTMLImageElement | null
   }
   showTitles: boolean,
   gap: number
