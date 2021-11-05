@@ -92,20 +92,12 @@
         @input="updateGap"
       >
     </div>
-    <div class="form-option">
-      <button
-        id="reset"
-        @click="resetState"
-      >
-        Reset (temporary dev option)
-      </button>
-    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { getStoredCharts } from '@/helpers/localStorage'
-import { initialState, State } from '@/store'
+import { State } from '@/store'
 import { BackgroundTypes, Chart } from '@/types'
 import { defineComponent } from '@vue/runtime-core'
 import { mapMutations, mapState } from 'vuex'
@@ -155,10 +147,6 @@ export default defineComponent({
     changeShowTitles (event: Event): void {
       const value: boolean = (event.target as HTMLFormElement).checked
       return this.toggleTitles(value)
-    },
-    resetState (): void {
-      this.populateForm(initialState.chart)
-      return this.reset()
     },
     setupFromLocalstorage (): void {
       const savedCharts = getStoredCharts()
