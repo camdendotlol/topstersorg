@@ -10,26 +10,32 @@
         @change="changeShowTitles"
       >
       <label for="chart-size">Size</label>
-      <input
-        min=1
-        max=12
-        value=5
-        type="number"
-        name="x-axis"
-        id="x-axis"
-        class="dimension-input"
-        @change="updateSizeX"
-      >
-      <input
-        min=1
-        max=12
-        value=5
-        type="number"
-        name="y-axis"
-        id="y-axis"
-        class="dimension-input"
-        @change="updateSizeY"
-      >
+      <div class="axis-item">
+        <label for="x-axis">x: {{ chart.size.x }}</label>
+        <input
+          min=1
+          max=12
+          value=5
+          type="range"
+          name="x-axis"
+          id="x-axis"
+          class="dimension-input"
+          @input="updateSizeX"
+        >
+      </div>
+      <div class="axis-item">
+        <label for="y-axis">y: {{ chart.size.y }}</label>
+        <input
+          min=1
+          max=12
+          value=5
+          type="range"
+          name="y-axis"
+          id="y-axis"
+          class="dimension-input"
+          @input="updateSizeY"
+        >
+      </div>
     </div>
     <div class="form-option">
       <label for="title">Title</label>
@@ -243,6 +249,23 @@ h2 {
   padding: 0;
   border-radius: 5px;
   overflow: hidden;
+}
+
+.axis-item {
+  display: flex;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.axis-item label {
+  width: 50px;
+}
+
+#x-axis, #y-axis {
+  width: 100px;
+  max-width: 100px;
+  gap: 10px;
 }
 
 select {
