@@ -164,7 +164,7 @@ export default defineComponent({
 .download-button {
   height: 30px;
   margin-right: 20px;
-  width: 100px;
+  width: 120px;
   bottom: 35px;
   float: right;
   position: relative;
