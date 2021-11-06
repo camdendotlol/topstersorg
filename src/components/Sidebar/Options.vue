@@ -120,8 +120,7 @@ export default defineComponent({
       'setBackgroundImage',
       'changeSize',
       'changeGap',
-      'toggleTitles',
-      'reset'
+      'toggleTitles'
     ]),
     updateTitle (event: Event): void {
       const title = (event.target as HTMLFormElement).value
@@ -252,8 +251,6 @@ h2 {
 
 #x-axis, #y-axis {
   width: 100px;
-  max-width: 100px;
-  gap: 10px;
 }
 
 select {
