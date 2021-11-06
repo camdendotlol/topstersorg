@@ -51,6 +51,7 @@ export default defineComponent({
 body {
   background: #2a2a2a;
   box-sizing: border-box;
+  touch-action: manipulation;
 }
 
 .main {
