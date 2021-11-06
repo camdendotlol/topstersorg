@@ -1,4 +1,4 @@
-import { Chart } from '../types'
+import { BackgroundTypes, Chart } from '../types'
 import fetchImageURL from './fetchImage'
 import generateChart from 'topster'
 
@@ -6,6 +6,20 @@ import generateChart from 'topster'
 const fillInItems = async (chart: Chart) => {
   const promises = []
 
+  // Get background image
+  if (chart.background.type === BackgroundTypes.Image) {
+    const bgImgURL = await fetchImageURL(chart.background.value)
+    promises.push(new Promise<void>(resolve => {
+      const bgImg = new Image()
+      bgImg.src = bgImgURL
+      bgImg.onload = () => {
+        resolve()
+      }
+      chart.background.img = bgImg
+    }))
+  }
+
+  // Get chart item images
   for (const item of chart.items) {
     if (item) {
       const localURL = await fetchImageURL(item.coverURL)
