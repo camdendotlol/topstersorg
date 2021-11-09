@@ -5,18 +5,24 @@
       <div>
         <button
           class="section-toggle"
+          :class="{ 'active-section-toggle': this.searchDisplayed }"
           @click="this.searchDisplayed = !this.searchDisplayed"
         >
-          Search Box
+          <span>Search Box</span>
+          <BIconCaretUpFill v-if="this.searchDisplayed" class="caret" />
+          <BIconCaretDownFill v-else class="caret" />
         </button>
         <SearchBox v-if="this.searchDisplayed" />
       </div>
       <div>
         <button
           class="section-toggle"
+          :class="{ 'active-section-toggle': this.optionsDisplayed }"
           @click="this.optionsDisplayed = !this.optionsDisplayed"
         >
-          Chart Options
+          <span>Chart Options</span>
+          <BIconCaretUpFill v-if="this.optionsDisplayed" class="caret" />
+          <BIconCaretDownFill v-else class="caret" />
         </button>
         <Options v-if="this.optionsDisplayed" />
       </div>
@@ -43,12 +49,15 @@ import Title from '../Title.vue'
 import SearchBox from './SearchBox/index.vue'
 import Options from './Options.vue'
 import { defineComponent } from '@vue/runtime-core'
+import { BIconCaretDownFill, BIconCaretUpFill } from 'bootstrap-icons-vue'
 
 export default defineComponent({
   components: {
     Title,
     SearchBox,
-    Options
+    Options,
+    BIconCaretDownFill,
+    BIconCaretUpFill
   },
   data () {
     return {
@@ -73,13 +82,31 @@ export default defineComponent({
   color: white;
   font-size: 1rem;
   border: none;
-  border-radius: 5px 5px 0 0;
+  border-radius: 5px;
   transition: color 0.2s;
 }
 
 .section-toggle:hover {
   cursor: pointer;
   color: lightgray;
+}
+
+.active-section-toggle {
+  border-radius: 5px 5px 0 0;
+}
+
+button {
+  display: flex;
+  align-items: center;
+}
+
+button span {
+  margin-left: 10px;
+}
+
+.caret {
+  margin-left: auto;
+  margin-right: 10px;
 }
 
 #credits-flex {
