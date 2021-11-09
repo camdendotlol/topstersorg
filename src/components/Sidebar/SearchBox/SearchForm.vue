@@ -8,11 +8,11 @@
         id="searchbox"
         ref="searchbox"
       />
-    </div>
     <button type="submit" class="submit-button">
       <BIconArrowRepeat class="loading-icon" v-if="loading" />
       <BIconArrowRight v-else />
     </button>
+    </div>
   </form>
 </template>
 
@@ -99,25 +99,21 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.add-form {
-  display: flex;
-  flex-flow: row;
-  justify-content: center;
-  align-items: center;
-}
-
 #searchbox {
   margin-top: 16px;
+  width: 80%;
+  margin: 10px auto;
 }
 
 .submit-button {
   border-radius: 50%;
   border: none;
-  height: 40px;
-  width: 40px;
-  margin-left: 10px;
-  align-self: flex-end;
-  display: flex;
+  height: 30px;
+  width: 30px;
+  background: rgba(50, 50, 50, 0.1);
+  position: relative;
+  right: 40px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   transition: filter 0.2s;

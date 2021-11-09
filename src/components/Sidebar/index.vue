@@ -2,8 +2,24 @@
   <div class="sidebar">
     <div class="sidebar-content">
       <Title />
-      <SearchBox />
-      <Options />
+      <div>
+        <button
+          class="section-toggle"
+          @click="this.searchDisplayed = !this.searchDisplayed"
+        >
+          Search Box
+        </button>
+        <SearchBox v-if="this.searchDisplayed" />
+      </div>
+      <div>
+        <button
+          class="section-toggle"
+          @click="this.optionsDisplayed = !this.optionsDisplayed"
+        >
+          Chart Options
+        </button>
+        <Options v-if="this.optionsDisplayed" />
+      </div>
       <div id="credits">
         <p>Data from:</p>
         <div id="credits-flex">
@@ -33,6 +49,12 @@ export default defineComponent({
     Title,
     SearchBox,
     Options
+  },
+  data () {
+    return {
+      searchDisplayed: true,
+      optionsDisplayed: true
+    }
   }
 })
 </script>
@@ -43,9 +65,21 @@ export default defineComponent({
   margin-right: 20px;
 }
 
-.chart-type-button {
-  margin-left: 5px;
-  margin-right: 5px;
+.section-toggle {
+  width: 100%;
+  margin: 10px auto 0;
+  padding: 8px;
+  background: #00003f;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px 5px 0 0;
+  transition: color 0.2s;
+}
+
+.section-toggle:hover {
+  cursor: pointer;
+  color: lightgray;
 }
 
 #credits-flex {

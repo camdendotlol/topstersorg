@@ -1,96 +1,97 @@
 <template>
   <div id="chart-options">
-    <h2>Options</h2>
-    <div class="form-option">
-      <label for="display-titles">Display Titles</label>
-      <input
-        type="checkbox"
-        name="display-titles"
-        id="display-titles"
-        @change="changeShowTitles"
-      >
-      <label for="chart-size">Size</label>
-      <div class="axis-item">
-        <label for="x-axis">x: {{ chart.size.x }}</label>
+    <div class="content">
+      <div class="form-option">
+        <label for="display-titles">Display Titles</label>
         <input
-          min=1
-          max=12
-          value=5
-          type="range"
-          name="x-axis"
-          id="x-axis"
-          class="dimension-input"
-          @input="updateSizeX"
+          type="checkbox"
+          name="display-titles"
+          id="display-titles"
+          @change="changeShowTitles"
         >
+        <label for="chart-size">Size</label>
+        <div class="axis-item">
+          <label for="x-axis">x: {{ chart.size.x }}</label>
+          <input
+            min=1
+            max=12
+            value=5
+            type="range"
+            name="x-axis"
+            id="x-axis"
+            class="dimension-input"
+            @input="updateSizeX"
+          >
+        </div>
+        <div class="axis-item">
+          <label for="y-axis">y: {{ chart.size.y }}</label>
+          <input
+            min=1
+            max=12
+            value=5
+            type="range"
+            name="y-axis"
+            id="y-axis"
+            class="dimension-input"
+            @input="updateSizeY"
+          >
+        </div>
       </div>
-      <div class="axis-item">
-        <label for="y-axis">y: {{ chart.size.y }}</label>
-        <input
-          min=1
-          max=12
-          value=5
-          type="range"
-          name="y-axis"
-          id="y-axis"
-          class="dimension-input"
-          @input="updateSizeY"
-        >
-      </div>
-    </div>
-    <div class="form-option">
-      <label for="title">Title</label>
-      <input
-        type="text"
-        name="title"
-        id="title"
-        @input="updateTitle"
-      >
-    </div>
-    <div class="form-option">
-      <label for="background-type">Background type</label>
-      <select
-        name="background-type"
-        id="background-type"
-        @change="changeBackgroundType"
-      >
-        <option value="color">Color</option>
-        <option value="image">Image</option>
-      </select>
-    </div>
-    <div class="form-option">
-      <div :class="backgroundType === 'color' ? '' : 'hidden'">
-        <label for="background-color">Background color</label>
-        <input
-          type="color"
-          name="background-color"
-          id="background-color"
-          @change="updateColor"
-        >
-      </div>
-      <div :class="backgroundType === 'image' ? '' : 'hidden'">
-        <label for="background-image">Background image</label>
+      <div class="form-option">
+        <label for="title">Title</label>
         <input
           type="text"
-          name="background-image"
-          id="background-image"
-          @change="updateBackgroundImage"
+          name="title"
+          id="title"
+          @input="updateTitle"
         >
       </div>
-    </div>
-    <div class="form-option">
-      <label for="gap">Gap</label>
-      <p class="gap-amount">
-        {{ gap }}px
-      </p>
-      <input
-        type="range"
-        min="0"
-        max="150"
-        value="0"
-        name="gap"
-        id="gap"
-        @input="updateGap"
-      >
+      <div class="form-option">
+        <label for="background-type">Background type</label>
+        <select
+          name="background-type"
+          id="background-type"
+          @change="changeBackgroundType"
+        >
+          <option value="color">Color</option>
+          <option value="image">Image</option>
+        </select>
+      </div>
+      <div class="form-option">
+        <div :class="backgroundType === 'color' ? '' : 'hidden'">
+          <label for="background-color">Background color</label>
+          <input
+            type="color"
+            name="background-color"
+            id="background-color"
+            @change="updateColor"
+          >
+        </div>
+        <div :class="backgroundType === 'image' ? '' : 'hidden'">
+          <label for="background-image">Background image</label>
+          <input
+            type="text"
+            name="background-image"
+            id="background-image"
+            @change="updateBackgroundImage"
+          >
+        </div>
+      </div>
+      <div class="form-option">
+        <label for="gap">Gap</label>
+        <p class="gap-amount">
+          {{ gap }}px
+        </p>
+        <input
+          type="range"
+          min="0"
+          max="150"
+          value="0"
+          name="gap"
+          id="gap"
+          @input="updateGap"
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -228,6 +229,13 @@ h2 {
   display: flex;
   flex-flow: column;
   gap: 10px;
+  background: rgba(161, 161, 255, 0.5);
+  border-radius: 0 0 5px 5px;
+  margin-top: 0;
+}
+
+.content {
+  margin: 10px 0 10px;
 }
 
 #background-color {
