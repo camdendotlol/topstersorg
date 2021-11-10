@@ -11,6 +11,9 @@
       <p>If you're a developer, you might be interested in the <a href="https://www.npmjs.com/package/topster">JavaScript library I made</a>. Ostrakon uses this to generate charts, and your project can too.</p>
       <h2>Why doesn't Ostrakon support movies?</h2>
       <p>I expect to add movie support in the future. I know of a good API but they were having technical issues the day I tried to add them, so I moved on to other features. I'll try again soon.</p>
+      <h2>Why is Ostrakon so laggy?</h2>
+      <p>This is a Firefox issue :(</p>
+      <p>I wish I could fix it, and there are a few performance optimizations I can make in the future, but the bottom line is that Firefox does a bad job of supporting the browser technology I used to build this site. Chart rendering uses a something called <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas">Canvas</a>, which is a nifty and modern way to render graphics in the browser. But Firefox is really behind on optimizing their version of Canvas, so it gets terrible performance. The feature that slows down Firefox the most is text shadows. If you're on Firefox, you might get more usable performance if you disable the "show titles" option.</p>
     </div>
   </div>
 </template>
@@ -31,11 +34,13 @@ export default defineComponent({
   padding: 0;
   border-radius: 0 0 5px 5px;
   text-align: left;
+  overflow-y: scroll;
+  height: 500px;
 }
 
 .container {
-  width: 90%;
-  margin: auto;
+  width: 100%;
+  margin: auto 10px;
 }
 
 h2 {

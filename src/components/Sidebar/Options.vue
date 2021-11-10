@@ -257,7 +257,8 @@ export default defineComponent({
 
 #background-color {
   height: 30px;
-  border: 0;
+  width: 30px;
+  border: none;
   padding: 0;
   border-radius: 5px;
   overflow: hidden;
@@ -277,27 +278,12 @@ export default defineComponent({
   width: 30px;
 }
 
-select {
-  padding: 5px;
-  font-size: 1rem;
-  border-radius: 5px;
-  background: #e9e9e9;
-}
-
 input {
   width: 140px;
   padding: 8px;
 }
 
-.gap-amount {
-  margin: 0;
-}
-
 td {
   padding-bottom: 10px;
-}
-
-.hidden {
-  display: none;
 }
 </style>

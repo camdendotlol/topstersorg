@@ -46,12 +46,20 @@ export default defineComponent({
   -moz-osx-font-smoothing: grayscale;
   color: #00003f;
   overflow-y: hidden;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   background: #2a2a2a;
   box-sizing: border-box;
   touch-action: manipulation;
+}
+
+select {
+  padding: 5px;
+  font-size: 1rem;
+  border-radius: 5px;
+  background: #e9e9e9;
 }
 
 .main {
@@ -62,6 +70,10 @@ body {
   top: 0px;
   left: 0px;
   margin: 0;
+}
+
+.hidden {
+  display: none;
 }
 
 #mobile-burger-toggle {
@@ -102,7 +114,7 @@ body {
 input {
   padding: 10px;
   font-size: 1rem;
-  border: none;
+  border: 1px solid #00003f;
   background: #e9e9e9;
   border-radius: 10px;
 }
