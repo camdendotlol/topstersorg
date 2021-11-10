@@ -362,7 +362,7 @@ export default defineComponent({
   },
   computed: {
     drawingCtx (): CanvasRenderingContext2D | null {
-      const ctx = this.canvas.getContext('2d', { alpha: false })
+      const ctx = this.canvas.getContext('2d')
       if (!ctx) {
         return null
       }

@@ -1,97 +1,128 @@
 <template>
   <div id="chart-options">
     <div class="content">
-      <div class="form-option">
-        <label for="display-titles">Display Titles</label>
-        <input
-          type="checkbox"
-          name="display-titles"
-          id="display-titles"
-          @change="changeShowTitles"
-        >
-        <label for="chart-size">Size</label>
-        <div class="axis-item">
-          <label for="x-axis">x: {{ chart.size.x }}</label>
-          <input
-            min=1
-            max=12
-            value=5
-            type="range"
-            name="x-axis"
-            id="x-axis"
-            class="dimension-input"
-            @input="updateSizeX"
-          >
-        </div>
-        <div class="axis-item">
-          <label for="y-axis">y: {{ chart.size.y }}</label>
-          <input
-            min=1
-            max=12
-            value=5
-            type="range"
-            name="y-axis"
-            id="y-axis"
-            class="dimension-input"
-            @input="updateSizeY"
-          >
-        </div>
-      </div>
-      <div class="form-option">
-        <label for="title">Title</label>
-        <input
-          type="text"
-          name="title"
-          id="title"
-          @input="updateTitle"
-        >
-      </div>
-      <div class="form-option">
-        <label for="background-type">Background type</label>
-        <select
-          name="background-type"
-          id="background-type"
-          @change="changeBackgroundType"
-        >
-          <option value="color">Color</option>
-          <option value="image">Image</option>
-        </select>
-      </div>
-      <div class="form-option">
-        <div :class="backgroundType === 'color' ? '' : 'hidden'">
-          <label for="background-color">Background color</label>
-          <input
-            type="color"
-            name="background-color"
-            id="background-color"
-            @change="updateColor"
-          >
-        </div>
-        <div :class="backgroundType === 'image' ? '' : 'hidden'">
-          <label for="background-image">Background image</label>
-          <input
-            type="text"
-            name="background-image"
-            id="background-image"
-            @change="updateBackgroundImage"
-          >
-        </div>
-      </div>
-      <div class="form-option">
-        <label for="gap">Gap</label>
-        <p class="gap-amount">
-          {{ gap }}px
-        </p>
-        <input
-          type="range"
-          min="0"
-          max="150"
-          value="0"
-          name="gap"
-          id="gap"
-          @input="updateGap"
-        >
-      </div>
+      <table>
+        <tr>
+          <td>
+            <label for="title">Title</label>
+          </td>
+          <td>
+            <input
+              type="text"
+              name="title"
+              id="title"
+              @input="updateTitle"
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="display-titles">Display Titles</label>
+          </td>
+          <td>
+            <input
+              type="checkbox"
+              name="display-titles"
+              id="display-titles"
+              @change="changeShowTitles"
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="chart-size">Width</label>
+          </td>
+          <td class="cell-with-value">
+            <span>{{ chart.size.x }}</span>
+            <input
+              min=1
+              max=12
+              value=5
+              type="range"
+              name="x-axis"
+              id="x-axis"
+              class="dimension-input"
+              @input="updateSizeX"
+            >
+          </td>
+        </tr>
+        <tr class="axis-row">
+          <td>
+            <label for="y-axis">Height</label>
+          </td>
+          <td class="cell-with-value">
+            <span>{{ chart.size.y }}</span>
+            <input
+              min=1
+              max=12
+              value=5
+              type="range"
+              name="y-axis"
+              id="y-axis"
+              class="dimension-input"
+              @input="updateSizeY"
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="background-type">Background type</label>
+          </td>
+          <td>
+            <select
+              name="background-type"
+              id="background-type"
+              @change="changeBackgroundType"
+            >
+              <option value="color">Color</option>
+              <option value="image">Image</option>
+            </select>
+          </td>
+        </tr>
+        <tr :class="backgroundType === 'color' ? '' : 'hidden'">
+          <td>
+            <label for="background-color">Background color</label>
+          </td>
+          <td>
+            <input
+              type="color"
+              name="background-color"
+              id="background-color"
+              @change="updateColor"
+            >
+          </td>
+        </tr>
+        <tr :class="backgroundType === 'image' ? '' : 'hidden'">
+          <td>
+            <label for="background-image">Background image</label>
+          </td>
+          <td>
+            <input
+              type="text"
+              name="background-image"
+              id="background-image"
+              @change="updateBackgroundImage"
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="gap">Gap</label>
+          </td>
+          <td class="cell-with-value">
+            <span>{{ gap }}</span>
+            <input
+              type="range"
+              min="0"
+              max="150"
+              value="0"
+              name="gap"
+              id="gap"
+              @input="updateGap"
+            >
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>
@@ -206,36 +237,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-input {
-  margin-left: 10px;
-  border: 2px solid #00003f;
-}
-
-.dimension-input {
-  width: 40px;
-}
-
-h2 {
-  margin-top: 10px;
-  margin-bottom: 5px;
-}
-
 #chart-options {
   display: flex;
-  flex-flow: column;
-  gap: 10px;
   background: #72bcd4;
   border-radius: 0 0 5px 5px;
-  margin-top: 0;
 }
 
 .content {
-  margin: 10px 0 10px;
+  margin: 10px auto;
 }
 
 #background-color {
@@ -246,31 +255,38 @@ h2 {
   overflow: hidden;
 }
 
-.axis-item {
-  display: flex;
-  margin: auto;
-  align-items: center;
-  justify-content: center;
-}
-
-.axis-item label {
-  width: 50px;
-}
-
 #x-axis, #y-axis {
   width: 100px;
+}
+
+.cell-with-value {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cell-with-value span {
+  width: 30px;
 }
 
 select {
   padding: 5px;
   font-size: 1rem;
-  border: 2px solid #00003f;
   border-radius: 5px;
   background: #e9e9e9;
 }
 
+input {
+  width: 140px;
+  padding: 8px;
+}
+
 .gap-amount {
   margin: 0;
+}
+
+td {
+  padding-bottom: 10px;
 }
 
 .hidden {

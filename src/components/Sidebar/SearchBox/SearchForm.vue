@@ -138,7 +138,6 @@ input {
   width: 30px;
   background: rgba(50, 50, 50, 0.1);
   margin-left: -36px;
-  top: 1px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
