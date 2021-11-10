@@ -133,6 +133,7 @@ input {
   .sidebar-visiblity-manager {
     transition: transform 0.2s;
     width: 100%;
+    min-height: 100vh;
     position: absolute;
     right: -100vw;
     transition: 0.2s;
