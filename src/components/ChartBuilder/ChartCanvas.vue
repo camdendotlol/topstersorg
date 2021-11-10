@@ -59,25 +59,33 @@ export default defineComponent({
         activeChart.data.background.img = bgImg
       }
 
-      for (const item of activeChart.data.items) {
-        // Make sure the item isn't null
-        if (item) {
-          const img = new Image()
-          img.src = item.coverURL
-          item.coverImg = img
-
-          // make sure they all load in
-          img.onload = () => {
-            this.renderChart()
-          }
-        }
-      }
+      this.oxidizeImages(activeChart.data)
       this.$store.commit('setEntireChart', activeChart.data)
     }
 
     this.renderChart()
   },
   methods: {
+    // Put the image elements into each item and set the onload callback.
+    // This is needed when loading a chart from storage, where the
+    // HTML image elements are not saved.
+    oxidizeImages (chart: Chart) {
+      for (const item of chart.items) {
+        // Make sure the item isn't null
+        if (item) {
+          if (!item.coverImg.complete) {
+            const img = new Image()
+            img.src = item.coverURL
+            item.coverImg = img
+          }
+
+          // make sure they all load in
+          item.coverImg.onload = () => {
+            this.renderChart()
+          }
+        }
+      }
+    },
     renderChart () {
       // The image will be stored in localStorage as an empty object :(
       // This fills it back in as an img element if that happens.
@@ -89,6 +97,8 @@ export default defineComponent({
         }
         this.chart.background.img = bgImg
       }
+
+      this.oxidizeImages(this.chart)
 
       generateChart(
         this.canvas,
