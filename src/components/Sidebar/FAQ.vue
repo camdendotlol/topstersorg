@@ -1,0 +1,45 @@
+<template>
+  <div id="faq">
+    <div class="container">
+      <h2>Why did you pick the name "Ostrakon"?</h2>
+      <p>It took me two weeks to come up with a name. Eventually, I came across the ancient Greek word for a piece of pottery that you draw on. It doesn't fit very well but it's all I could think of and now I'm stuck with the domain name for two years. Imagine the ancient Greeks making their topsters on pottery!</p>
+      <h2>Why did you make this site?</h2>
+      <p>I wanted to add a project to my portfolio, and a topster site was one of several ideas I kicked around for a while. I finally got around to it one night. Just a couple hours after I sat down to start coding, the creator of another well-known topster site added a link to a sketchy website, which made a lot of people start looking for an alternative. That coincidence certainly pushed me to commit to finishing Ostrakon, but it was only a coincidence. My decision to create Ostrakon was personal interest and not a response to anything.</p>
+      <h2>Why is book searching slow, why does it sometimes not work, why is it missing a book, etc.?</h2>
+      <p>I'm using OpenLibrary, which is affiliated with the Internet Archive and runs on donations. The music and games APIs are both from companies that can afford top-tier reliability. But OpenLibrary is a bit less reliable. Don't judge them too much for it, and maybe <a href="https://archive.org/donate/?platform=ol&origin=olwww-TopNavDonateButton">donate to them</a> to help them improve their services.</p>
+      <h2>How can I make my own topster site or similar project?</h2>
+      <p>If you're a developer, you might be interested in the <a href="https://www.npmjs.com/package/topster">JavaScript library I made</a>. Ostrakon uses this to generate charts, and your project can too.</p>
+      <h2>Why doesn't Ostrakon support movies?</h2>
+      <p>I expect to add movie support in the future. I know of a good API but they were having technical issues the day I tried to add them, so I moved on to other features. I'll try again soon.</p>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from '@vue/runtime-core'
+
+export default defineComponent({
+
+})
+</script>
+
+<style scoped>
+#faq {
+  display: flex;
+  background: #72bcd4;
+  margin-top: 0;
+  padding: 0;
+  border-radius: 0 0 5px 5px;
+  text-align: left;
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+}
+
+h2 {
+  font-size: 1.2rem;
+}
+
+</style>

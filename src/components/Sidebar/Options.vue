@@ -229,7 +229,7 @@ h2 {
   display: flex;
   flex-flow: column;
   gap: 10px;
-  background: rgba(161, 161, 255, 0.5);
+  background: #72bcd4;
   border-radius: 0 0 5px 5px;
   margin-top: 0;
 }

@@ -52,7 +52,7 @@ export default defineComponent({
 #searchbox {
   border-radius: 5px;
   color: #e9e9e9;
-  background: rgba(161, 161, 255, 0.5);
+  background: #72bcd4;
 }
 
 #search-body {

@@ -8,7 +8,7 @@
           :class="{ 'active-section-toggle': this.searchDisplayed }"
           @click="this.searchDisplayed = !this.searchDisplayed"
         >
-          <span>Search Box</span>
+          <span>Add Items</span>
           <BIconCaretUpFill v-if="this.searchDisplayed" class="caret" />
           <BIconCaretDownFill v-else class="caret" />
         </button>
@@ -25,6 +25,18 @@
           <BIconCaretDownFill v-else class="caret" />
         </button>
         <Options v-if="this.optionsDisplayed" />
+      </div>
+      <div>
+        <button
+          class="section-toggle"
+          :class="{ 'active-section-toggle': this.faqDisplayed }"
+          @click="this.faqDisplayed = !this.faqDisplayed"
+        >
+          <span>FAQ</span>
+          <BIconCaretUpFill v-if="this.faqDisplayed" class="caret" />
+          <BIconCaretDownFill v-else class="caret" />
+        </button>
+        <FAQ v-if="this.faqDisplayed" />
       </div>
       <div id="credits">
         <p>Data from:</p>
@@ -50,19 +62,22 @@ import SearchBox from './SearchBox/index.vue'
 import Options from './Options.vue'
 import { defineComponent } from '@vue/runtime-core'
 import { BIconCaretDownFill, BIconCaretUpFill } from 'bootstrap-icons-vue'
+import FAQ from './FAQ.vue'
 
 export default defineComponent({
   components: {
     Title,
     SearchBox,
     Options,
+    FAQ,
     BIconCaretDownFill,
     BIconCaretUpFill
   },
   data () {
     return {
-      searchDisplayed: true,
-      optionsDisplayed: true
+      searchDisplayed: false,
+      optionsDisplayed: false,
+      faqDisplayed: false
     }
   }
 })
