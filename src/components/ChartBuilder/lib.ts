@@ -71,7 +71,7 @@ export const insertPlaceholder = (drawingContext: CanvasRenderingContext2D | nul
 
   const chartTitleMargin = chart.title === '' ? 0 : 60
 
-  drawingContext.fillStyle = 'rgba(230, 230, 230)'
+  drawingContext.fillStyle = 'rgb(230, 230, 230)'
   // No need for scaled dimensions here, we're working on the original Canvas.
   drawingContext.fillRect(
     (coords.x * (ITEM_SIZE + chart.gap)) + chart.gap,
