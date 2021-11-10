@@ -3,21 +3,28 @@
     class="add-form"
     @submit.prevent="handleSearch"
   >
-    <div>
-      <input
-        id="searchbox"
-        ref="searchbox"
+    <div class="form-flex">
+      <TypeDropdown
+        :searchType="searchType"
+        @setSearchType="changeSearchType"
       />
-    <button type="submit" class="submit-button">
-      <BIconArrowRepeat class="loading-icon" v-if="loading" />
-      <BIconArrowRight v-else />
-    </button>
+      <div class="searchbox-div">
+        <input
+          id="searchbox"
+          ref="searchbox"
+        />
+        <button type="submit" class="submit-button">
+          <BIconArrowRepeat class="loading-icon" v-if="loading" />
+          <BIconArrowRight v-else />
+        </button>
+      </div>
     </div>
   </form>
 </template>
 
 <script lang="ts">
 import queryOpenLibrary from '../../../api/openlibrary'
+import TypeDropdown from './TypeDropdown.vue'
 import { defineComponent } from '@vue/runtime-core'
 import { BIconArrowRight, BIconArrowRepeat } from 'bootstrap-icons-vue'
 import { SearchTypes } from './index.vue'
@@ -31,6 +38,7 @@ interface FormData {
 
 export default defineComponent({
   components: {
+    TypeDropdown,
     BIconArrowRight,
     BIconArrowRepeat
   },
@@ -38,7 +46,8 @@ export default defineComponent({
     'searchType'
   ],
   emits: [
-    'updateResults'
+    'updateResults',
+    'setSearchType'
   ],
   data (): FormData {
     return {
@@ -47,18 +56,22 @@ export default defineComponent({
     }
   },
   methods: {
-    async handleSearch (event: Event): Promise<unknown[]> {
-      const type = this.searchType
+    changeSearchType (newType: string) {
+      this.$emit('setSearchType', newType)
+    },
+    async handleSearch (): Promise<unknown[] | null> {
+      if (this.loading) {
+        return null
+      }
 
-      // Horrible hack below to make TypeScript happy
-      const query = ((event.target as HTMLFormElement).elements[0] as HTMLInputElement).value
+      const query = (this.$refs.searchbox as HTMLInputElement).value
 
-      switch (type) {
+      switch (this.searchType) {
         case SearchTypes.Books:
         {
           this.loading = true
           const response = await queryOpenLibrary(query)
-          // needs error handling
+          // TODO: needs error handling
           if (response) {
             this.results = response
             this.$emit('updateResults', response)
@@ -99,10 +112,23 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#searchbox {
-  margin-top: 16px;
-  width: 80%;
-  margin: 10px auto;
+.add-form {
+  margin-bottom: 10px;
+}
+
+.searchbox-div {
+  flex-grow: 1;
+}
+
+input {
+  width: 90%;
+}
+
+.form-flex {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  align-items: center;
 }
 
 .submit-button {
@@ -111,8 +137,8 @@ export default defineComponent({
   height: 30px;
   width: 30px;
   background: rgba(50, 50, 50, 0.1);
-  position: relative;
-  right: 40px;
+  margin-left: -36px;
+  top: 1px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -121,11 +147,11 @@ export default defineComponent({
 
 .submit-button:hover {
   cursor: pointer;
-  filter: brightness(0.9);
+  filter: brightness(0.8);
 }
 
 .submit-button svg {
-  transform: scale(150%);
+  transform: scale(120%);
 }
 
 .loading-icon {

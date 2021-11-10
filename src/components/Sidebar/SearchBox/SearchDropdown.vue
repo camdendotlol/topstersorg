@@ -1,43 +1,45 @@
 <template>
-  <ul v-if="resultsType === 'books'">
-    <li
-      v-for="(result, index) in filterBooks(results)"
-      :key="index"
-    >
-      <ResultItem
-        :imageData="{ src: `https://covers.openlibrary.org/b/olid/${result.cover_edition_key}-L.jpg`, alt: result.title }"
-        @click="addToChart(result)"
-        draggable="true"
-        @dragstart="(event) => initDrag(event, result)"
-      />
-    </li>
-  </ul>
-  <ul v-else-if="resultsType === 'music'">
-    <li
-      v-for="(result, index) in filterMusic(results)"
-      :key="index"
-    >
-      <ResultItem
-        :imageData="{ src: result.image[result.image.length - 1]['#text'], alt: result.name }"
-        @click="addToChart(result)"
-        draggable="true"
-      />
-    </li>
-  </ul>
-  <ul v-else-if="resultsType === 'games'">
-    <li
-      v-for="(result, index) in filterGames(results)"
-      :key="index"
-    >
-      <ResultItem
-        :imageData="{ src: result.cover, alt: result.name }"
-        @click="addToChart(result)"
-        draggable="true"
-      />
-    </li>
-  </ul>
-  <div v-else>
-    <p>Search for {{ resultsType }} has not been implemented yet.</p>
+  <div id="results-div">
+    <ul v-if="resultsType === 'books'">
+      <li
+        v-for="(result, index) in filterBooks(results)"
+        :key="index"
+      >
+        <ResultItem
+          :imageData="{ src: `https://covers.openlibrary.org/b/olid/${result.cover_edition_key}-L.jpg`, alt: result.title }"
+          @click="addToChart(result)"
+          draggable="true"
+          @dragstart="(event) => initDrag(event, result)"
+        />
+      </li>
+    </ul>
+    <ul v-else-if="resultsType === 'music'">
+      <li
+        v-for="(result, index) in filterMusic(results)"
+        :key="index"
+      >
+        <ResultItem
+          :imageData="{ src: result.image[result.image.length - 1]['#text'], alt: result.name }"
+          @click="addToChart(result)"
+          draggable="true"
+        />
+      </li>
+    </ul>
+    <ul v-else-if="resultsType === 'games'">
+      <li
+        v-for="(result, index) in filterGames(results)"
+        :key="index"
+      >
+        <ResultItem
+          :imageData="{ src: result.cover, alt: result.name }"
+          @click="addToChart(result)"
+          draggable="true"
+        />
+      </li>
+    </ul>
+    <div v-else>
+      <p>Search for {{ resultsType }} has not been implemented yet.</p>
+    </div>
   </div>
 </template>
 
@@ -106,18 +108,19 @@ export default defineComponent({
 </script>
 
 <style scoped>
+#results-div {
+  max-height: 600px;
+  overflow-y: scroll;
+  background: #00003f;
+}
+
 ul {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   flex-wrap: wrap;
-  overflow-y: scroll;
   padding: 0px;
-  /* TODO: Below is a hack to fix overflow. */
-  /* This component overflows the SearchBox div even though the latter */
-  /* has a set height. Gonna try to look into that at some point. */
-  height: 85%;
 }
 
 li {
@@ -125,7 +128,7 @@ li {
 }
 
 li img {
-  width: 100px;
+  width: 80px;
 }
 
 li img:hover {
@@ -134,7 +137,6 @@ li img:hover {
 
 #empty-results-placeholder {
   display: flex;
-  height: 85%;
   justify-content: center;
   align-items: center;
 }

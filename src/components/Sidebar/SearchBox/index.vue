@@ -1,12 +1,16 @@
 <template>
   <div id="searchbox">
-    <TypeDropdown
-      :searchType="searchType"
-      @setSearchType="setSearchType"
-    />
-    <div id="search-body">
-      <SearchForm :searchType="searchType" @updateResults="updateResults" />
-      <SearchDropdown :results="results" :resultsType="searchType" />
+    <div class="container">
+      <SearchForm
+        :searchType="searchType"
+        @updateResults="updateResults"
+        @setSearchType="setSearchType"
+      />
+      <SearchDropdown
+        v-if="results.length > 0"
+        :results="results"
+        :resultsType="searchType"
+      />
     </div>
   </div>
 </template>
@@ -15,7 +19,6 @@
 import { defineComponent } from '@vue/runtime-core'
 import SearchForm from './SearchForm.vue'
 import SearchDropdown from './SearchDropdown.vue'
-import TypeDropdown from './TypeDropdown.vue'
 
 export enum SearchTypes {
   Music = 'music',
@@ -26,8 +29,7 @@ export enum SearchTypes {
 export default defineComponent({
   components: {
     SearchForm,
-    SearchDropdown,
-    TypeDropdown
+    SearchDropdown
   },
   data () {
     return {
@@ -50,14 +52,12 @@ export default defineComponent({
 
 <style scoped>
 #searchbox {
-  border-radius: 5px;
+  border-radius: 0 0 5px 5px;
   color: #e9e9e9;
   background: #72bcd4;
 }
 
-#search-body {
-  background: #00003f;
-  height: 560px;
-  border-radius: 5px;
+.container {
+  padding: 10px;
 }
 </style>

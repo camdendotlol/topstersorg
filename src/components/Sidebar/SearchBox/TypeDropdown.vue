@@ -9,19 +9,19 @@
           value="music"
           :selected="searchType === 'music'"
         >
-          Music
+          <span>Music</span>
         </option>
         <option
           value="books"
           :selected="searchType === 'books'"
         >
-          Books
+          <span>Books</span>
         </option>
         <option
           value="games"
           :selected="searchType === 'games'"
         >
-          Games
+          <span>Games</span>
         </option>
       </select>
     </div>
@@ -53,5 +53,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
+#search-type-dropdown {
+  display: inline;
+}
 
+#search-type-dropdown * {
+  font-size: 1rem;
+}
 </style>
