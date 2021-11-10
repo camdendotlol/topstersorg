@@ -296,6 +296,8 @@ export default defineComponent({
         itemObject: item
       }
 
+      this.updateCursor(event)
+
       this.renderChart()
 
       // Cover up the original spot since we're moving it
