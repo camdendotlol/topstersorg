@@ -11,6 +11,7 @@
               type="text"
               name="title"
               id="title"
+              ref="title"
               @input="updateTitle"
             >
           </td>
@@ -23,6 +24,7 @@
             <input
               type="checkbox"
               name="display-titles"
+              ref="display-titles"
               id="display-titles"
               @change="changeShowTitles"
             >
@@ -41,6 +43,7 @@
               type="range"
               name="x-axis"
               id="x-axis"
+              ref="x-axis"
               class="dimension-input"
               @input="updateSizeX"
             >
@@ -59,6 +62,7 @@
               type="range"
               name="y-axis"
               id="y-axis"
+              ref="y-axis"
               class="dimension-input"
               @input="updateSizeY"
             >
@@ -72,6 +76,7 @@
             <select
               name="background-type"
               id="background-type"
+              ref="background-type"
               @change="changeBackgroundType"
             >
               <option value="color">Color</option>
@@ -88,6 +93,7 @@
               type="color"
               name="background-color"
               id="background-color"
+              ref="background-color"
               @change="updateColor"
             >
           </td>
@@ -101,6 +107,7 @@
               type="text"
               name="background-image"
               id="background-image"
+              ref="background-image"
               @change="updateBackgroundImage"
             >
           </td>
@@ -117,6 +124,7 @@
               max="150"
               value="0"
               name="gap"
+              ref="gap"
               id="gap"
               @input="updateGap"
             >
@@ -193,22 +201,22 @@ export default defineComponent({
       }
     },
     populateForm (chart: Chart): void {
-      (document.getElementById('display-titles') as HTMLFormElement).checked = chart.showTitles;
+      (this.$refs['display-titles'] as HTMLFormElement).checked = chart.showTitles;
 
-      (document.getElementById('x-axis') as HTMLFormElement).value = chart.size.x;
-      (document.getElementById('y-axis') as HTMLFormElement).value = chart.size.y;
+      (this.$refs['x-axis'] as HTMLFormElement).value = chart.size.x;
+      (this.$refs['y-axis'] as HTMLFormElement).value = chart.size.y;
 
-      (document.getElementById('title') as HTMLFormElement).value = chart.title;
+      (this.$refs.title as HTMLFormElement).value = chart.title;
 
-      (document.getElementById('background-type') as HTMLFormElement).value = chart.background.type
+      (this.$refs['background-type'] as HTMLFormElement).value = chart.background.type
 
       if (chart.background.type === BackgroundTypes.Color) {
-        (document.getElementById('background-color') as HTMLFormElement).value = chart.background.value
+        (this.$refs['background-color'] as HTMLFormElement).value = chart.background.value
       } else if (chart.background.type === BackgroundTypes.Image) {
-        (document.getElementById('background-image') as HTMLFormElement).value = chart.background.value
+        (this.$refs['background-image'] as HTMLFormElement).value = chart.background.value
       }
 
-      (document.getElementById('gap') as HTMLFormElement).value = chart.gap
+      (this.$refs.gap as HTMLFormElement).value = chart.gap
       this.gap = chart.gap
     },
     changeBackgroundType (event: Event): void {

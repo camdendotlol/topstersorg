@@ -1,6 +1,7 @@
 <template>
     <canvas
       id="chart-canvas"
+      ref="chart-canvas"
       @mousemove="updateCursor"
       @mouseleave="resetCursor"
       @mousedown.left="pickUpItem"
@@ -29,7 +30,7 @@ type InteractionEvent = MouseEvent | TouchEvent
 
 export default defineComponent({
   mounted () {
-    const canvas = document.getElementById('chart-canvas')
+    const canvas = this.$refs['chart-canvas']
 
     if (!canvas) {
       throw new Error('Couldn\'t find canvas. Something must have gone wrong with page loading, please refresh.')
@@ -350,7 +351,7 @@ export default defineComponent({
       } {
     return {
       grabbedItem: null,
-      canvas: document.getElementById('chart-canvas') as HTMLCanvasElement,
+      canvas: this.$refs['chart-canvas'] as HTMLCanvasElement,
       // We need to store the most recent touch position because the touchend event doesn't provide coordinates.
       lastTouch: { x: 0, y: 0 }
     }
@@ -362,7 +363,7 @@ export default defineComponent({
   },
   computed: {
     drawingCtx (): CanvasRenderingContext2D | null {
-      const ctx = this.canvas.getContext('2d')
+      const ctx = (this.$refs['chart-canvas'] as HTMLCanvasElement).getContext('2d')
       if (!ctx) {
         return null
       }
