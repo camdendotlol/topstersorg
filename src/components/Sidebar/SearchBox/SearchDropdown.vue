@@ -117,7 +117,7 @@ export default defineComponent({
 ul {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   gap: 6px;
   flex-wrap: wrap;
   padding: 0px;
