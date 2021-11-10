@@ -59,6 +59,7 @@ select {
   padding: 5px;
   font-size: 1rem;
   border-radius: 5px;
+  border: 1px solid #00003f;
   background: #e9e9e9;
 }
 
@@ -112,11 +113,11 @@ select {
 }
 
 input {
-  padding: 10px;
+  padding: 8px;
   font-size: 1rem;
   border: 1px solid #00003f;
   background: #e9e9e9;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 
 @media screen and (max-width: 1000px) {

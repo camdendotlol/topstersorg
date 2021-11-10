@@ -280,10 +280,13 @@ export default defineComponent({
 
 input {
   width: 140px;
-  padding: 8px;
 }
 
 td {
-  padding-bottom: 10px;
+  height: 40px;
+}
+
+tr td:nth-child(1) {
+  text-align: left;
 }
 </style>

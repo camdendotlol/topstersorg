@@ -134,8 +134,8 @@ input {
 .submit-button {
   border-radius: 50%;
   border: none;
-  height: 30px;
-  width: 30px;
+  height: 26px;
+  width: 26px;
   background: rgba(50, 50, 50, 0.1);
   margin-left: -36px;
   display: inline-flex;
