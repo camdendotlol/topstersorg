@@ -1,12 +1,28 @@
 <template>
   <div class="main">
     <div class="sidebar-div">
-      <button type="button" id="mobile-burger-toggle" @click="toggleSidebarDisplay">
-        <BIconGearFill />
-      </button>
-      <div class="sidebar-visiblity-manager" :class="showMobileSidebar ? 'visible-sidebar' : 'invisible-sidebar'">
-        <Sidebar @toggleSidebarDisplay="toggleSidebarDisplay" />
-      </div>
+      <Sidebar />
+    </div>
+    <button type="button" class="toggle-button" id="mobile-search-toggle" @click="toggleMobileSearchDisplay">
+      <BIconPlusLg />
+    </button>
+    <button
+      type="button"
+      class="toggle-button"
+      id="home-button"
+      @click="returnToHomepage"
+      v-if="showMobileOptions || showMobileSearch"
+    >
+      <BIconHouse />
+    </button>
+    <button type="button" class="toggle-button" id="mobile-options-toggle" @click="toggleMobileOptionsDisplay">
+      <BIconGearFill />
+    </button>
+    <div class="mobile-options-visibility-manager" :class="showMobileOptions ? 'visible-mobile-options' : 'invisible-mobile-options'">
+      <MobileOptionsSidebar />
+    </div>
+    <div class="mobile-search-visibility-manager" :class="showMobileSearch ? 'visible-mobile-search' : 'invisible-mobile-search'">
+      <MobileSearchSidebar />
     </div>
     <ChartBuilder />
   </div>
@@ -16,23 +32,39 @@
 import { defineComponent } from 'vue'
 import Sidebar from './components/Sidebar/index.vue'
 import ChartBuilder from './components/ChartBuilder/index.vue'
-import { BIconGearFill } from 'bootstrap-icons-vue'
+import { BIconGearFill, BIconPlusLg, BIconHouse } from 'bootstrap-icons-vue'
+import MobileOptionsSidebar from './components/MobileOptionsSidebar.vue'
+import MobileSearchSidebar from './components/MobileSearchSidebar.vue'
 
 export default defineComponent({
   name: 'Ostrakon',
   components: {
     Sidebar,
+    MobileOptionsSidebar,
+    MobileSearchSidebar,
     ChartBuilder,
-    BIconGearFill
+    BIconGearFill,
+    BIconPlusLg,
+    BIconHouse
   },
   data () {
     return {
-      showMobileSidebar: false
+      showMobileSearch: false,
+      showMobileOptions: false
     }
   },
   methods: {
-    toggleSidebarDisplay () {
-      this.showMobileSidebar = !this.showMobileSidebar
+    toggleMobileSearchDisplay () {
+      this.showMobileOptions = false
+      this.showMobileSearch = !this.showMobileSearch
+    },
+    toggleMobileOptionsDisplay () {
+      this.showMobileSearch = false
+      this.showMobileOptions = !this.showMobileOptions
+    },
+    returnToHomepage () {
+      this.showMobileSearch = false
+      this.showMobileOptions = false
     }
   }
 })
@@ -47,6 +79,7 @@ export default defineComponent({
   color: #00003f;
   overflow-y: hidden;
   text-rendering: optimizeLegibility;
+  box-sizing: border-box;
 }
 
 body {
@@ -77,18 +110,33 @@ select {
   display: none;
 }
 
-#mobile-burger-toggle {
+.toggle-button {
   display: none;
+  border-radius: 50%;
+  border: none;
+  height: 50px;
+  width: 50px;
+}
+
+#mobile-search-toggle {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  border-radius: 50%;
-  border: none;
-  height: 3rem;
-  width: 3rem;
 }
 
-#mobile-burger-toggle svg {
+#mobile-options-toggle {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+}
+
+#home-button {
+  position: fixed;
+  left: calc(50vw - 25px);
+  bottom: 20px;
+}
+
+.toggle-button svg {
   transform: scale(2);
   margin: 0 auto;
   padding: 0;
@@ -96,7 +144,7 @@ select {
   top: 2px;
 }
 
-#mobile-burger-toggle:hover {
+.toggle-button:hover {
   filter: brightness(90%);
   cursor: pointer;
 }
@@ -120,41 +168,73 @@ input {
   border-radius: 5px;
 }
 
+.mobile-options-visibility-manager {
+  display: none;
+}
+
+.mobile-search-visibility-manager {
+  display: none;
+}
+
 @media screen and (max-width: 1000px) {
   .main {
     flex-flow: column;
     overflow-x: hidden;
   }
 
-  #mobile-burger-toggle {
+  .sidebar-div {
+    display: none;
+  }
+
+  .toggle-button {
     display: initial;
     z-index: 1001;
   }
 
-  .sidebar-visiblity-manager {
-    transition: transform 0.2s;
+  .mobile-options-visibility-manager {
+    display: initial;
+    width: 100%;
+    min-height: 100vh;
+    position: absolute;
+    left: -100vw;
+    padding: 0;
+    margin: 0;
+    background: #AAE5CA;
+    transition: 0.2s;
+  }
+
+  .mobile-search-visibility-manager {
+    display: initial;
     width: 100%;
     min-height: 100vh;
     position: absolute;
     right: -100vw;
-    transition: 0.2s;
     padding: 0;
     margin: 0;
     background: #AAE5CA;
+    transition: 0.2s;
   }
 
-  .invisible-sidebar {
+  .visible-mobile-options {
+    display: initial;
+    transform: translateX(100vw);
+    z-index: 1000;
+  }
+
+  .invisible-mobile-options {
     transform: translateX(0vw);
-    opacity: 0;
-    height: 100vh;
     overflow: hidden;
   }
 
-  .visible-sidebar {
+  .visible-mobile-search {
     display: initial;
-    opacity: 1;
     transform: translateX(-100vw);
     z-index: 1000;
+  }
+
+  .invisible-mobile-search {
+    transform: translateX(0vw);
+    overflow: hidden;
   }
 }
 
