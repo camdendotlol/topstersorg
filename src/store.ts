@@ -39,7 +39,7 @@ export const store = createStore<State>({
       state.chart = { ...state.chart, items: [...itemsArray] }
     },
     // For changing the place of a current item
-    insertItem (state: State, payload: { item: ChartItem, oldIndex: number, newIndex: number }) {
+    moveItem (state: State, payload: { item: ChartItem, oldIndex: number, newIndex: number }) {
       const itemsArray = [...state.chart.items]
 
       // Remove the item from its old index

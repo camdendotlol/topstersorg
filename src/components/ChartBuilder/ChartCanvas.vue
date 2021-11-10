@@ -5,7 +5,9 @@
       @mousemove="updateCursor"
       @mouseleave="resetCursor"
       @mousedown.left="pickUpItem"
-      @mouseup.left="dropItem"
+      @mouseup.left="dropCanvasItem"
+      @dragover="allowDragAndDrop"
+      @drop="dropHTMLItem"
       @touchstart="pickUpItem"
       @touchmove="updateCursor"
       @touchend="dropItem"
@@ -21,7 +23,7 @@ import { mapState } from 'vuex'
 import { State } from '../../store'
 import generateChart from 'topster'
 import { BackgroundTypes, Chart, ChartItem, StoredChart } from '@/types'
-import { demoChart, getCanvasInfo, insertPlaceholder, isDroppable, isTouchEvent } from './lib'
+import { demoChart, getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
 import { getScaledDimensions } from 'topster/dist/lib'
 import { getStoredCharts, setStoredCharts } from '@/helpers/localStorage'
 
@@ -59,7 +61,7 @@ export default defineComponent({
         activeChart.data.background.img = bgImg
       }
 
-      this.oxidizeImages(activeChart.data)
+      this.hydrateImages(activeChart.data)
       this.$store.commit('setEntireChart', activeChart.data)
     }
 
@@ -69,11 +71,11 @@ export default defineComponent({
     // Put the image elements into each item and set the onload callback.
     // This is needed when loading a chart from storage, where the
     // HTML image elements are not saved.
-    oxidizeImages (chart: Chart) {
+    hydrateImages (chart: Chart) {
       for (const item of chart.items) {
         // Make sure the item isn't null
         if (item) {
-          if (!item.coverImg.complete) {
+          if (!item.coverImg?.complete) {
             const img = new Image()
             img.src = item.coverURL
             item.coverImg = img
@@ -98,7 +100,7 @@ export default defineComponent({
         this.chart.background.img = bgImg
       }
 
-      this.oxidizeImages(this.chart)
+      this.hydrateImages(this.chart)
 
       generateChart(
         this.canvas,
@@ -147,7 +149,7 @@ export default defineComponent({
 
       setStoredCharts(updatedArray)
     },
-    checkDroppability (event: InteractionEvent) {
+    checkDroppability (event: InteractionEvent | DragEvent) {
       const canvasInfo = getCanvasInfo(this.canvas, this.chart)
 
       const droppable = isDroppable(
@@ -185,6 +187,11 @@ export default defineComponent({
       const touchEvent = isTouchEvent(event)
 
       if (!touchEvent) {
+        const canvasOffset = { x: this.canvas.offsetLeft, y: this.canvas.offsetTop }
+        this.lastMousePosition = {
+          x: (event as MouseEvent).clientX - canvasOffset.x + window.scrollX,
+          y: (event as MouseEvent).clientY - canvasOffset.y + window.scrollY
+        }
         if (isSelectable) {
           document.body.style.cursor = 'pointer'
         } else if (!isSelectable && !this.grabbedItem) {
@@ -307,7 +314,23 @@ export default defineComponent({
       const coords = this.getInteractionCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
       this.drawImageAtMouse(this.grabbedItem.itemObject.coverImg, coords)
     },
-    dropItem (event: InteractionEvent) {
+    dropHTMLItem (event: DragEvent) {
+      const item = event.dataTransfer?.getData('application/json')
+
+      if (!item) {
+        return null
+      }
+
+      this.dropItem(event)
+    },
+    dropCanvasItem (event: InteractionEvent) {
+      if (!this.grabbedItem) {
+        return null
+      }
+
+      this.dropItem(event)
+    },
+    dropItem (event: InteractionEvent | DragEvent) {
       // If the spot doesn't contain a movable item, just put the item back where it came from.
       if (!this.checkDroppability(event)) {
         this.grabbedItem = null
@@ -315,32 +338,43 @@ export default defineComponent({
         return null
       }
 
-      if (!this.grabbedItem) {
-        return null
-      }
-
       const newIndex = this.getItemIndexFromCoords(event)
 
-      if (!this.chart.items[newIndex]) {
-        // If the selected slot is empty, just
-        // 1) move the item there
+      if (isDragAndDropEvent(event)) {
+        const item = JSON.parse(event.dataTransfer?.getData('application/json') || 'null')
+        if (!item) {
+          return null
+        }
         this.$store.commit('addItem', {
-          item: this.grabbedItem.itemObject,
+          item,
           index: newIndex
         })
-        // 2) and remove it from its old spot
-        this.$store.commit('addItem', {
-          item: null,
-          index: this.grabbedItem.originalIndex
-        })
       } else {
-        // If there's an item in the new slot, adjust the array
-        // without deleting anything.
-        this.$store.commit('insertItem', {
-          item: this.grabbedItem.itemObject,
-          oldIndex: this.grabbedItem.originalIndex,
-          newIndex: newIndex
-        })
+        if (!this.grabbedItem) {
+          return null
+        }
+
+        if (!this.chart.items[newIndex]) {
+          // If the selected slot is empty, just
+          // 1) move the item there
+          this.$store.commit('addItem', {
+            item: this.grabbedItem.itemObject,
+            index: newIndex
+          })
+          // 2) and remove it from its old spot
+          this.$store.commit('addItem', {
+            item: null,
+            index: this.grabbedItem.originalIndex
+          })
+        } else {
+          // If there's an item in the new slot, adjust the array
+          // without deleting anything.
+          this.$store.commit('moveItem', {
+            item: this.grabbedItem.itemObject,
+            oldIndex: this.grabbedItem.originalIndex,
+            newIndex: newIndex
+          })
+        }
       }
 
       this.grabbedItem = null
@@ -349,6 +383,9 @@ export default defineComponent({
       this.updateCursor(event)
 
       this.renderChart()
+    },
+    allowDragAndDrop (event: DragEvent) {
+      event.preventDefault()
     }
   },
   data (): {
@@ -359,13 +396,15 @@ export default defineComponent({
           itemObject: ChartItem
         } | null,
       canvas: HTMLCanvasElement,
-      lastTouch: { x: number, y: number }
+      lastTouch: { x: number, y: number },
+      lastMousePosition: { x: number, y: number }
       } {
     return {
       grabbedItem: null,
       canvas: this.$refs['chart-canvas'] as HTMLCanvasElement,
       // We need to store the most recent touch position because the touchend event doesn't provide coordinates.
-      lastTouch: { x: 0, y: 0 }
+      lastTouch: { x: 0, y: 0 },
+      lastMousePosition: { x: 0, y: 0 }
     }
   },
   watch: {

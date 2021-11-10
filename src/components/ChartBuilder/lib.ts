@@ -90,6 +90,14 @@ export const isTouchEvent = (event: MouseEvent | TouchEvent): event is TouchEven
   }
 }
 
+export const isDragAndDropEvent = (event: unknown): event is DragEvent => {
+  if ((event as DragEvent).dataTransfer) {
+    return true
+  } else {
+    return false
+  }
+}
+
 // This is an example chart that will auto-populate when the user visits ostrakon with the #demo hash.
 // Specifically, this URL: https://www.ostrakon.xyz/#demo
 // I made this to quickly show off the site to potential employers.
