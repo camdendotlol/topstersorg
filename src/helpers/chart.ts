@@ -75,7 +75,7 @@ export const createChartItem = (item: Result): ChartItem => {
   }
 }
 
-export const downloadChart = async (chart: Chart, callback: null | (() => void) = null): Promise<void> => {
+export const downloadChart = async (chart: Chart): Promise<void> => {
   // TypeScript doesn't know the navigator.share types yet.
   // So let's just make it stop being annoying.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -103,9 +103,9 @@ export const downloadChart = async (chart: Chart, callback: null | (() => void) 
 
     typescriptAnnoying.share({
       files,
-      title: 'Chart',
+      title: chartData.title ? chartData.title : 'Chart',
       text: 'My topster chart from ostrakon.xyz'
-    }).then(callback ? () => callback() : null)
+    })
   } else {
     saveChart(downloadableChart)
   }

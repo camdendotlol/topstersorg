@@ -36,9 +36,7 @@ export default defineComponent({
     async saveChart () {
       this.loading = true
 
-      await downloadChart(this.chart, () => {
-        this.loading = false
-      })
+      await downloadChart(this.chart)
 
       this.loading = false
     }
