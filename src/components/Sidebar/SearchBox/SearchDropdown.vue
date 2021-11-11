@@ -22,6 +22,7 @@
           :imageData="{ src: result.image[result.image.length - 1]['#text'], alt: result.name }"
           @click="addToChart(result)"
           draggable="true"
+          @dragstart="(event) => initDrag(event, result)"
         />
       </li>
     </ul>
@@ -34,6 +35,7 @@
           :imageData="{ src: result.cover, alt: result.name }"
           @click="addToChart(result)"
           draggable="true"
+          @dragstart="(event) => initDrag(event, result)"
         />
       </li>
     </ul>
