@@ -101,7 +101,7 @@ export const downloadChart = async (chart: Chart): Promise<void> => {
       )
     ]
 
-    await typescriptAnnoying.share({
+    typescriptAnnoying.share({
       files,
       title: 'Chart',
       text: 'My topster chart from ostrakon.xyz'
