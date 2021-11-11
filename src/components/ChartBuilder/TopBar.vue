@@ -16,7 +16,7 @@
     <button
       v-if="!loading"
       class="download-button"
-      @click="downloadChart"
+      @click="saveChart"
     >
       <BIconFileEarmarkArrowDown id="save-icon" />
       Download
