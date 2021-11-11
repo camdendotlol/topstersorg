@@ -18,7 +18,7 @@
         <li>Music and game searches</li>
         <li>CORS proxy requests</li>
       </ul>
-      <p>Music and game searches are routed through the Ostrakon server due to the Last.fm and IGDB API rules. I log these searches to 1) keep an eye out for potential abuse, 2) estimate the number of users the site gets, and 3) make it easier to hunt down bugs. OpenLibrary doesn't require me to route through the server, so book searches never touch my server at  all.</p>
+      <p>Music and game searches are routed through the Ostrakon server due to the Last.fm and IGDB API rules. I log these searches to 1) keep an eye out for potential abuse, 2) estimate the number of users the site gets, and 3) make it easier to hunt down bugs. OpenLibrary doesn't require me to route through the server, so book searches never touch my server at all. Logged searches are anonymous--all I see is "incoming album search: fiona apple".</p>
       <p>Some sites restrict how you can load their images, so Ostrakon proxies through the server if an image fails to load. I log these requests to keep an eye out for abuse.</p>
       <p>In the future, I might also log when someone downloads a chart. There won't be any information other than "someone downloaded a chart". This would make it easier for me to see how many people use the site. But this isn't currently logged.</p>
       <h2>Why is Ostrakon so laggy?</h2>
