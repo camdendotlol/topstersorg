@@ -158,6 +158,7 @@ input {
 svg {
   height: 100%;
   width: 100%;
+  color: black;
 }
 
 .loading-icon {
