@@ -24,6 +24,7 @@
     <div class="mobile-search-visibility-manager" :class="showMobileSearch ? 'visible-mobile-search' : 'invisible-mobile-search'">
       <MobileSearchSidebar />
     </div>
+    <Popup />
     <ChartBuilder />
   </div>
 </template>
@@ -35,6 +36,7 @@ import ChartBuilder from './components/ChartBuilder/index.vue'
 import { BIconGearFill, BIconPlusLg, BIconHouse } from 'bootstrap-icons-vue'
 import MobileOptionsSidebar from './components/MobileOptionsSidebar.vue'
 import MobileSearchSidebar from './components/MobileSearchSidebar.vue'
+import Popup from './components/Popup.vue'
 
 export default defineComponent({
   name: 'Ostrakon',
@@ -43,6 +45,7 @@ export default defineComponent({
     MobileOptionsSidebar,
     MobileSearchSidebar,
     ChartBuilder,
+    Popup,
     BIconGearFill,
     BIconPlusLg,
     BIconHouse
@@ -116,6 +119,7 @@ select {
   border: none;
   height: 50px;
   width: 50px;
+  z-index: 10001;
 }
 
 #mobile-search-toggle {
@@ -188,7 +192,6 @@ input {
 
   .toggle-button {
     display: initial;
-    z-index: 1001;
   }
 
   .mobile-options-visibility-manager {
@@ -218,7 +221,7 @@ input {
   .visible-mobile-options {
     display: initial;
     transform: translateX(100vw);
-    z-index: 1000;
+    z-index: 10000;
   }
 
   .invisible-mobile-options {
@@ -229,7 +232,7 @@ input {
   .visible-mobile-search {
     display: initial;
     transform: translateX(-100vw);
-    z-index: 1000;
+    z-index: 10000;
   }
 
   .invisible-mobile-search {

@@ -3,13 +3,15 @@ import { createStore, useStore as baseUseStore, Store } from 'vuex'
 import { BackgroundTypes, Chart, ChartItem } from './types'
 
 export interface State {
-  chart: Chart
+  chart: Chart,
+  popupText: string | null
 }
 
 // define injection key
 export const key: InjectionKey<Store<State>> = Symbol('store')
 
 export const initialState = {
+  popupText: null,
   chart: {
     title: '',
     items: Array(144).fill(null),
@@ -32,6 +34,9 @@ export const store = createStore<State>({
     return { ...initialState }
   },
   mutations: {
+    setPopup (state: State, text: string | null) {
+      state.popupText = text
+    },
     // For overriding the existing item (e.g. adding to a null slot, or removing an item)
     addItem (state: State, payload: { item: ChartItem | null, index: number }) {
       const itemsArray = state.chart.items

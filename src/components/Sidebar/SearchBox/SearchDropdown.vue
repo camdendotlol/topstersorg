@@ -47,6 +47,7 @@
 import { createChartItem } from '@/helpers/chart'
 import { BookResult, GameResult, MusicResult, Result } from '@/types'
 import { defineComponent } from '@vue/runtime-core'
+import { mapMutations } from 'vuex'
 import ResultItem from './ResultItem.vue'
 
 export default defineComponent({
@@ -59,6 +60,9 @@ export default defineComponent({
     isLoading: Boolean
   },
   methods: {
+    ...mapMutations([
+      'setPopup'
+    ]),
     filterBooks (results: BookResult[]): BookResult[] {
       // remove any without a cover and/or an author
       return results
@@ -92,6 +96,7 @@ export default defineComponent({
       if (firstEmptyIndex < totalSlots) {
         const newItem = createChartItem(item)
         this.$store.commit('addItem', { item: newItem, index: firstEmptyIndex })
+        this.setPopup(`Added ${newItem.title}`)
       }
     },
     initDrag (event: DragEvent, result: Result): void {
