@@ -11,9 +11,19 @@
       <p>If you're a developer, you might be interested in the <a href="https://www.npmjs.com/package/topster">JavaScript library I made</a>. Ostrakon uses this to generate charts, and your project can too.</p>
       <h2>Why doesn't Ostrakon support movies?</h2>
       <p>I expect to add movie support in the future. I know of a good API but they were having technical issues the day I tried to add them, so I moved on to other features. I'll try again soon.</p>
+      <h2>Why is my favorite album/book/game not in the results?</h2>
+      <p>Not everything in the databases has cover art attached. Because charts require cover art, Ostrakon filters out items that are missing it. For example, occasionally a band decides they don't want their cover art to appear in databases anymore, so they file a copyright takedown. You may have seen this happen on other sites such as Rate Your Music. This is very rare but it can affect popular items--as of this writing, all of King Crimson's releases are missing album art on Last.fm and as a result will not appear in Ostrakon's search results.</p>
+      <h2>What data do you log?</h2>
+      <ul>
+        <li>Music and game searches</li>
+        <li>CORS proxy requests</li>
+      </ul>
+      <p>Music and game searches are routed through the Ostrakon server due to the Last.fm and IGDB API rules. I log these searches to 1) keep an eye out for potential abuse, 2) estimate the number of users the site gets, and 3) make it easier to hunt down bugs. OpenLibrary doesn't require me to route through the server, so book searches never touch my server at  all.</p>
+      <p>Some sites restrict how you can load their images, so Ostrakon proxies through the server if an image fails to load. I log these requests to keep an eye out for abuse.</p>
+      <p>In the future, I might also log when someone downloads a chart. There won't be any information other than "someone downloaded a chart". This would make it easier for me to see how many people use the site. But this isn't currently logged.</p>
       <h2>Why is Ostrakon so laggy?</h2>
       <p>This is a Firefox issue :(</p>
-      <p>I wish I could fix it, and there are a few performance optimizations I can make in the future, but the bottom line is that Firefox does a bad job of supporting the browser technology I used to build this site. Chart rendering uses a something called <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas">Canvas</a>, which is a nifty and modern way to render graphics in the browser. But Firefox is really behind on optimizing their version of Canvas, so it gets terrible performance. The feature that slows down Firefox the most is text shadows. If you're on Firefox, you might get more usable performance if you disable the "show titles" option.</p>
+      <p>I wish I could fix it, and there are a few performance optimizations I can make in the future, but the bottom line is that Firefox does a bad job of supporting the browser technology I used to build this site. Chart rendering uses a something called <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas">Canvas</a>, which is a nifty modern way to render graphics in the browser. But Firefox is really behind on optimizing their version of Canvas, so it gets terrible performance. The feature that slows down Firefox the most is text shadows. If you're on Firefox, you might get more usable performance if you disable the "show titles" option.</p>
     </div>
   </div>
 </template>
