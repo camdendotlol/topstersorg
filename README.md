@@ -2,33 +2,11 @@
 
 A website for creating charts with books, music, and games.
 
-![screenshot of the app](/screenshot.jpg)
+![screenshot of the app](/screenshot.png)
 
 ## Roadmap
 
-### Tier one features
-
-- ~~chart generation with Canvas~~
-
-- ~~book data from [OpenLibrary](https://openlibrary.org/developers/api)~~
-
-- ~~add a title to the top of the chart~~
-
-- customize colors for background, shadow, etc
-
-### Tier two features
-
-- ~~album data from LastFM API (requires a backend)~~
-
-- ~~ability to include both books and albums in the same chart~~
-
-- insert custom subheadings into chart
-
-- custom background image
-
-### Tier three featues
-
-- movie data from [TMDB](https://www.themoviedb.org/documentation/api)
+The post-release roadmap is tracked [here](https://github.com/mythmakerseven/ostrakon/issues/4).
 
 ## Project setup
 ```
@@ -54,6 +32,8 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## Portfolio Reflection
+
+(Note: This site is now in production use with real users. I plan to write a post on my blog where I talk about my experience running a site that people actually use. That blog post will eventually replace the below text.)
 
 I just noticed I haven't written one of these for Ostrakon. Oops. Here we go.
 
