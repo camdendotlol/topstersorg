@@ -135,9 +135,11 @@ input {
   border-radius: 50%;
   border: none;
   height: 26px;
+  position: relative;
   width: 26px;
-  background: rgba(50, 50, 50, 0.1);
+  background: #e9e9e9;
   margin-left: -36px;
+  top: 6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -151,6 +153,11 @@ input {
 
 .submit-button svg {
   transform: scale(120%);
+}
+
+svg {
+  height: 100%;
+  width: 100%;
 }
 
 .loading-icon {
