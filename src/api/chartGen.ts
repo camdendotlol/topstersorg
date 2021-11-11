@@ -50,7 +50,7 @@ export const createDownloadableChart = async (data: Chart): Promise<HTMLCanvasEl
 }
 
 // Saves the chart as an image
-export const saveChart = async (chartCanvas: HTMLCanvasElement): Promise<void | null> => {
+export const saveChart = (chartCanvas: HTMLCanvasElement): void => {
   // Download the canvas
   const canvasImgURL = chartCanvas.toDataURL()
   const link = document.createElement('a')
