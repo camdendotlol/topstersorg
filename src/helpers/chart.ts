@@ -103,8 +103,8 @@ export const downloadChart = async (chart: Chart): Promise<void> => {
 
     typescriptAnnoying.share({
       files,
-      title: chartData.title ? chartData.title : 'Chart',
-      text: 'My topster chart from ostrakon.xyz'
+      title: 'Chart',
+      text: chartData.title ? chartData.title : 'My topster from https://ostrakon.xyz'
     })
   } else {
     saveChart(downloadableChart)
