@@ -15,11 +15,11 @@
     >
       <BIconHouse />
     </button>
-    <button
+    <div
       v-if="!showMobileOptions && !showMobileSearch"
     >
       <DownloadButton />
-    </button>
+    </div>
     <button type="button" class="toggle-button" id="mobile-options-toggle" @click="toggleMobileOptionsDisplay">
       <BIconGearFill />
     </button>
