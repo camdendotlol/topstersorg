@@ -15,6 +15,11 @@
     >
       <BIconHouse />
     </button>
+    <button
+      v-if="!showMobileOptions && !showMobileSearch"
+    >
+      <DownloadButton />
+    </button>
     <button type="button" class="toggle-button" id="mobile-options-toggle" @click="toggleMobileOptionsDisplay">
       <BIconGearFill />
     </button>
@@ -37,6 +42,7 @@ import { BIconGearFill, BIconPlusLg, BIconHouse } from 'bootstrap-icons-vue'
 import MobileOptionsSidebar from './components/MobileOptionsSidebar.vue'
 import MobileSearchSidebar from './components/MobileSearchSidebar.vue'
 import Popup from './components/Popup.vue'
+import DownloadButton from './components/buttons/Download.vue'
 
 export default defineComponent({
   name: 'Ostrakon',
@@ -48,7 +54,8 @@ export default defineComponent({
     Popup,
     BIconGearFill,
     BIconPlusLg,
-    BIconHouse
+    BIconHouse,
+    DownloadButton
   },
   data () {
     return {

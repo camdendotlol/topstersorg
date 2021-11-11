@@ -1,5 +1,6 @@
 // Functions for filling in the chart.
 
+import { createDownloadableChart, saveChart } from '@/api/chartGen'
 import { initialState } from '@/store'
 import { Chart, ChartItem, Result } from '@/types'
 import { setStoredCharts } from './localStorage'
@@ -71,5 +72,41 @@ export const createChartItem = (item: Result): ChartItem => {
     }
   } else {
     throw new Error('Invalid chart item')
+  }
+}
+
+export const downloadChart = async (chart: Chart): Promise<void> => {
+  // TypeScript doesn't know the navigator.share types yet.
+  // So let's just make it stop being annoying.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const typescriptAnnoying: any = navigator
+
+  // Clone the chart data so we don't mutate state
+  const chartData = { ...chart }
+  const downloadableChart = await createDownloadableChart(chartData)
+
+  // If on a mobile browser, use the native share functionality.
+  // Otherwise, use the normal download trick.
+  if (typescriptAnnoying.canShare) {
+    const chartFile = await fetch(downloadableChart.toDataURL())
+    const blob = await chartFile.blob()
+    const files = [
+      new File(
+        [blob],
+        'chart.png',
+        {
+          type: 'image/png',
+          lastModified: new Date().getTime()
+        }
+      )
+    ]
+
+    typescriptAnnoying.share({
+      files,
+      title: 'Chart',
+      text: 'My topster chart from ostrakon.xyz'
+    })
+  } else {
+    saveChart(downloadableChart)
   }
 }

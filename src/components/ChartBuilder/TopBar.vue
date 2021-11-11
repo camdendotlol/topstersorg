@@ -34,13 +34,12 @@
 <script lang="ts">
 import { defineComponent } from '@vue/runtime-core'
 import { mapState } from 'vuex'
-import { createDownloadableChart, saveChart } from '../../api/chartGen'
 import { initialState, State } from '../../store'
 import { BIconFileEarmarkArrowDown, BIconArrowRepeat } from 'bootstrap-icons-vue'
 import Switcher from './Switcher.vue'
 import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
 import { StoredChart } from '@/types'
-import { addImgElements, initializeFirstRun } from '@/helpers/chart'
+import { addImgElements, downloadChart, initializeFirstRun } from '@/helpers/chart'
 
 export default defineComponent({
   components: {
@@ -56,43 +55,9 @@ export default defineComponent({
     }
   },
   methods: {
-    async downloadChart () {
-      // TypeScript doesn't know the navigator.share types yet.
-      // So let's just make it stop being annoying.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const typescriptAnnoying: any = navigator
-
+    async saveChart () {
       this.loading = true
-
-      // Clone the chart data so we don't mutate state
-      const chartData = { ...this.chart }
-      const downloadableChart = await createDownloadableChart(chartData)
-
-      // If on a mobile browser, use the native share functionality.
-      // Otherwise, use the normal download trick.
-      if (typescriptAnnoying.canShare) {
-        const chartFile = await fetch(downloadableChart.toDataURL())
-        const blob = await chartFile.blob()
-        const files = [
-          new File(
-            [blob],
-            'chart.png',
-            {
-              type: 'image/png',
-              lastModified: new Date().getTime()
-            }
-          )
-        ]
-
-        typescriptAnnoying.share({
-          files,
-          title: 'Chart',
-          text: 'My topster chart from ostrakon.xyz'
-        }).then(this.loading = false)
-      } else {
-        saveChart(downloadableChart)
-      }
-
+      await downloadChart(this.chart)
       this.loading = false
     },
     startNewChart () {
@@ -209,6 +174,10 @@ export default defineComponent({
     width: 100%;
     border-radius: 0;
     left: 0;
+  }
+
+  .download-button {
+    display: none;
   }
 }
 </style>
