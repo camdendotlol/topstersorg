@@ -134,12 +134,13 @@ input {
 .submit-button {
   border-radius: 50%;
   border: none;
-  height: 26px;
+  height: 20px;
+  width: 20px;
   position: relative;
-  width: 26px;
   background: #e9e9e9;
   margin-left: -36px;
-  top: 6px;
+  top: 8px;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -151,13 +152,9 @@ input {
   filter: brightness(0.8);
 }
 
-.submit-button svg {
-  transform: scale(120%);
-}
-
 svg {
-  height: 100%;
-  width: 100%;
+  height: 25px;
+  width: 25px;
   color: black;
 }
 
