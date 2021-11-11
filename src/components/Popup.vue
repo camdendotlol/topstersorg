@@ -18,7 +18,6 @@ export default defineComponent({
   watch: {
     text () {
       // Make sure not to reset the popup when something else has been added.
-      console.log(this.text)
       const oldText = this.text
       setTimeout(() => {
         if (this.text === oldText) {
