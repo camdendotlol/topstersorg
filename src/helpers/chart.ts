@@ -87,7 +87,9 @@ export const downloadChart = async (chart: Chart): Promise<void> => {
 
   // If on a mobile browser, use the native share functionality.
   // Otherwise, use the normal download trick.
-  if (typescriptAnnoying.canShare) {
+  // Also, use normal downloads on Android instead of share feature,
+  // because the Android share menu doesn't allow normal downloads :(
+  if (typescriptAnnoying.canShare && !navigator.userAgent.match(/Android/i)) {
     const chartFile = await fetch(downloadableChart.toDataURL())
     const blob = await chartFile.blob()
     const files = [
