@@ -79,11 +79,10 @@ export default defineComponent({
             const img = new Image()
             img.src = item.coverURL
             item.coverImg = img
-          }
-
-          // make sure they all load in
-          item.coverImg.onload = () => {
-            this.renderChart()
+            // make sure they all load in
+            item.coverImg.onload = () => {
+              this.renderChart()
+            }
           }
         }
       }
