@@ -79,7 +79,7 @@ export const downloadChart = async (chart: Chart): Promise<void> => {
   // TypeScript doesn't know the navigator.share types yet.
   // So let's just make it stop being annoying.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const typescriptAnnoying: any = navigator
+  // const typescriptAnnoying: any = navigator
 
   // Clone the chart data so we don't mutate state
   const chartData = { ...chart }
@@ -89,32 +89,32 @@ export const downloadChart = async (chart: Chart): Promise<void> => {
   // Otherwise, use the normal download trick.
   // Also, use normal downloads on Android instead of share feature,
   // because the Android share menu doesn't allow normal downloads :(
-  if (typescriptAnnoying.canShare &&
-    !navigator.userAgent.match(/Android/i) &&
-    !navigator.userAgent.match(/Microsoft Edge/i)
-  ) {
-    downloadableChart.toBlob((blob: Blob | null) => {
-      if (blob) {
-        const files = [
-          new File(
-            [blob],
-            'chart.png',
-            {
-              type: 'image/png',
-              lastModified: new Date().getTime()
-            }
-          )
-        ]
+  // if (typescriptAnnoying.canShare &&
+  //   !navigator.userAgent.match(/Android/i) &&
+  //   !navigator.userAgent.match(/Microsoft Edge/i)
+  // ) {
+  //   downloadableChart.toBlob((blob: Blob | null) => {
+  //     if (blob) {
+  //       const files = [
+  //         new File(
+  //           [blob],
+  //           'chart.png',
+  //           {
+  //             type: 'image/png',
+  //             lastModified: new Date().getTime()
+  //           }
+  //         )
+  //       ]
 
-        typescriptAnnoying.share({
-          files,
-          title: 'Chart',
-          text: chartData.title ? chartData.title : 'My topster from https://ostrakon.xyz'
-        })
-      }
-    })
-  } else {
-    const chartURL = downloadableChart.toDataURL()
-    saveChart(chartURL)
-  }
+  //       typescriptAnnoying.share({
+  //         files,
+  //         title: 'Chart',
+  //         text: chartData.title ? chartData.title : 'My topster from https://ostrakon.xyz'
+  //       })
+  //     }
+  //   })
+  // } else {
+  const chartURL = downloadableChart.toDataURL()
+  saveChart(chartURL)
+  // }
 }
