@@ -93,25 +93,28 @@ export const downloadChart = async (chart: Chart): Promise<void> => {
     !navigator.userAgent.match(/Android/i) &&
     !navigator.userAgent.match(/Microsoft Edge/i)
   ) {
-    const chartFile = await fetch(downloadableChart.toDataURL())
-    const blob = await chartFile.blob()
-    const files = [
-      new File(
-        [blob],
-        'chart.png',
-        {
-          type: 'image/png',
-          lastModified: new Date().getTime()
-        }
-      )
-    ]
+    downloadableChart.toBlob((blob: Blob | null) => {
+      if (blob) {
+        const files = [
+          new File(
+            [blob],
+            'chart.png',
+            {
+              type: 'image/png',
+              lastModified: new Date().getTime()
+            }
+          )
+        ]
 
-    typescriptAnnoying.share({
-      files,
-      title: 'Chart',
-      text: chartData.title ? chartData.title : 'My topster from https://ostrakon.xyz'
+        typescriptAnnoying.share({
+          files,
+          title: 'Chart',
+          text: chartData.title ? chartData.title : 'My topster from https://ostrakon.xyz'
+        })
+      }
     })
   } else {
-    saveChart(downloadableChart)
+    const chartURL = downloadableChart.toDataURL()
+    saveChart(chartURL)
   }
 }
