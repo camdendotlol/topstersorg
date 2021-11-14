@@ -75,7 +75,8 @@ export default defineComponent({
       for (const item of chart.items) {
         // Make sure the item isn't null
         if (item) {
-          if (!item.coverImg?.complete) {
+          // Images from storage will be empty objects
+          if (!item.coverImg.addEventListener) {
             const img = new Image()
             img.src = item.coverURL
             item.coverImg = img
