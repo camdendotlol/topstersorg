@@ -71,8 +71,10 @@ export default defineComponent({
     // Put the image elements into each item and set the onload callback.
     // This is needed when loading a chart from storage, where the
     // HTML image elements are not saved.
-    hydrateImages (chart: Chart) {
-      for (const item of chart.items) {
+    async hydrateImages (chart: Chart) {
+      // We only need to load visible items.
+      const itemsToLoad = chart.items.slice(0, chart.size.x * chart.size.y)
+      for (const item of itemsToLoad) {
         // Make sure the item isn't null
         if (item) {
           // Images from storage will be empty objects
