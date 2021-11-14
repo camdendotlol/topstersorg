@@ -72,22 +72,34 @@ export default defineComponent({
     // This is needed when loading a chart from storage, where the
     // HTML image elements are not saved.
     async hydrateImages (chart: Chart) {
+      // Keep track of whether all images have loaded.
+      // We can ignore requests to hydrate when they're all loaded in.
+      // Then at the bottom of this function, we call a final chart render
+      // to make sure the finished images are rendered on the canvas.
+      if (!this.imagesStillLoading) {
+        return null
+      }
+
       // We only need to load visible items.
-      const itemsToLoad = chart.items.slice(0, chart.size.x * chart.size.y)
+      const itemsToLoad = chart.items.slice(0, chart.size.x * chart.size.y).filter(item => item !== null) as ChartItem[]
+
       for (const item of itemsToLoad) {
-        // Make sure the item isn't null
-        if (item) {
-          // Images from storage will be empty objects
-          if (!item.coverImg.addEventListener) {
-            const img = new Image()
-            img.src = item.coverURL
-            item.coverImg = img
-            // make sure they all load in
-            item.coverImg.onload = () => {
-              this.renderChart()
-            }
+        // Images from storage will be empty objects
+        if (!item.coverImg.addEventListener) {
+          const img = new Image()
+          img.src = item.coverURL
+          item.coverImg = img
+          // make sure they all load in
+          item.coverImg.onload = () => {
+            this.renderChart()
           }
         }
+      }
+
+      const allImagesLoaded = itemsToLoad.filter(item => item?.coverImg.complete).length === itemsToLoad.length
+      if (allImagesLoaded) {
+        this.imagesStillLoading = false
+        this.renderChart()
       }
     },
     renderChart () {
@@ -399,18 +411,21 @@ export default defineComponent({
         } | null,
       canvas: HTMLCanvasElement,
       lastTouch: { x: number, y: number },
-      lastMousePosition: { x: number, y: number }
+      lastMousePosition: { x: number, y: number },
+      imagesStillLoading: boolean
       } {
     return {
       grabbedItem: null,
       canvas: this.$refs['chart-canvas'] as HTMLCanvasElement,
       // We need to store the most recent touch position because the touchend event doesn't provide coordinates.
       lastTouch: { x: 0, y: 0 },
-      lastMousePosition: { x: 0, y: 0 }
+      lastMousePosition: { x: 0, y: 0 },
+      imagesStillLoading: true
     }
   },
   watch: {
     chart () {
+      this.imagesStillLoading = true
       this.renderChart()
     }
   },
