@@ -4,7 +4,7 @@ import { createDownloadableChart, saveChart } from '@/api/chartGen'
 import { initialState } from '@/store'
 import { Chart, ChartItem, Result } from '@/types'
 import { setStoredCharts } from './localStorage'
-import { isBookResult, isGameResult, isMusicResult } from './typeGuards'
+import { isBookResult, isGameResult, isMovieResult, isMusicResult, isTVResult } from './typeGuards'
 
 // Add the proper <img> elements into the chart state.
 // This is needed when loading a saved chart from localstorage.
@@ -69,6 +69,18 @@ export const createChartItem = (item: Result): ChartItem => {
       title: item.name,
       coverImg: setImage(item.cover),
       coverURL: item.cover
+    }
+  } else if (isMovieResult(item)) {
+    return {
+      title: item.title,
+      coverImg: setImage(`https://image.tmdb.org/t/p/w185/${item.poster_path}`),
+      coverURL: `https://image.tmdb.org/t/p/w185/${item.poster_path}`
+    }
+  } else if (isTVResult(item)) {
+    return {
+      title: item.name,
+      coverImg: setImage(`https://image.tmdb.org/t/p/w185/${item.poster_path}`),
+      coverURL: `https://image.tmdb.org/t/p/w185/${item.poster_path}`
     }
   } else {
     throw new Error('Invalid chart item')

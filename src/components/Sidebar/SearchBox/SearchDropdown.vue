@@ -39,6 +39,32 @@
         />
       </li>
     </ul>
+    <ul v-else-if="resultsType === 'movies'">
+      <li
+        v-for="(result, index) in filterMoviesOrTV(results)"
+        :key="index"
+      >
+        <ResultItem
+          :imageData="{ src: `https://image.tmdb.org/t/p/w185/${result.poster_path}`, alt: result.name }"
+          @click="addToChart(result)"
+          draggable="true"
+          @dragstart="(event) => initDrag(event, result)"
+        />
+      </li>
+    </ul>
+    <ul v-else-if="resultsType === 'tv'">
+      <li
+        v-for="(result, index) in filterMoviesOrTV(results)"
+        :key="index"
+      >
+        <ResultItem
+          :imageData="{ src: `https://image.tmdb.org/t/p/w185/${result.poster_path}`, alt: result.name }"
+          @click="addToChart(result)"
+          draggable="true"
+          @dragstart="(event) => initDrag(event, result)"
+        />
+      </li>
+    </ul>
     <div v-else>
       <p>Search for {{ resultsType }} has not been implemented yet.</p>
     </div>
@@ -47,7 +73,7 @@
 
 <script lang="ts">
 import { createChartItem } from '@/helpers/chart'
-import { BookResult, GameResult, MusicResult, Result } from '@/types'
+import { BookResult, GameResult, MusicResult, Result, MovieResult, TVResult } from '@/types'
 import { defineComponent } from '@vue/runtime-core'
 import { mapMutations } from 'vuex'
 import ResultItem from './ResultItem.vue'
@@ -87,6 +113,9 @@ export default defineComponent({
     filterGames (results: GameResult[]): GameResult[] {
       // remove games without a cover image
       return results.filter(result => result.cover)
+    },
+    filterMoviesOrTV (results: Array<MovieResult | TVResult>): Array<MovieResult | TVResult> {
+      return results.filter(result => result.poster_path)
     },
     addToChart (item: Result): void {
       // Get the index of the first null chart slot

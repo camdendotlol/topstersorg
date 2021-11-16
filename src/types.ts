@@ -64,4 +64,14 @@ export interface GameResult {
   cover: string
 }
 
-export type Result = BookResult | MusicResult | GameResult
+export interface MovieResult {
+  title: string,
+  poster_path: string
+}
+
+export interface TVResult {
+  name: string,
+  poster_path: string
+}
+
+export type Result = BookResult | MusicResult | GameResult | MovieResult | TVResult

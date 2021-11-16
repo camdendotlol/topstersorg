@@ -18,6 +18,18 @@
           <span>Books</span>
         </option>
         <option
+          value="movies"
+          :selected="searchType === 'movies'"
+        >
+          <span>Movies</span>
+        </option>
+        <option
+          value="tv"
+          :selected="searchType === 'tv'"
+        >
+          <span>TV Shows</span>
+        </option>
+        <option
           value="games"
           :selected="searchType === 'games'"
         >
@@ -39,7 +51,7 @@ export default defineComponent({
   },
   mounted () {
     const storedType = localStorage.getItem('activeTab')
-    if (storedType && ['music', 'books', 'games'].includes(storedType)) {
+    if (storedType && ['music', 'books', 'games', 'movies', 'tv'].includes(storedType)) {
       this.$emit('setSearchType', storedType)
     }
   },

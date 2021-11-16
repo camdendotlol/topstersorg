@@ -1,6 +1,5 @@
 import { errorMessages } from './errors'
 
-// TODO: handling for LastFM API fetches
 const queryLastFM = async (query: string): Promise<unknown[]> => {
   if (query === '') {
     return []

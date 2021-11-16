@@ -30,6 +30,7 @@ import { BIconArrowRight, BIconArrowRepeat } from 'bootstrap-icons-vue'
 import { SearchTypes } from './index.vue'
 import queryLastFM from '../../../api/lastfm'
 import queryIGDB from '@/api/igdb'
+import { tmdbMovieSearch, tmdbTVSearch } from '../../../api/tmdb'
 
 interface FormData {
   results: unknown[],
@@ -101,7 +102,28 @@ export default defineComponent({
           this.loading = false
           break
         }
-        // add movies later
+        case SearchTypes.Movies:
+        {
+          this.loading = true
+          const response = await tmdbMovieSearch(query)
+          if (response) {
+            this.results = response
+            this.$emit('updateResults', response)
+          }
+          this.loading = false
+          break
+        }
+        case SearchTypes.TV:
+        {
+          this.loading = true
+          const response = await tmdbTVSearch(query)
+          if (response) {
+            this.results = response
+            this.$emit('updateResults', response)
+          }
+          this.loading = false
+          break
+        }
         default:
           return []
       }

@@ -23,7 +23,9 @@ import SearchDropdown from './SearchDropdown.vue'
 export enum SearchTypes {
   Music = 'music',
   Books = 'books',
-  Games = 'games'
+  Games = 'games',
+  Movies = 'movies',
+  TV = 'tv'
 }
 
 export default defineComponent({
