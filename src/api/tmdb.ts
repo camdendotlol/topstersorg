@@ -1,3 +1,4 @@
+import { encodeQuery } from '@/helpers/search'
 import { MovieResult, TVResult } from '@/types'
 import { errorMessages } from './errors'
 
@@ -26,11 +27,13 @@ export const tmdbMovieSearch = async (query: string): Promise<MovieResult[]> => 
     return []
   }
 
+  const encodedQuery = encodeQuery(query)
+
   let url
   if (process.env.NODE_ENV === 'development') {
-    url = `http://localhost:42069/api/tmdb/search/movie/${query}`
+    url = `http://localhost:42069/api/tmdb/search/movie/${encodedQuery}`
   } else {
-    url = `https://octagon-moon-9u5g9.ondigitalocean.app/api/tmdb/search/movie/${query}`
+    url = `https://octagon-moon-9u5g9.ondigitalocean.app/api/tmdb/search/movie/${encodedQuery}`
   }
 
   return await queryTmdb(url) as MovieResult[]
@@ -41,11 +44,13 @@ export const tmdbTVSearch = async (query: string): Promise<TVResult[]> => {
     return []
   }
 
+  const encodedQuery = encodeQuery(query)
+
   let url
   if (process.env.NODE_ENV === 'development') {
-    url = `http://localhost:42069/api/tmdb/search/tv/${query}`
+    url = `http://localhost:42069/api/tmdb/search/tv/${encodedQuery}`
   } else {
-    url = `https://octagon-moon-9u5g9.ondigitalocean.app/api/tmdb/search/tv/${query}`
+    url = `https://octagon-moon-9u5g9.ondigitalocean.app/api/tmdb/search/tv/${encodedQuery}`
   }
 
   return await queryTmdb(url) as TVResult[]

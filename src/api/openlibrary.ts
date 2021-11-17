@@ -1,3 +1,4 @@
+import { encodeQuery } from '@/helpers/search'
 import { errorMessages } from './errors'
 
 const queryOpenLibrary = async (query: string): Promise<unknown[]> => {
@@ -6,7 +7,9 @@ const queryOpenLibrary = async (query: string): Promise<unknown[]> => {
     return []
   }
 
-  const res = await fetch(`https://openlibrary.org/search.json?q=${query}`)
+  const encodedQuery = encodeQuery(query)
+
+  const res = await fetch(`https://openlibrary.org/search.json?q=${encodedQuery}`)
 
   if (!res) {
     throw new Error(errorMessages.NoConnection)

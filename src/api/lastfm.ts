@@ -1,3 +1,4 @@
+import { encodeQuery } from '@/helpers/search'
 import { errorMessages } from './errors'
 
 const queryLastFM = async (query: string): Promise<unknown[]> => {
@@ -5,11 +6,13 @@ const queryLastFM = async (query: string): Promise<unknown[]> => {
     return []
   }
 
+  const encodedQuery = encodeQuery(query)
+
   let res
   if (process.env.NODE_ENV === 'development') {
-    res = await fetch(`http://localhost:42069/api/lastfm/search/${query}`)
+    res = await fetch(`http://localhost:42069/api/lastfm/search/${encodedQuery}`)
   } else {
-    res = await fetch(`https://octagon-moon-9u5g9.ondigitalocean.app/api/lastfm/search/${query}`)
+    res = await fetch(`https://octagon-moon-9u5g9.ondigitalocean.app/api/lastfm/search/${encodedQuery}`)
   }
 
   if (!res) {
