@@ -50,7 +50,11 @@
           <a href="https://www.igdb.com">
             <img src="/igdb_logo.png" alt="IGDB" id="igdb-logo">
           </a>
+          <a href="https://www.themoviedb.org">
+            <img src="/tmdb.svg" alt="The Movie DB" id="tmdb-logo">
+          </a>
         </div>
+        <p>Ostrakon is not affiliated with or endorsed by any of the above services.</p>
       </div>
     </div>
   </div>
@@ -139,6 +143,10 @@ button span {
 
 #igdb-logo {
   filter: invert(100);
+}
+
+#tmdb-logo {
+  height: 32px;
 }
 
 @media screen and (max-width: 1000px) {
