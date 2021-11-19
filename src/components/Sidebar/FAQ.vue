@@ -9,16 +9,14 @@
       <p>I'm using OpenLibrary, which is affiliated with the Internet Archive and runs on donations. The music and games APIs are both from companies that can afford top-tier reliability. But OpenLibrary is a bit less reliable. Don't judge them too much for it, and maybe <a href="https://archive.org/donate/?platform=ol&origin=olwww-TopNavDonateButton">donate to them</a> to help them improve their services.</p>
       <h2>How can I make my own topster site or similar project?</h2>
       <p>If you're a developer, you might be interested in the <a href="https://www.npmjs.com/package/topster">JavaScript library I made</a>. Ostrakon uses this to generate charts, and your project can too.</p>
-      <h2>Why doesn't Ostrakon support movies?</h2>
-      <p>I expect to add movie support in the future. I know of a good API but they were having technical issues the day I tried to add them, so I moved on to other features. I'll try again soon.</p>
       <h2>Why is my favorite album/book/game not in the results?</h2>
       <p>Not everything in the databases has cover art attached. Because charts require cover art, Ostrakon filters out items that are missing it. For example, occasionally a band decides they don't want their cover art to appear in databases anymore, so they file a copyright takedown. You may have seen this happen on other sites such as Rate Your Music. This is very rare but it can affect popular items--as of this writing, all of King Crimson's releases are missing album art on Last.fm and as a result will not appear in Ostrakon's search results.</p>
       <h2>What data do you log?</h2>
       <ul>
-        <li>Music and game searches</li>
+        <li>Searches (except for books)</li>
         <li>CORS proxy requests</li>
       </ul>
-      <p>Music and game searches are routed through the Ostrakon server due to the Last.fm and IGDB API rules. I log these searches to 1) keep an eye out for potential abuse, 2) estimate the number of users the site gets, and 3) make it easier to hunt down bugs. OpenLibrary doesn't require me to route through the server, so book searches never touch my server at all. Logged searches are anonymous--all I see is "incoming album search: fiona apple".</p>
+      <p>Searches are routed through the Ostrakon server due to the rules of the APIs I'm using. I log these searches to 1) keep an eye out for potential abuse, 2) estimate the number of users the site gets, and 3) make it easier to hunt down bugs. OpenLibrary doesn't require me to route through the server, so book searches never touch my server at all. Logged searches are anonymous--all I see is "incoming album search: fiona apple".</p>
       <p>Some sites restrict how you can load their images, so Ostrakon proxies through the server if an image fails to load. I log these requests to keep an eye out for abuse.</p>
       <p>In the future, I might also log when someone downloads a chart. There won't be any information other than "someone downloaded a chart". This would make it easier for me to see how many people use the site. But this isn't currently logged.</p>
       <h2>Why is Ostrakon so laggy?</h2>
