@@ -25,7 +25,8 @@ export const initialState = {
       img: null
     },
     showTitles: false,
-    gap: 20
+    gap: 20,
+    font: 'Ubuntu Mono'
   }
 }
 
@@ -58,7 +59,7 @@ export const store = createStore<State>({
     changeTitle (state: State, newTitle: string) {
       state.chart = { ...state.chart, title: newTitle }
     },
-    changeColor (state: State, newColor: string) {
+    changeBackgroundColor (state: State, newColor: string) {
       state.chart = {
         ...state.chart,
         background: {
@@ -94,6 +95,12 @@ export const store = createStore<State>({
     },
     changeGap (state: State, newGap: number) {
       state.chart = { ...state.chart, gap: newGap }
+    },
+    changeFont (state: State, newFont: string) {
+      state.chart = { ...state.chart, font: newFont }
+    },
+    changeTextColor (state: State, newColor: string) {
+      state.chart = { ...state.chart, textColor: newColor }
     },
     toggleTitles (state: State, newValue: boolean) {
       state.chart = { ...state.chart, showTitles: newValue }

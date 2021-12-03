@@ -93,8 +93,9 @@
               type="color"
               name="background-color"
               id="background-color"
+              class="color-picker"
               ref="background-color"
-              @change="updateColor"
+              @change="updateBackgroundColor"
             >
           </td>
         </tr>
@@ -130,6 +131,36 @@
             >
           </td>
         </tr>
+        <tr>
+          <td>
+            <label for="font">Font</label>
+          </td>
+          <td class="cell-with-value">
+            <span>{{ font }}</span>
+            <input
+              type="text"
+              name="font"
+              ref="font"
+              id="font"
+              @input="updateFont"
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="text-color">Background color</label>
+          </td>
+          <td>
+            <input
+              type="color"
+              name="text-color"
+              id="text-color"
+              class="color-picker"
+              ref="text-color"
+              @change="updateTextColor"
+            >
+          </td>
+        </tr>
       </table>
     </div>
   </div>
@@ -156,19 +187,21 @@ export default defineComponent({
   methods: {
     ...mapMutations([
       'changeTitle',
-      'changeColor',
+      'changeBackgroundColor',
       'setBackgroundImage',
       'changeSize',
       'changeGap',
+      'changeFont',
+      'changeTextColor',
       'toggleTitles'
     ]),
     updateTitle (event: Event): void {
       const title = (event.target as HTMLFormElement).value
       return this.changeTitle(title)
     },
-    updateColor (event: Event): void {
+    updateBackgroundColor (event: Event): void {
       const color = (event.target as HTMLFormElement).value
-      return this.changeColor(color)
+      return this.changeBackgroundColor(color)
     },
     updateSizeX (event: Event): void {
       const value = parseInt((event.target as HTMLFormElement).value)
@@ -182,6 +215,14 @@ export default defineComponent({
       const value = parseInt((event.target as HTMLFormElement).value)
       this.gap = value
       return this.changeGap(value)
+    },
+    updateFont (event: Event): void {
+      const value = (event.target as HTMLFormElement).value
+      return this.changeFont(value)
+    },
+    updateTextColor (event: Event): void {
+      const value = (event.target as HTMLFormElement).value
+      return this.changeTextColor(value)
     },
     changeShowTitles (event: Event): void {
       const value: boolean = (event.target as HTMLFormElement).checked
@@ -216,7 +257,11 @@ export default defineComponent({
         (this.$refs['background-image'] as HTMLFormElement).value = chart.background.value
       }
 
-      (this.$refs.gap as HTMLFormElement).value = chart.gap
+      (this.$refs.gap as HTMLFormElement).value = chart.gap;
+
+      (this.$refs['text-color'] as HTMLFormElement).value = chart.textColor;
+
+      (this.$refs.font as HTMLFormElement).value = chart.font
       this.gap = chart.gap
     },
     changeBackgroundType (event: Event): void {
@@ -255,7 +300,7 @@ export default defineComponent({
   margin: 10px auto;
 }
 
-#background-color {
+.color-picker {
   height: 30px;
   width: 30px;
   border: none;

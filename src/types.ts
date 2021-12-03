@@ -27,7 +27,9 @@ export interface Chart {
     img: HTMLImageElement | null
   }
   showTitles: boolean,
-  gap: number
+  gap: number,
+  font?: string,
+  textColor?: string
 }
 
 export interface IgdbItem {
