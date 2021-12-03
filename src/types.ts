@@ -29,7 +29,8 @@ export interface Chart {
   showTitles: boolean,
   gap: number,
   font?: string,
-  textColor?: string
+  textColor?: string,
+  shadows?: boolean
 }
 
 export interface IgdbItem {

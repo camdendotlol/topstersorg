@@ -133,10 +133,23 @@
         </tr>
         <tr>
           <td>
+            <label for="display-titles">Show Shadows</label>
+          </td>
+          <td>
+            <input
+              type="checkbox"
+              name="show-shadows"
+              ref="show-shadows"
+              id="show-shadows"
+              @change="changeShowShadows"
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>
             <label for="font">Font</label>
           </td>
           <td class="cell-with-value">
-            <span>{{ font }}</span>
             <input
               type="text"
               name="font"
@@ -148,7 +161,7 @@
         </tr>
         <tr>
           <td>
-            <label for="text-color">Background color</label>
+            <label for="text-color">Text color</label>
           </td>
           <td>
             <input
@@ -193,7 +206,8 @@ export default defineComponent({
       'changeGap',
       'changeFont',
       'changeTextColor',
-      'toggleTitles'
+      'toggleTitles',
+      'toggleShadows'
     ]),
     updateTitle (event: Event): void {
       const title = (event.target as HTMLFormElement).value
@@ -215,6 +229,10 @@ export default defineComponent({
       const value = parseInt((event.target as HTMLFormElement).value)
       this.gap = value
       return this.changeGap(value)
+    },
+    changeShowShadows (event: Event): void {
+      const value = (event.target as HTMLFormElement).checked
+      return this.toggleShadows(value)
     },
     updateFont (event: Event): void {
       const value = (event.target as HTMLFormElement).value
@@ -261,7 +279,10 @@ export default defineComponent({
 
       (this.$refs['text-color'] as HTMLFormElement).value = chart.textColor;
 
+      (this.$refs['show-shadows'] as HTMLFormElement).checked = chart.shadows;
+
       (this.$refs.font as HTMLFormElement).value = chart.font
+
       this.gap = chart.gap
     },
     changeBackgroundType (event: Event): void {

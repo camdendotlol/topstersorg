@@ -26,6 +26,7 @@ import { BackgroundTypes, Chart, ChartItem, StoredChart } from '@/types'
 import { demoChart, getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
 import { getScaledDimensions } from 'topster/dist/lib'
 import { getStoredCharts, setStoredCharts } from '@/helpers/localStorage'
+import updateWithShim from '@/helpers/shim'
 
 // Ostrakon supports drag and drop for both mouse and touch events.
 type InteractionEvent = MouseEvent | TouchEvent
@@ -52,17 +53,18 @@ export default defineComponent({
     const activeChart = savedCharts.find(chart => chart.currentlyActive === true)
 
     if (activeChart) {
-      if (activeChart.data.background.type === BackgroundTypes.Image) {
+      const updatedChart = updateWithShim(activeChart.data)
+      if (updatedChart.background.type === BackgroundTypes.Image) {
         const bgImg = new Image()
-        bgImg.src = activeChart.data.background.value
+        bgImg.src = updatedChart.background.value
         bgImg.onload = () => {
           this.renderChart()
         }
-        activeChart.data.background.img = bgImg
+        updatedChart.background.img = bgImg
       }
 
-      this.hydrateImages(activeChart.data)
-      this.$store.commit('setEntireChart', activeChart.data)
+      this.hydrateImages(updatedChart)
+      this.$store.commit('setEntireChart', updatedChart)
     }
 
     this.renderChart()
