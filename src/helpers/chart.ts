@@ -1,10 +1,11 @@
 // Functions for filling in the chart.
 
-import { createDownloadableChart, saveChart } from '@/api/chartGen'
 import { initialState } from '@/store'
-import { Chart, ChartItem, Result } from '@/types'
+import { Chart, ChartItem, Result, BackgroundTypes } from '@/types'
 import { setStoredCharts } from './localStorage'
 import { isBookResult, isGameResult, isMovieResult, isMusicResult, isTVResult } from './typeGuards'
+import fetchImageURL from '../api/fetchImage'
+import generateChart from 'topster'
 
 // Add the proper <img> elements into the chart state.
 // This is needed when loading a saved chart from localstorage.
@@ -88,45 +89,68 @@ export const createChartItem = (item: Result): ChartItem => {
 }
 
 export const downloadChart = async (chart: Chart): Promise<void> => {
-  // TypeScript doesn't know the navigator.share types yet.
-  // So let's just make it stop being annoying.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // const typescriptAnnoying: any = navigator
-
-  // Clone the chart data so we don't mutate state
   const chartData = { ...chart }
   const downloadableChart = await createDownloadableChart(chartData)
-
-  // If on a mobile browser, use the native share functionality.
-  // Otherwise, use the normal download trick.
-  // Also, use normal downloads on Android instead of share feature,
-  // because the Android share menu doesn't allow normal downloads :(
-  // if (typescriptAnnoying.canShare &&
-  //   !navigator.userAgent.match(/Android/i) &&
-  //   !navigator.userAgent.match(/Microsoft Edge/i)
-  // ) {
-  //   downloadableChart.toBlob((blob: Blob | null) => {
-  //     if (blob) {
-  //       const files = [
-  //         new File(
-  //           [blob],
-  //           'chart.png',
-  //           {
-  //             type: 'image/png',
-  //             lastModified: new Date().getTime()
-  //           }
-  //         )
-  //       ]
-
-  //       typescriptAnnoying.share({
-  //         files,
-  //         title: 'Chart',
-  //         text: chartData.title ? chartData.title : 'My topster from https://ostrakon.xyz'
-  //       })
-  //     }
-  //   })
-  // } else {
   const chartURL = downloadableChart.toDataURL()
-  saveChart(chartURL)
-  // }
+  saveChartImage(chartURL)
+}
+
+// Hacky way to make sure all images are loaded in before saving the chart
+const fillInItems = async (chart: Chart) => {
+  const promises = []
+
+  // Get background image
+  if (chart.background.type === BackgroundTypes.Image) {
+    const bgImgURL = await fetchImageURL(chart.background.value)
+    promises.push(new Promise<void>(resolve => {
+      const bgImg = new Image()
+      bgImg.src = bgImgURL
+      bgImg.onload = () => {
+        resolve()
+      }
+      chart.background.img = bgImg
+    }))
+  }
+
+  const visibleItems = chart.items.slice(0, chart.size.x * chart.size.y)
+
+  // Get chart item images
+  for (const item of visibleItems) {
+    if (item) {
+      const localURL = await fetchImageURL(item.coverURL)
+      promises.push(new Promise<void>(resolve => {
+        item.coverImg.src = localURL
+        item.coverImg.onload = () => {
+          resolve()
+        }
+      }))
+    }
+  }
+
+  await Promise.all(promises)
+
+  return chart
+}
+
+// Create a new canvas to render the final downloadable version.
+// This is needed to avoid CORS issues with third-party images.
+const createDownloadableChart = async (data: Chart): Promise<HTMLCanvasElement> => {
+  const chartCanvas = document.createElement('canvas')
+  const chart = await fillInItems(data)
+
+  // Populate the chart with the items etc.
+  generateChart(chartCanvas, chart)
+
+  return chartCanvas
+}
+
+// Saves the chart as an image
+const saveChartImage = (url: string): void => {
+  // Download the canvas
+  const link = document.createElement('a')
+  link.download = 'chart.png'
+  link.href = url
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
 }
