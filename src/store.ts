@@ -26,7 +26,9 @@ export const initialState = {
     },
     showTitles: false,
     gap: 20,
-    font: 'Ubuntu Mono'
+    font: 'Ubuntu Mono',
+    textColor: '#ffffff',
+    shadows: true
   }
 }
 
