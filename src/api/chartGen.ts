@@ -19,8 +19,10 @@ const fillInItems = async (chart: Chart) => {
     }))
   }
 
+  const visibleItems = chart.items.slice(0, chart.size.x * chart.size.y)
+
   // Get chart item images
-  for (const item of chart.items) {
+  for (const item of visibleItems) {
     if (item) {
       const localURL = await fetchImageURL(item.coverURL)
       promises.push(new Promise<void>(resolve => {
