@@ -6,14 +6,18 @@ export const ping = async (): Promise<void> => {
     url = 'https://octagon-moon-9u5g9.ondigitalocean.app/api/meta/ping'
   }
 
-  await fetch(
-    url,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ referrer: document.referrer })
-    }
-  )
+  try {
+    await fetch(
+      url,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ referrer: document.referrer })
+      }
+    )
+  } catch {
+    console.log('Error pinging the server with metadata.')
+  }
 }
