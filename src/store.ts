@@ -24,11 +24,11 @@ export const initialState = {
       value: '#000000',
       img: null
     },
-    showTitles: false,
+    showTitles: true,
     gap: 20,
     font: 'Ubuntu Mono',
     textColor: '#ffffff',
-    shadows: true
+    shadows: false
   }
 }
 
