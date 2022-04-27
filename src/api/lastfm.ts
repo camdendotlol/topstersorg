@@ -8,12 +8,7 @@ const queryLastFM = async (query: string): Promise<unknown[]> => {
 
   const encodedQuery = encodeQuery(query)
 
-  let res
-  if (process.env.NODE_ENV === 'development') {
-    res = await fetch(`http://localhost:42069/api/lastfm/search/${encodedQuery}`)
-  } else {
-    res = await fetch(`https://octagon-moon-9u5g9.ondigitalocean.app/api/lastfm/search/${encodedQuery}`)
-  }
+  const res = await fetch(`${process.env.VUE_APP_BACKEND_URL}/api/lastfm/search/${encodedQuery}`)
 
   if (!res) {
     throw new Error(errorMessages.NoConnection)

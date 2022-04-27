@@ -9,12 +9,7 @@ const queryIGDB = async (query: string): Promise<IgdbItem[]> => {
 
   const encodedQuery = encodeQuery(query)
 
-  let res
-  if (process.env.NODE_ENV === 'development') {
-    res = await fetch(`http://localhost:42069/api/igdb/search/${encodedQuery}`)
-  } else {
-    res = await fetch(`https://octagon-moon-9u5g9.ondigitalocean.app/api/igdb/search/${encodedQuery}`)
-  }
+  const res = await fetch(`${process.env.VUE_APP_BACKEND_URL}/api/igdb/search/${encodedQuery}`)
 
   if (!res) {
     throw new Error(errorMessages.NoConnection)

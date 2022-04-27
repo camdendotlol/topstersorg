@@ -1,14 +1,7 @@
 export const ping = async (): Promise<void> => {
-  let url
-  if (process.env.NODE_ENV === 'development') {
-    url = 'http://localhost:42069/api/meta/ping'
-  } else {
-    url = 'https://octagon-moon-9u5g9.ondigitalocean.app/api/meta/ping'
-  }
-
   try {
     await fetch(
-      url,
+      `${process.env.VUE_APP_BACKEND_URL}/api/meta/ping`,
       {
         method: 'POST',
         headers: {
