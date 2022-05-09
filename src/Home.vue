@@ -45,7 +45,7 @@ import Popup from './components/Popup.vue'
 import DownloadButton from './components/buttons/Download.vue'
 
 export default defineComponent({
-  name: 'Ostrakon',
+  name: 'Topsters 3',
   components: {
     Sidebar,
     MobileOptionsSidebar,

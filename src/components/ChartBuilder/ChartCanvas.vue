@@ -28,7 +28,7 @@ import { getScaledDimensions } from 'topster/dist/lib'
 import { getStoredCharts, setStoredCharts } from '@/helpers/localStorage'
 import updateWithShim from '@/helpers/shim'
 
-// Ostrakon supports drag and drop for both mouse and touch events.
+// Topsters 3 supports drag and drop for both mouse and touch events.
 type InteractionEvent = MouseEvent | TouchEvent
 
 export default defineComponent({
@@ -42,7 +42,7 @@ export default defineComponent({
     this.canvas = canvas as HTMLCanvasElement
 
     let savedCharts: StoredChart[]
-    // Use the #demo URL hash to show off Ostrakon to potential employers with an auto-populated example chart.
+    // Use the #demo URL hash to show off Topsters 3 to potential employers with an auto-populated example chart.
     if (window.location.hash === '#demo') {
       savedCharts = [demoChart]
     } else {

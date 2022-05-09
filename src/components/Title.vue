@@ -1,5 +1,5 @@
 <template>
-  <h1>ostrakon</h1>
+  <h1>{{ getName() }}</h1>
   <h3>{{ subtitles[Math.floor(Math.random() * subtitles.length)] }}</h3>
 </template>
 
@@ -10,10 +10,19 @@ export default defineComponent({
   data () {
     return {
       subtitles: [
-        'a.k.a. Topsters 3?',
+        'is this Topsters 3?',
         'over 9000 charts served',
         'yet another chart site'
       ]
+    }
+  },
+  methods: {
+    getName () {
+      if (window.location.hostname.includes('ostrakon')) {
+        return 'ostrakon'
+      } else {
+        return 'topsters.org'
+      }
     }
   }
 })

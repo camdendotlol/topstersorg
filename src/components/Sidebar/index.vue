@@ -54,7 +54,7 @@
             <img src="/tmdb.svg" alt="The Movie DB" id="tmdb-logo">
           </a>
         </div>
-        <p>Ostrakon is not affiliated with or endorsed by any of the above services.</p>
+        <p>topsters.org is not affiliated with or endorsed by any of the above services.</p>
       </div>
     </div>
   </div>

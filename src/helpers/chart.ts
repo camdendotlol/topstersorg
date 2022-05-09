@@ -29,7 +29,7 @@ export const addImgElements = (chart: Chart): Chart => {
   }
 }
 
-// To run the first time Ostrakon launches, or when we want to reset everything.
+// To run the first time Topsters.org launches, or when we want to reset everything.
 export const initializeFirstRun = (): void => {
   const newChartArray = [
     {
