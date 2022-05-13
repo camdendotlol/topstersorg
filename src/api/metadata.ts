@@ -7,7 +7,10 @@ export const ping = async (): Promise<void> => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ referrer: document.referrer })
+        body: JSON.stringify({
+          referrer: document.referrer,
+          domain: window.location.hostname
+        })
       }
     )
   } catch {
