@@ -1,4 +1,4 @@
-import { BookResult, GameResult, MovieResult, MusicResult, Result, TVResult } from '@/types'
+import { BookResult, CustomResult, GameResult, MovieResult, MusicResult, Result, TVResult } from '@/types'
 
 export const isBookResult = (item: Result): item is BookResult => {
   if ((item as BookResult).cover_edition_key) {
@@ -34,6 +34,14 @@ export const isMovieResult = (item: Result): item is MovieResult => {
 
 export const isTVResult = (item: Result): item is TVResult => {
   if ((item as TVResult).name && (item as MovieResult).poster_path) {
+    return true
+  } else {
+    return false
+  }
+}
+
+export const isCustomResult = (item: Result): item is CustomResult => {
+  if ((item as CustomResult).type === 'custom') {
     return true
   } else {
     return false

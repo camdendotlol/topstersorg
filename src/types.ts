@@ -77,4 +77,11 @@ export interface TVResult {
   poster_path: string
 }
 
-export type Result = BookResult | MusicResult | GameResult | MovieResult | TVResult
+export interface CustomResult {
+  title: string,
+  creator?: string,
+  imageURL: string,
+  type: 'custom'
+}
+
+export type Result = BookResult | MusicResult | GameResult | MovieResult | TVResult | CustomResult

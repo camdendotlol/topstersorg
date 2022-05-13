@@ -3,7 +3,7 @@
 import { initialState } from '@/store'
 import { Chart, ChartItem, Result, BackgroundTypes } from '@/types'
 import { setStoredCharts } from './localStorage'
-import { isBookResult, isGameResult, isMovieResult, isMusicResult, isTVResult } from './typeGuards'
+import { isBookResult, isCustomResult, isGameResult, isMovieResult, isMusicResult, isTVResult } from './typeGuards'
 import fetchImageURL from '../api/fetchImage'
 import generateChart from 'topster'
 
@@ -82,6 +82,13 @@ export const createChartItem = (item: Result): ChartItem => {
       title: item.name,
       coverImg: setImage(`https://image.tmdb.org/t/p/w185/${item.poster_path}`),
       coverURL: `https://image.tmdb.org/t/p/w185/${item.poster_path}`
+    }
+  } else if (isCustomResult(item)) {
+    return {
+      title: item.title,
+      creator: item.creator,
+      coverImg: setImage(item.imageURL),
+      coverURL: item.imageURL
     }
   } else {
     throw new Error('Invalid chart item')

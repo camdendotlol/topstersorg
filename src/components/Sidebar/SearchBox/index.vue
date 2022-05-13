@@ -25,7 +25,8 @@ export enum SearchTypes {
   Books = 'books',
   Games = 'games',
   Movies = 'movies',
-  TV = 'tv'
+  TV = 'tv',
+  Custom = 'custom'
 }
 
 export default defineComponent({
