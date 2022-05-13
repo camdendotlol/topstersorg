@@ -79,7 +79,7 @@ export default defineComponent({
   },
   data () {
     return {
-      searchDisplayed: false,
+      searchDisplayed: true,
       optionsDisplayed: false,
       faqDisplayed: false
     }
