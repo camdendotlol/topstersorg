@@ -65,6 +65,16 @@
         />
       </li>
     </ul>
+    <ul v-else-if="resultsType === 'custom'">
+      <li>
+        <ResultItem
+          :imageData="{ src: results[0].imageURL, alt: results[0].title }"
+          @click="addToChart(results[0])"
+          draggable="true"
+          @dragstart="(event) => initDrag(event, results[0])"
+        />
+      </li>
+    </ul>
     <div v-else>
       <p>Search for {{ resultsType }} has not been implemented yet.</p>
     </div>

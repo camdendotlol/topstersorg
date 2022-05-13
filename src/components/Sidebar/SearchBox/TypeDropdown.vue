@@ -35,6 +35,11 @@
         >
           <span>Games</span>
         </option>
+        <option
+          value="custom"
+        >
+          <span>Custom</span>
+        </option>
       </select>
     </div>
 </template>
