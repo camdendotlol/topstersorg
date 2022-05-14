@@ -56,7 +56,7 @@ export default defineComponent({
   },
   mounted () {
     const storedType = localStorage.getItem('activeTab')
-    if (storedType && ['music', 'books', 'games', 'movies', 'tv'].includes(storedType)) {
+    if (storedType && ['music', 'books', 'games', 'movies', 'tv', 'custom'].includes(storedType)) {
       this.$emit('setSearchType', storedType)
     }
   },
