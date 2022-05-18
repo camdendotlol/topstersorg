@@ -11,6 +11,7 @@ import { defineComponent } from '@vue/runtime-core'
 import Home from './Home.vue'
 import AnnouncementModal from './components/AnnouncementModal.vue'
 import { ping } from './api/metadata'
+import { redirectUsers } from './helpers/redirect'
 
 export default defineComponent({
   data: () => ({
@@ -26,6 +27,12 @@ export default defineComponent({
     }
   },
   async mounted () {
+    // Redirect new users to topsters.org
+    if (window.location.href.includes('ostrakon.xyz')) {
+      redirectUsers()
+    }
+
+    // Display redirect notice
     if (
       document.referrer.includes('ostrakon.xyz') &&
       window.location.href.includes('topsters.org')

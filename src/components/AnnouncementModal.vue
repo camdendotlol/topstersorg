@@ -20,7 +20,7 @@ export default defineComponent({
   data () {
     return {
       header: 'Ostrakon is now Topsters.org',
-      message: 'This move is still in progress. If you want to access your old charts, you can still visit the old URL. Eventually, your charts will be copied over automatically.'
+      message: 'If you want to access your old charts, you can still visit the old URL. Eventually, your charts will be copied over automatically.'
     }
   },
   emits: ['toggleAnnouncement']
