@@ -37,6 +37,7 @@
         </option>
         <option
           value="custom"
+          :selected="searchType === 'custom'"
         >
           <span>Custom</span>
         </option>
