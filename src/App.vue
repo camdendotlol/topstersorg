@@ -24,6 +24,7 @@ export default defineComponent({
   methods: {
     toggleAnnouncement () {
       this.displayAnnouncement = !this.displayAnnouncement
+      localStorage.setItem('seenAnnouncement', 'true')
     }
   },
   async mounted () {
@@ -35,7 +36,8 @@ export default defineComponent({
     // Display redirect notice
     if (
       document.referrer.includes('ostrakon.xyz') &&
-      window.location.href.includes('topsters.org')
+      window.location.href.includes('topsters.org') &&
+      !localStorage.getItem('seenAnnouncement')
     ) {
       this.displayAnnouncement = true
     }
