@@ -23,7 +23,7 @@ import { mapState } from 'vuex'
 import { State } from '../../store'
 import generateChart from 'topster'
 import { BackgroundTypes, Chart, ChartItem, StoredChart } from '@/types'
-import { demoChart, getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
+import { getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
 import { getScaledDimensions } from 'topster/dist/lib'
 import { getStoredCharts, setStoredCharts } from '@/helpers/localStorage'
 import updateWithShim from '@/helpers/shim'
@@ -41,15 +41,7 @@ export default defineComponent({
 
     this.canvas = canvas as HTMLCanvasElement
 
-    let savedCharts: StoredChart[]
-    // Use the #demo URL hash to show off Topsters 3 to potential employers with an auto-populated example chart.
-    if (window.location.hash === '#demo') {
-      savedCharts = [demoChart]
-    } else {
-      // check for saved chart in local storage
-      savedCharts = getStoredCharts()
-    }
-
+    const savedCharts: StoredChart[] = getStoredCharts()
     const activeChart = savedCharts.find(chart => chart.currentlyActive === true)
 
     if (activeChart) {
