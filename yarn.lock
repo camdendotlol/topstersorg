@@ -9127,10 +9127,10 @@ toposort@^1.0.0:
   resolved "https://registry.yarnpkg.com/toposort/-/toposort-1.0.7.tgz#2e68442d9f64ec720b8cc89e6443ac6caa950029"
   integrity sha1-LmhELZ9k7HILjMieZEOsbKqVACk=
 
-topster@^5.2.1:
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/topster/-/topster-5.2.1.tgz#bcaa699df4698255d82aa22616eb9bf70306a9bf"
-  integrity sha512-oQfa0XURDEK6sLt24FLb0M4HBCD1Auc4NN3oeREveiQKxFqA7xAdGGnAJ16WCLPQwLNEst0zgTbvLXtSrYVorQ==
+topster@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/topster/-/topster-5.3.0.tgz#270b91db73430cfb1281171c2b06a984a1ca3376"
+  integrity sha512-s1NS6d57MHomVRssbmDbnXf8MTm70TVomVdJcDLtJeAVSEeMZxrihWnrC2ACikitWkf8vDmA2T2nZDRvkb3UNQ==
 
 tough-cookie@~2.4.3:
   version "2.4.3"

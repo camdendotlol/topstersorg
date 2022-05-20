@@ -133,6 +133,20 @@
         </tr>
         <tr>
           <td>
+            <label for="display-numbers">Show Numbers</label>
+          </td>
+          <td>
+            <input
+              type="checkbox"
+              name="show-numbers"
+              ref="show-numbers"
+              id="show-numbers"
+              @change="changeShowNumbers"
+            >
+          </td>
+        </tr>
+        <tr>
+          <td>
             <label for="display-titles">Show Shadows</label>
           </td>
           <td>
@@ -207,6 +221,7 @@ export default defineComponent({
       'changeFont',
       'changeTextColor',
       'toggleTitles',
+      'toggleNumbers',
       'toggleShadows'
     ]),
     updateTitle (event: Event): void {
@@ -229,6 +244,10 @@ export default defineComponent({
       const value = parseInt((event.target as HTMLFormElement).value)
       this.gap = value
       return this.changeGap(value)
+    },
+    changeShowNumbers (event: Event): void {
+      const value = (event.target as HTMLFormElement).checked
+      return this.toggleNumbers(value)
     },
     changeShowShadows (event: Event): void {
       const value = (event.target as HTMLFormElement).checked
@@ -279,6 +298,7 @@ export default defineComponent({
 
       (this.$refs['text-color'] as HTMLFormElement).value = chart.textColor;
 
+      (this.$refs['show-numbers'] as HTMLFormElement).checked = chart.showNumbers;
       (this.$refs['show-shadows'] as HTMLFormElement).checked = chart.shadows;
 
       (this.$refs.font as HTMLFormElement).value = chart.font

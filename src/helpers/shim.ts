@@ -11,6 +11,11 @@ const updateWithShim = (chart: Chart): Chart => {
     clone.font = 'Ubuntu Mono'
   }
 
+  if (!Object.prototype.hasOwnProperty.call(clone, 'showNumbers')) {
+    console.log('no number option found! setting to false')
+    clone.showNumbers = false
+  }
+
   if (!Object.prototype.hasOwnProperty.call(clone, 'shadows')) {
     console.log('no shadow option found! setting to true')
     clone.shadows = true

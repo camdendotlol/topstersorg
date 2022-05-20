@@ -25,7 +25,8 @@ export interface Chart {
     type: BackgroundTypes,
     value: string,
     img: HTMLImageElement | null
-  }
+  },
+  showNumbers: boolean,
   showTitles: boolean,
   gap: number,
   font?: string,

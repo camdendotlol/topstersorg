@@ -24,6 +24,7 @@ export const initialState = {
       value: '#000000',
       img: null
     },
+    showNumbers: false,
     showTitles: true,
     gap: 20,
     font: 'Ubuntu Mono',
@@ -106,6 +107,9 @@ export const store = createStore<State>({
     },
     toggleTitles (state: State, newValue: boolean) {
       state.chart = { ...state.chart, showTitles: newValue }
+    },
+    toggleNumbers (state: State, newValue: boolean) {
+      state.chart = { ...state.chart, showNumbers: newValue }
     },
     toggleShadows (state: State, newValue: boolean) {
       state.chart = { ...state.chart, shadows: newValue }
