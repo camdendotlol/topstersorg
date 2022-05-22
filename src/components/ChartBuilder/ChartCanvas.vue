@@ -212,12 +212,22 @@ export default defineComponent({
           x: event.touches[0].clientX,
           y: event.touches[0].clientY
         }
+
+        const coords = this.getInteractionCoords(event, { x: this.canvas.offsetLeft, y: this.canvas.offsetTop })
+        const canvasDimensions = this.canvas.getBoundingClientRect()
+
+        if (
+          coords.x < 0 ||
+          coords.x > canvasDimensions.width ||
+          coords.y < 0 ||
+          coords.y > canvasDimensions.height
+        ) {
+          this.resetCursor(event)
+        }
       }
 
       if (this.grabbedItem) {
-        if (!touchEvent) {
-          document.body.style.cursor = 'grab'
-        }
+        document.body.style.cursor = 'grab'
         // If we don't re-render, the dragged item from the previous frame remains visible and
         // it looks like that old Windows 95 bug with the window movement artifacts.
         this.renderChart()
@@ -228,9 +238,7 @@ export default defineComponent({
       }
     },
     resetCursor (event: InteractionEvent) {
-      if (!isTouchEvent(event)) {
-        document.body.style.cursor = 'default'
-      }
+      document.body.style.cursor = 'default'
 
       if (this.grabbedItem) {
         // Remove the item from the chart.
