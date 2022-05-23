@@ -10,11 +10,13 @@
   "dependencies": {
     "bootstrap-icons-vue": "^0.7.0",
     "core-js": "^3.6.5",
+    "pako": "^2.0.4",
     "topster": "^5.3.0",
     "vue": "^3.0.0",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
+    "@types/pako": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.0",
