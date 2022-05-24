@@ -29,6 +29,18 @@
       <div>
         <button
           class="section-toggle"
+          :class="{ 'active-section-toggle': this.importsDisplayed }"
+          @click="this.importsDisplayed = !this.importsDisplayed"
+        >
+          <span>Imports</span>
+          <BIconCaretUpFill v-if="this.importsDisplayed" class="caret" />
+          <BIconCaretDownFill v-else class="caret" />
+        </button>
+        <Imports v-if="this.importsDisplayed" />
+      </div>
+      <div>
+        <button
+          class="section-toggle"
           :class="{ 'active-section-toggle': this.faqDisplayed }"
           @click="this.faqDisplayed = !this.faqDisplayed"
         >
@@ -64,6 +76,7 @@
 import Title from '../Title.vue'
 import SearchBox from './SearchBox/index.vue'
 import Options from './Options.vue'
+import Imports from './Imports.vue'
 import { defineComponent } from '@vue/runtime-core'
 import { BIconCaretDownFill, BIconCaretUpFill } from 'bootstrap-icons-vue'
 import FAQ from './FAQ.vue'
@@ -73,6 +86,7 @@ export default defineComponent({
     Title,
     SearchBox,
     Options,
+    Imports,
     FAQ,
     BIconCaretDownFill,
     BIconCaretUpFill
@@ -81,6 +95,7 @@ export default defineComponent({
     return {
       searchDisplayed: true,
       optionsDisplayed: false,
+      importsDisplayed: false,
       faqDisplayed: false
     }
   }
