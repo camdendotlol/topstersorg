@@ -11,7 +11,7 @@
         :key="index"
         :selected="chart.currentlyActive ? true : false"
       >
-        {{ chart.name ? chart.name : chart.timestamp }}
+        {{ chart.name ? chart.name : `Untitled (${new Date(chart.timestamp).toUTCString()})` }}
       </option>
     </select>
   </div>
@@ -77,5 +77,7 @@ export default defineComponent({
 </script>
 
 <style>
-
+#chart-switcher {
+  width: 140px;
+}
 </style>
