@@ -215,7 +215,7 @@ input {
   height: 20px;
   width: 20px;
   position: relative;
-  background: #e9e9e9;
+  background: var(--off-white);
   margin-left: -36px;
   top: 8px;
   padding: 0;
@@ -244,7 +244,7 @@ svg {
 
 .custom-form-item {
   margin-top: 10px;
-  color: #00003f;
+  color: var(--dark-blue);
 }
 
 .custom-metadata-form > label {

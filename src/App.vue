@@ -12,6 +12,7 @@ import Home from './Home.vue'
 import AnnouncementModal from './components/AnnouncementModal.vue'
 import { ping } from './api/metadata'
 import { redirectUsers } from './helpers/redirect'
+import './global.css'
 
 export default defineComponent({
   data: () => ({

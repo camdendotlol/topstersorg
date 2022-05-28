@@ -112,7 +112,7 @@ export default defineComponent({
   width: 100%;
   margin: 10px auto 0;
   padding: 8px;
-  background: #00003f;
+  background: var(--dark-blue);
   color: white;
   font-size: 1rem;
   border: none;

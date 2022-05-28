@@ -27,7 +27,7 @@ export default defineComponent({
 <style scoped>
 #faq {
   display: flex;
-  background: #72bcd4;
+  background: var(--blue-bg);
   margin-top: 0;
   padding: 0;
   border-radius: 0 0 5px 5px;

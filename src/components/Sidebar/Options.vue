@@ -333,7 +333,7 @@ export default defineComponent({
 <style scoped>
 #chart-options {
   display: flex;
-  background: #72bcd4;
+  background: var(--blue-bg);
   border-radius: 0 0 5px 5px;
 }
 

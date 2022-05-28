@@ -86,7 +86,7 @@ export default defineComponent({
   font-family: "Ubuntu Mono", monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #00003f;
+  color: var(--dark-blue);
   overflow-y: hidden;
   text-rendering: optimizeLegibility;
   box-sizing: border-box;
@@ -102,8 +102,8 @@ select {
   padding: 5px;
   font-size: 1rem;
   border-radius: 5px;
-  border: 1px solid #00003f;
-  background: #e9e9e9;
+  border: 1px solid var(--dark-blue);
+  background: var(--off-white);
 }
 
 .main {
@@ -166,7 +166,7 @@ select {
   width: 400px;
   flex-shrink: 0;
   overflow-y: scroll;
-  background: #AAE5CA;
+  background: var(--green-bg);
   box-shadow: 2px 0 3px -1px gray;
   text-align: center;
 }
@@ -174,8 +174,8 @@ select {
 input {
   padding: 8px;
   font-size: 1rem;
-  border: 1px solid #00003f;
-  background: #e9e9e9;
+  border: 1px solid var(--dark-blue);
+  background: var(--off-white);
   border-radius: 5px;
 }
 
@@ -209,7 +209,7 @@ input {
     left: -100vw;
     padding: 0;
     margin: 0;
-    background: #AAE5CA;
+    background: var(--green-bg);
     transition: 0.2s;
   }
 
@@ -221,7 +221,7 @@ input {
     right: -100vw;
     padding: 0;
     margin: 0;
-    background: #AAE5CA;
+    background: var(--green-bg);
     transition: 0.2s;
   }
 

@@ -113,7 +113,7 @@ export default defineComponent({
 #top-bar {
   width: calc(100% - 500px);
   height: 40px;
-  background: #AAE5CA;
+  background: var(--green-bg);
   position: absolute;
   display: block;
   top: 0;
@@ -123,7 +123,7 @@ export default defineComponent({
   padding: 0;
   gap: 50px;
   color: white;
-  box-shadow: 0 1px 2px #00003f;
+  box-shadow: 0 1px 2px var(--dark-blue);
 }
 
 .download-button {
@@ -152,7 +152,7 @@ export default defineComponent({
 .switcher-menu {
   width: auto;
   height: 40px;
-  color: #00003f;
+  color: var(--dark-blue);
   text-align: center;
   display: flex;
   justify-content: center;
