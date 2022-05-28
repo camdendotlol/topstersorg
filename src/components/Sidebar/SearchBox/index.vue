@@ -56,8 +56,8 @@ export default defineComponent({
 <style scoped>
 #searchbox {
   border-radius: 0 0 5px 5px;
-  color: #e9e9e9;
-  background: #72bcd4;
+  color: var(--off-white);
+  background: var(--blue-bg);
 }
 
 .container {

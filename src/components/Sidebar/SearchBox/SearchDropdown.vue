@@ -157,7 +157,7 @@ export default defineComponent({
 #results-div {
   max-height: 600px;
   overflow-y: scroll;
-  background: #00003f;
+  background: var(--dark-blue);
 }
 
 ul {

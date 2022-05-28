@@ -460,9 +460,9 @@ export default defineComponent({
   margin-top: 20px;
   padding: 20px;
   border-radius: 50%;
-  border: 2px solid #e9e9e9;
+  border: 2px solid var(--off-white);
   background: transparent;
-  color: #e9e9e9;
+  color: var(--off-white);
   height: 5rem;
   width: 5rem;
   font-size: 0.8rem;
@@ -471,8 +471,8 @@ export default defineComponent({
 
 #save-button:hover {
   cursor: pointer;
-  background: #e9e9e9;
-  color: #00003f;
+  background: var(--off-white);
+  color: var(--dark-blue);
 }
 
 #save-button svg {

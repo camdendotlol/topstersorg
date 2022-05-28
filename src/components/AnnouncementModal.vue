@@ -42,7 +42,7 @@ export default defineComponent({
 
 .announcement-modal {
   position: absolute;
-  background: #AAE5CA;
+  background: var(--green-bg);
   padding: 20px;
   border-radius: 20px;
   max-width: 500px;
