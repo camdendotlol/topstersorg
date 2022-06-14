@@ -14,7 +14,7 @@ Keep in mind that this project started as a personal portfolio project when I ha
 
 ## Roadmap
 
-The post-release roadmap is tracked [here](https://github.com/mythmakerseven/topstersorg/issues/4).
+The post-release roadmap is tracked [here](https://github.com/camdendotlol/topstersorg/issues/4).
 
 ## Project setup
 
