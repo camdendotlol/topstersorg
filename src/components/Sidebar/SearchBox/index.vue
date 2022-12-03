@@ -11,6 +11,12 @@
         :results="results"
         :resultsType="searchType"
       />
+    <p
+      style="color:black"
+      v-if="searchType === 'games'"
+    >
+      Game searches currently seem to be broken. Unfortunately I have a busy weekend but I will look into it as soon as I can.
+    </p>
     </div>
   </div>
 </template>
