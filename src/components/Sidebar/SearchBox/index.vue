@@ -13,9 +13,9 @@
       />
     <p
       style="color:black"
-      v-if="searchType === 'games'"
+      v-if="['games', 'tv', 'movies'].includes(searchType)"
     >
-      Game searches currently seem to be broken. Unfortunately I have a busy weekend but I will look into it as soon as I can.
+      Search results for games, shows, and movies were broken for a few hours on December 3. The fix has been deployed and everything should be up and running again.
     </p>
     </div>
   </div>
