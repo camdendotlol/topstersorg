@@ -11,12 +11,6 @@
         :results="results"
         :resultsType="searchType"
       />
-    <p
-      style="color:black"
-      v-if="['games', 'tv', 'movies'].includes(searchType)"
-    >
-      Search results for games, shows, and movies were broken for a few hours on December 3. The fix has been deployed and everything should be up and running again.
-    </p>
     </div>
   </div>
 </template>
