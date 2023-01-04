@@ -1,4 +1,4 @@
-import { BookResult, CustomResult, GameResult, MovieResult, MusicResult, Result, TVResult } from '@/types'
+import type { BookResult, CustomResult, GameResult, MovieResult, MusicResult, Result, TVResult } from '../types'
 
 export const isBookResult = (item: Result): item is BookResult => {
   if ((item as BookResult).cover_edition_key) {

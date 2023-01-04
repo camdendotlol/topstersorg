@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import Searchbox from './Sidebar/SearchBox/index.vue'
 
 export default defineComponent({

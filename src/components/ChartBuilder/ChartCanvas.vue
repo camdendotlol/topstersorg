@@ -18,15 +18,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import { State } from '../../store'
 import generateChart from 'topster'
-import { BackgroundTypes, Chart, ChartItem, StoredChart } from '@/types'
+import { BackgroundTypes, Chart, ChartItem, StoredChart } from '../../types'
 import { getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
 import { getScaledDimensions } from 'topster/dist/lib'
-import { getStoredCharts, setStoredCharts } from '@/helpers/localStorage'
-import updateWithShim from '@/helpers/shim'
+import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
+import updateWithShim from '../../helpers/shim'
 
 // Topsters 3 supports drag and drop for both mouse and touch events.
 type InteractionEvent = MouseEvent | TouchEvent
@@ -388,7 +388,7 @@ export default defineComponent({
           this.$store.commit('moveItem', {
             item: this.grabbedItem.itemObject,
             oldIndex: this.grabbedItem.originalIndex,
-            newIndex: newIndex
+            newIndex
           })
         }
       }

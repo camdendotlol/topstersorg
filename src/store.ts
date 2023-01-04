@@ -1,7 +1,7 @@
-import { InjectionKey } from 'vue'
+import type { InjectionKey } from 'vue'
 import { createStore, useStore as baseUseStore, Store } from 'vuex'
 import { getStoredCharts, setStoredCharts } from './helpers/localStorage'
-import { BackgroundTypes, Chart, ChartItem } from './types'
+import { BackgroundTypes, type Chart, type ChartItem } from './types'
 
 export interface State {
   chart: Chart,

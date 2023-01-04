@@ -1,6 +1,6 @@
 // This helper library updates old charts to new formats
 
-import { Chart } from '@/types'
+import type { Chart } from '../types'
 
 const updateWithShim = (chart: Chart): Chart => {
   // Avoid mutating the original

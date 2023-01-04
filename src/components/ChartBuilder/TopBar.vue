@@ -32,14 +32,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import { initialState, State } from '../../store'
 import { BIconFileEarmarkArrowDown, BIconArrowRepeat } from 'bootstrap-icons-vue'
 import Switcher from './Switcher.vue'
 import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
-import { StoredChart } from '@/types'
-import { addImgElements, downloadChart, initializeFirstRun } from '@/helpers/chart'
+import { StoredChart } from '../../types'
+import { addImgElements, downloadChart, initializeFirstRun } from '../../helpers/chart'
 
 export default defineComponent({
   components: {

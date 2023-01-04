@@ -82,9 +82,9 @@
 </template>
 
 <script lang="ts">
-import { createChartItem } from '@/helpers/chart'
-import { BookResult, GameResult, MusicResult, Result, MovieResult, TVResult } from '@/types'
-import { defineComponent } from '@vue/runtime-core'
+import { createChartItem } from '../../../helpers/chart'
+import { BookResult, GameResult, MusicResult, Result, MovieResult, TVResult } from '../../../types'
+import { defineComponent } from 'vue'
 import { mapMutations } from 'vuex'
 import ResultItem from './ResultItem.vue'
 

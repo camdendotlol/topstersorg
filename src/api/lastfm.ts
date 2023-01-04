@@ -1,4 +1,4 @@
-import { encodeQuery } from '@/helpers/search'
+import { encodeQuery } from '../helpers/search'
 import { errorMessages } from './errors'
 
 const queryLastFM = async (query: string): Promise<unknown[]> => {
@@ -8,7 +8,7 @@ const queryLastFM = async (query: string): Promise<unknown[]> => {
 
   const encodedQuery = encodeQuery(query)
 
-  const res = await fetch(`${process.env.VUE_APP_BACKEND_URL}/api/lastfm/search/${encodedQuery}`)
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/lastfm/search/${encodedQuery}`)
 
   if (!res) {
     throw new Error(errorMessages.NoConnection)

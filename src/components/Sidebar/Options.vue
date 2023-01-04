@@ -194,10 +194,10 @@
 </template>
 
 <script lang="ts">
-import { getStoredCharts } from '@/helpers/localStorage'
-import { State } from '@/store'
-import { BackgroundTypes, Chart } from '@/types'
-import { defineComponent } from '@vue/runtime-core'
+import { getStoredCharts } from '../../helpers/localStorage'
+import type { State } from '../../store'
+import { BackgroundTypes, Chart } from '../../types'
+import { defineComponent } from 'vue'
 import { mapMutations, mapState } from 'vuex'
 
 export default defineComponent({

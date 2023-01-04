@@ -5,8 +5,8 @@
 </template>
 
 <script lang="ts">
-import { State } from '@/store'
-import { defineComponent } from '@vue/runtime-core'
+import { State } from '../store'
+import { defineComponent } from 'vue'
 import { mapMutations, mapState } from 'vuex'
 
 export default defineComponent({

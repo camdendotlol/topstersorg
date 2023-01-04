@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import Home from './Home.vue'
 import AnnouncementModal from './components/AnnouncementModal.vue'
 import { ping } from './api/metadata'
@@ -47,7 +47,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style>
-
-</style>

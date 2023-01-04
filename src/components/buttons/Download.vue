@@ -16,9 +16,9 @@
 </template>
 
 <script lang="ts">
-import { downloadChart } from '@/helpers/chart'
-import { State } from '@/store'
-import { defineComponent } from '@vue/runtime-core'
+import { downloadChart } from '../../helpers/chart'
+import { State } from '../../store'
+import { defineComponent } from 'vue'
 import { BIconFileEarmarkArrowDown, BIconArrowRepeat } from 'bootstrap-icons-vue'
 import { mapState } from 'vuex'
 

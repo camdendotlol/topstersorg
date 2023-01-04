@@ -18,9 +18,9 @@
 </template>
 
 <script lang='ts'>
-import { getStoredCharts, setStoredCharts } from '@/helpers/localStorage'
-import { StoredChart } from '@/types'
-import { defineComponent } from '@vue/runtime-core'
+import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
+import { StoredChart } from '../../types'
+import { defineComponent } from 'vue'
 import { mapState } from 'vuex'
 import { State } from '../../store'
 import { addImgElements } from '../../helpers/chart'

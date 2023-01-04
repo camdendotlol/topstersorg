@@ -1,4 +1,4 @@
-import { Chart } from '@/types'
+import { Chart } from '../../types'
 
 export interface CanvasInfo {
   scaleRatio: number,

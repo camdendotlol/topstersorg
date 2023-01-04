@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar">
     <div class="sidebar-content">
-      <Title />
+      <PageTitle />
       <div>
         <button
           class="section-toggle"
@@ -73,17 +73,17 @@
 </template>
 
 <script>
-import Title from '../Title.vue'
+import PageTitle from '../PageTitle.vue'
 import SearchBox from './SearchBox/index.vue'
 import Options from './Options.vue'
 import Imports from './Imports.vue'
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { BIconCaretDownFill, BIconCaretUpFill } from 'bootstrap-icons-vue'
 import FAQ from './FAQ.vue'
 
 export default defineComponent({
   components: {
-    Title,
+    PageTitle,
     SearchBox,
     Options,
     Imports,

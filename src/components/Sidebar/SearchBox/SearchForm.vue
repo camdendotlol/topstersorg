@@ -48,13 +48,13 @@
 <script lang="ts">
 import queryOpenLibrary from '../../../api/openlibrary'
 import TypeDropdown from './TypeDropdown.vue'
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { BIconArrowRight, BIconArrowRepeat } from 'bootstrap-icons-vue'
 import { SearchTypes } from './index.vue'
 import queryLastFM from '../../../api/lastfm'
-import queryIGDB from '@/api/igdb'
+import queryIGDB from '../../../api/igdb'
 import { tmdbMovieSearch, tmdbTVSearch } from '../../../api/tmdb'
-import { CustomResult } from '@/types'
+import type { CustomResult } from '../../../types'
 
 interface FormData {
   results: unknown[],

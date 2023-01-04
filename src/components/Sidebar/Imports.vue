@@ -17,9 +17,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
-import { BackgroundTypes, StoredChart, ChartItem } from '@/types'
+import { BackgroundTypes, StoredChart, ChartItem } from '../../types'
 import pako from 'pako'
 
 export default defineComponent({
@@ -122,10 +122,10 @@ export default defineComponent({
               // Create new chart
               const newChart: StoredChart = {
                 timestamp: new Date().getTime(),
-                name: name,
+                name,
                 data: {
                   title: '',
-                  items: items,
+                  items,
                   size: chartSize,
                   background: {
                     type: background.startsWith('#') ? BackgroundTypes.Color : BackgroundTypes.Image,
