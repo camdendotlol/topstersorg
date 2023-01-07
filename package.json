@@ -1,10 +1,8 @@
 {
   "name": "topstersorg",
-  "version": "1.0.0",
   "private": true,
-  "main": "./dist/topstersorg.mjs",
-  "module": "./dist/topstersorg.umd.js",
-  "typings": "./dist_types/main.d.ts",
+  "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
@@ -12,7 +10,6 @@
   },
   "dependencies": {
     "bootstrap-icons-vue": "^1.8.1",
-    "core-js": "^3.26.1",
     "pako": "^2.1.0",
     "topster": "^5.3.0",
     "vue": "^3.2.45",

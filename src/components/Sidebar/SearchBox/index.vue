@@ -19,15 +19,7 @@
 import { defineComponent } from 'vue'
 import SearchForm from './SearchForm.vue'
 import SearchDropdown from './SearchDropdown.vue'
-
-export enum SearchTypes {
-  Music = 'music',
-  Books = 'books',
-  Games = 'games',
-  Movies = 'movies',
-  TV = 'tv',
-  Custom = 'custom'
-}
+import { SearchTypes } from '../../../types'
 
 export default defineComponent({
   components: {
@@ -36,7 +28,7 @@ export default defineComponent({
   },
   data () {
     return {
-      searchType: 'music',
+      searchType: SearchTypes.Music,
       results: []
     }
   },

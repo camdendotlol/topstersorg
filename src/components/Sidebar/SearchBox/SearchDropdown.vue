@@ -1,6 +1,90 @@
+<script setup lang="ts">
+
+import { createChartItem } from '../../../helpers/chart'
+import {
+  BookResult,
+  GameResult,
+  MusicResult,
+  Result,
+  MovieResult,
+  TVResult,
+  SearchTypes
+} from '../../../types'
+import { useStore } from '../../../store'
+import ResultItem from './ResultItem.vue'
+
+interface Props {
+  results: any[],
+  resultsType: SearchTypes,
+  isLoading?: boolean
+}
+
+const props = defineProps<Props>()
+
+const store = useStore()
+
+// remove any without a cover and/or an author
+const filterBooks = (results: BookResult[]): BookResult[] => {
+  return results
+    .filter(result => result.cover_edition_key)
+    .filter(result => result.author_name)
+}
+
+// remove music without a cover image
+const filterMusic = (results: MusicResult[]): MusicResult[] => {
+  return results
+    .filter(result => {
+      let coverFound = false
+      result.image.forEach(image => {
+        if (image['#text'] !== '') {
+          coverFound = true
+        }
+      })
+      return coverFound
+    })
+}
+
+// remove games without a cover image
+const filterGames = (results: GameResult[]): GameResult[] => (
+  results.filter(result => result.cover)
+)
+
+const filterMovies = (results: MovieResult[]): MovieResult[] => (
+  results.filter(result => result.poster_path)
+)
+
+const filterTV = (results: TVResult[]): TVResult[] => (
+  results.filter(result => result.poster_path)
+)
+
+const addToChart = (item: Result): void => {
+  // Get the index of the first null chart slot
+  const firstEmptyIndex = store.state.chart.items.indexOf(null)
+
+  const totalSlots = store.state.chart.size.x * store.state.chart.size.y
+
+  // Only add an item if there's a visible slot
+  if (firstEmptyIndex < totalSlots) {
+    const newItem = createChartItem(item)
+    store.commit('addItem', { item: newItem, index: firstEmptyIndex })
+    store.commit('setPopup', `Added ${newItem.title}`)
+  }
+}
+
+const initDrag = (event: DragEvent, result: Result): void => {
+  const itemString = JSON.stringify(createChartItem(result))
+  // Some null-checking is needed here to satisfy TS
+  if (event.dataTransfer) {
+    // Put the item object into the the payload
+    event.dataTransfer.setData('application/json', itemString)
+  }
+}
+
+</script>
+
 <template>
   <div id="results-div">
-    <ul v-if="resultsType === 'books'">
+    <ul v-if="resultsType === SearchTypes.Books">
       <li
         v-for="(result, index) in filterBooks(results)"
         :key="index"
@@ -13,7 +97,7 @@
         />
       </li>
     </ul>
-    <ul v-else-if="resultsType === 'music'">
+    <ul v-else-if="resultsType === SearchTypes.Music">
       <li
         v-for="(result, index) in filterMusic(results)"
         :key="index"
@@ -26,7 +110,7 @@
         />
       </li>
     </ul>
-    <ul v-else-if="resultsType === 'games'">
+    <ul v-else-if="resultsType === SearchTypes.Games">
       <li
         v-for="(result, index) in filterGames(results)"
         :key="index"
@@ -39,9 +123,22 @@
         />
       </li>
     </ul>
-    <ul v-else-if="resultsType === 'movies'">
+    <ul v-else-if="resultsType === SearchTypes.Movies">
       <li
-        v-for="(result, index) in filterMoviesOrTV(results)"
+        v-for="(result, index) in filterMovies(results)"
+        :key="index"
+      >
+        <ResultItem
+          :imageData="{ src: `https://image.tmdb.org/t/p/w185/${result.poster_path}`, alt: result.title }"
+          @click="addToChart(result)"
+          draggable="true"
+          @dragstart="(event) => initDrag(event, result)"
+        />
+      </li>
+    </ul>
+    <ul v-else-if="resultsType === SearchTypes.TV">
+      <li
+        v-for="(result, index) in filterTV(results)"
         :key="index"
       >
         <ResultItem
@@ -52,20 +149,7 @@
         />
       </li>
     </ul>
-    <ul v-else-if="resultsType === 'tv'">
-      <li
-        v-for="(result, index) in filterMoviesOrTV(results)"
-        :key="index"
-      >
-        <ResultItem
-          :imageData="{ src: `https://image.tmdb.org/t/p/w185/${result.poster_path}`, alt: result.name }"
-          @click="addToChart(result)"
-          draggable="true"
-          @dragstart="(event) => initDrag(event, result)"
-        />
-      </li>
-    </ul>
-    <ul v-else-if="resultsType === 'custom'">
+    <ul v-else-if="resultsType === SearchTypes.Custom">
       <li>
         <ResultItem
           :imageData="{ src: results[0].imageURL, alt: results[0].title }"
@@ -76,82 +160,10 @@
       </li>
     </ul>
     <div v-else>
-      <p>Search for {{ resultsType }} has not been implemented yet.</p>
+      <p>Search for {{ props.resultsType }} has not been implemented yet.</p>
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { createChartItem } from '../../../helpers/chart'
-import { BookResult, GameResult, MusicResult, Result, MovieResult, TVResult } from '../../../types'
-import { defineComponent } from 'vue'
-import { mapMutations } from 'vuex'
-import ResultItem from './ResultItem.vue'
-
-export default defineComponent({
-  components: {
-    ResultItem
-  },
-  props: {
-    results: Array,
-    resultsType: String,
-    isLoading: Boolean
-  },
-  methods: {
-    ...mapMutations([
-      'setPopup'
-    ]),
-    filterBooks (results: BookResult[]): BookResult[] {
-      // remove any without a cover and/or an author
-      return results
-        .filter(result => result.cover_edition_key)
-        .filter(result => result.author_name)
-    },
-    filterMusic (results: MusicResult[]): MusicResult[] {
-      // remove music without a cover image
-      return results
-        .filter(result => {
-          let coverFound = false
-          result.image.forEach(image => {
-            if (image['#text'] !== '') {
-              coverFound = true
-            }
-          })
-          return coverFound
-        })
-    },
-    filterGames (results: GameResult[]): GameResult[] {
-      // remove games without a cover image
-      return results.filter(result => result.cover)
-    },
-    filterMoviesOrTV (results: Array<MovieResult | TVResult>): Array<MovieResult | TVResult> {
-      return results.filter(result => result.poster_path)
-    },
-    addToChart (item: Result): void {
-      // Get the index of the first null chart slot
-      const firstEmptyIndex = this.$store.state.chart.items.indexOf(null)
-
-      const totalSlots = this.$store.state.chart.size.x * this.$store.state.chart.size.y
-
-      // Only add an item if there's a visible slot
-      if (firstEmptyIndex < totalSlots) {
-        const newItem = createChartItem(item)
-        this.$store.commit('addItem', { item: newItem, index: firstEmptyIndex })
-        this.setPopup(`Added ${newItem.title}`)
-      }
-    },
-    initDrag (event: DragEvent, result: Result): void {
-      const itemString = JSON.stringify(createChartItem(result))
-      // Some null-checking is needed here to satisfy TS
-      if (event.dataTransfer) {
-        // Put the item object into the the payload
-        event.dataTransfer.setData('application/json', itemString)
-      }
-    }
-  }
-})
-
-</script>
 
 <style scoped>
 #results-div {

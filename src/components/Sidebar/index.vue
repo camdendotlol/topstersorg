@@ -72,7 +72,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import PageTitle from '../PageTitle.vue'
 import SearchBox from './SearchBox/index.vue'
 import Options from './Options.vue'
