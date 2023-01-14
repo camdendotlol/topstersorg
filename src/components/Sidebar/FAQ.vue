@@ -9,9 +9,6 @@
       <p>If you're a developer, you might be interested in the <a href="https://www.npmjs.com/package/topster">JavaScript library I made</a>. Topsters 3 uses this to generate charts, and your project can too.</p>
       <h2>Why is my favorite album/book/game not in the results?</h2>
       <p>Not everything in the databases has cover art attached. Because charts require cover art, Topsters 3 filters out items that are missing it. For example, occasionally a band decides they don't want their cover art to appear in databases anymore, so they file a copyright takedown. You may have seen this happen on other sites such as Rate Your Music. This is very rare but it can affect popular items--as of this writing, all of King Crimson's releases are missing album art on Last.fm and as a result will not appear in search results.</p>
-      <h2>Why is Topsters.org so laggy?</h2>
-      <p>This is a Firefox issue :(</p>
-      <p>I wish I could fix it, and there are a few performance optimizations I can make in the future, but the bottom line is that Firefox does a bad job of supporting the browser technology I used to build this site. Chart rendering uses a something called <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas">Canvas</a>, which is a nifty modern way to render graphics in the browser. But Firefox is really behind on optimizing their version of Canvas, so it gets terrible performance. The feature that slows down Firefox the most is text shadows. If you're on Firefox, you might get more usable performance if you disable the "show titles" option.</p>
     </div>
   </div>
 </template>
