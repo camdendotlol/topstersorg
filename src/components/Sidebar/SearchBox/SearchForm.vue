@@ -6,7 +6,7 @@ import queryLastFM from '../../../api/lastfm'
 import queryIGDB from '../../../api/igdb'
 import { tmdbMovieSearch, tmdbTVSearch } from '../../../api/tmdb'
 import type { CustomResult, SearchTypes } from '../../../types'
-import { defineEmits, ref, reactive } from 'vue'
+import { ref, reactive } from 'vue'
 
 interface FormData {
   results: unknown[],
