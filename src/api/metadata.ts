@@ -1,7 +1,7 @@
 export const ping = async (): Promise<void> => {
   try {
     await fetch(
-      `${process.env.VUE_APP_BACKEND_URL}/api/meta/ping`,
+      `${import.meta.env.VITE_BACKEND_URL}/api/meta/ping`,
       {
         method: 'POST',
         headers: {

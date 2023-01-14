@@ -1,3 +1,32 @@
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { SearchTypes } from '../../../types'
+
+interface Props {
+  searchType: SearchTypes
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const props = defineProps<Props>()
+
+const emit = defineEmits([
+  'setSearchType'
+])
+
+const changeSearchType = (event: Event) => {
+  const newSearchType = (event.target as HTMLFormElement).value
+  emit('setSearchType', newSearchType)
+}
+
+onMounted(() => {
+  const storedType = localStorage.getItem('activeTab')
+  if (storedType && ['music', 'books', 'games', 'movies', 'tv', 'custom'].includes(storedType)) {
+    emit('setSearchType', storedType)
+  }
+})
+
+</script>
+
 <template>
   <div id="search-type-dropdown">
       <select
@@ -44,31 +73,6 @@
       </select>
     </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
-
-export default defineComponent({
-  emits: [
-    'setSearchType'
-  ],
-  props: {
-    searchType: String
-  },
-  mounted () {
-    const storedType = localStorage.getItem('activeTab')
-    if (storedType && ['music', 'books', 'games', 'movies', 'tv', 'custom'].includes(storedType)) {
-      this.$emit('setSearchType', storedType)
-    }
-  },
-  methods: {
-    changeSearchType (event: Event) {
-      const newSearchType = (event.target as HTMLFormElement).value
-      this.$emit('setSearchType', newSearchType)
-    }
-  }
-})
-</script>
 
 <style scoped>
 #search-type-dropdown {

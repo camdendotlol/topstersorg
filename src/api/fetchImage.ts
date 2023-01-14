@@ -7,7 +7,7 @@ const fetchImageURL = async (url: string): Promise<string> => {
     const directData = await fetch(url)
     blob = await directData.blob()
   } catch (e) {
-    const proxyURL = `${process.env.VUE_APP_BACKEND_URL}/api/proxy`
+    const proxyURL = `${import.meta.env.VITE_BACKEND_URL}/api/proxy`
     const proxyData = await fetch(proxyURL,
       {
         method: 'POST',
@@ -15,7 +15,7 @@ const fetchImageURL = async (url: string): Promise<string> => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          url: url
+          url
         })
       })
 

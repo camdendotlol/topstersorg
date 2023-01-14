@@ -12,10 +12,6 @@ If you want to change something not listed in the issues, open an issue to propo
 
 Keep in mind that this project started as a personal portfolio project when I had very little programming experience. The code isn't very professional and there's a lot of room for improvement. This was also my first, and so far only, Vue project. Feedback and contributions from Vue experts would be greatly appreciated.
 
-## Roadmap
-
-The post-release roadmap is tracked [here](https://github.com/camdendotlol/topstersorg/issues/4).
-
 ## Project setup
 
 This project requires [the Yarn package manager](https://yarnpkg.com), which is easy to set up if you use `npm`.
@@ -27,7 +23,7 @@ yarn install
 
 ### Compiles and hot-reloads for development
 ```
-yarn serve
+yarn dev
 ```
 
 ### Compiles and minifies for production
@@ -36,6 +32,9 @@ yarn build
 ```
 
 ### Lints and fixes files
+
+Please make sure your changes pass the linter before opening a PR.
+
 ```
 yarn lint
 ```

@@ -1,20 +1,13 @@
+<script setup lang="ts">
+import Searchbox from './Sidebar/SearchBox/index.vue'
+</script>
+
 <template>
   <div class="container">
     <h1>Search</h1>
     <Searchbox />
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
-import Searchbox from './Sidebar/SearchBox/index.vue'
-
-export default defineComponent({
-  components: {
-    Searchbox
-  }
-})
-</script>
 
 <style scoped>
 .container {

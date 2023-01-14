@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import ChartCanvas from './ChartCanvas.vue'
+import TopBar from './TopBar.vue'
+</script>
+
 <template>
   <div class="chart-builder">
     <div class="chart-builder-contents">
@@ -6,19 +11,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import ChartCanvas from './ChartCanvas.vue'
-import TopBar from './TopBar.vue'
-
-export default defineComponent({
-  components: {
-    ChartCanvas,
-    TopBar
-  }
-})
-</script>
 
 <style scoped>
 .chart-builder {

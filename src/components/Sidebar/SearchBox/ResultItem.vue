@@ -1,19 +1,18 @@
-<template>
-  <img
-    :src="this.imageData.src"
-    :alt="this.imageData.alt"
-  >
-</template>
+<script setup lang="ts">
+interface Props {
+  imageData: {
+    src: string,
+    alt: string
+  }
+}
 
-<script>
-import { defineComponent } from '@vue/runtime-core'
-export default defineComponent({
-  props: [
-    'imageData'
-  ]
-})
+const props = defineProps<Props>()
+
 </script>
 
-<style>
-
-</style>
+<template>
+  <img
+    :src="props.imageData.src"
+    :alt="props.imageData.alt"
+  >
+</template>

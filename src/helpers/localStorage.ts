@@ -1,6 +1,6 @@
 // Functions for dealing with localStorage
 
-import { StoredChart } from '@/types'
+import type { StoredChart } from '../types'
 
 export const setStoredCharts = (charts: StoredChart[]): void => {
   localStorage.setItem('charts', JSON.stringify(charts))

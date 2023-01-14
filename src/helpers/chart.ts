@@ -1,7 +1,7 @@
 // Functions for filling in the chart.
 
-import { initialState } from '@/store'
-import { Chart, ChartItem, Result, BackgroundTypes } from '@/types'
+import { initialState } from '../store'
+import { type Chart, type ChartItem, type Result, BackgroundTypes } from '../types'
 import { setStoredCharts } from './localStorage'
 import { isBookResult, isCustomResult, isGameResult, isMovieResult, isMusicResult, isTVResult } from './typeGuards'
 import fetchImageURL from '../api/fetchImage'

@@ -1,4 +1,4 @@
-import { encodeQuery } from '@/helpers/search'
+import { encodeQuery } from '../helpers/search'
 import { errorMessages } from './errors'
 
 const queryOpenLibrary = async (query: string): Promise<unknown[]> => {

@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-
 export interface ChartItem {
   title: string,
   creator?: string,
@@ -83,6 +81,15 @@ export interface CustomResult {
   creator?: string,
   imageURL: string,
   type: 'custom'
+}
+
+export enum SearchTypes {
+  Music = 'music',
+  Books = 'books',
+  Games = 'games',
+  Movies = 'movies',
+  TV = 'tv',
+  Custom = 'custom'
 }
 
 export type Result = BookResult | MusicResult | GameResult | MovieResult | TVResult | CustomResult

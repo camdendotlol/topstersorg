@@ -1,3 +1,71 @@
+<script setup lang="ts">
+import { Ref, ref } from 'vue'
+import { initialState, useStore } from '../../store'
+import { BIconFileEarmarkArrowDown, BIconArrowRepeat } from 'bootstrap-icons-vue'
+import Switcher from './Switcher.vue'
+import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
+import { StoredChart } from '../../types'
+import { addImgElements, downloadChart, initializeFirstRun } from '../../helpers/chart'
+
+const store = useStore()
+
+// Keep track of loading so the user knows why it's taking a while.
+// Also, we can prevent the user from spamming the button to generate multiple requests.
+const loading: Ref<boolean> = ref(false)
+
+const saveChart = async () => {
+  loading.value = true
+  await downloadChart(store.state.chart)
+  loading.value = false
+}
+
+const startNewChart = () => {
+  const storedCharts = getStoredCharts()
+
+  const newStoredChartsArray = storedCharts.map(chart => chart.currentlyActive ? { ...chart, currentlyActive: false } : chart)
+
+  const newChart: StoredChart = {
+    timestamp: new Date().getTime(),
+    name: null,
+    data: initialState.chart,
+    currentlyActive: true
+  }
+
+  setStoredCharts([...newStoredChartsArray, newChart])
+
+  store.commit('reset')
+}
+
+const deleteChart = () => {
+  const storedCharts = getStoredCharts()
+
+  const warningPopup = confirm('Are you sure you want to delete this chart? There\'s no way to recover it!')
+
+  if (warningPopup === false) {
+    return null
+  }
+
+  setStoredCharts(storedCharts.filter(chart => chart.currentlyActive === false))
+
+  const newStoredCharts = getStoredCharts()
+
+  if (newStoredCharts.length < 1) {
+    // We've just deleted the only saved chart, so let's re-initialize.
+    initializeFirstRun()
+    store.commit('reset')
+  } else {
+    const newActiveChartIndex = newStoredCharts.length - 1
+    // Fall back to the most recent chart in the array.
+    newStoredCharts[newActiveChartIndex].currentlyActive = true
+    setStoredCharts(newStoredCharts)
+
+    addImgElements(newStoredCharts[newActiveChartIndex].data)
+    store.commit('setEntireChart', newStoredCharts[newActiveChartIndex].data)
+  }
+}
+
+</script>
+
 <template>
   <div id="top-bar">
     <div class="switcher-menu">
@@ -30,84 +98,6 @@
     </button>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
-import { mapState } from 'vuex'
-import { initialState, State } from '../../store'
-import { BIconFileEarmarkArrowDown, BIconArrowRepeat } from 'bootstrap-icons-vue'
-import Switcher from './Switcher.vue'
-import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
-import { StoredChart } from '@/types'
-import { addImgElements, downloadChart, initializeFirstRun } from '@/helpers/chart'
-
-export default defineComponent({
-  components: {
-    Switcher,
-    BIconFileEarmarkArrowDown,
-    BIconArrowRepeat
-  },
-  data () {
-    return {
-      // Keep track of loading so the user knows why it's taking a while.
-      // Also, we can prevent the user from spamming the button to generate multiple requests.
-      loading: false
-    }
-  },
-  methods: {
-    async saveChart () {
-      this.loading = true
-      await downloadChart(this.chart)
-      this.loading = false
-    },
-    startNewChart () {
-      const storedCharts = getStoredCharts()
-
-      const newStoredChartsArray = storedCharts.map(chart => chart.currentlyActive ? { ...chart, currentlyActive: false } : chart)
-
-      const newChart: StoredChart = {
-        timestamp: new Date().getTime(),
-        name: null,
-        data: initialState.chart,
-        currentlyActive: true
-      }
-
-      setStoredCharts([...newStoredChartsArray, newChart])
-
-      this.$store.commit('reset')
-    },
-    deleteChart () {
-      const storedCharts = getStoredCharts()
-
-      const warningPopup = confirm('Are you sure you want to delete this chart? There\'s no way to recover it!')
-
-      if (warningPopup === false) {
-        return null
-      }
-
-      setStoredCharts(storedCharts.filter(chart => chart.currentlyActive === false))
-
-      const newStoredCharts = getStoredCharts()
-
-      if (newStoredCharts.length < 1) {
-        // We've just deleted the only saved chart, so let's re-initialize.
-        initializeFirstRun()
-        this.$store.commit('reset')
-      } else {
-        // Fall back to the first chart in the array.
-        newStoredCharts[0].currentlyActive = true
-        setStoredCharts(newStoredCharts)
-
-        addImgElements(newStoredCharts[0].data)
-        this.$store.commit('setEntireChart', newStoredCharts[0].data)
-      }
-    }
-  },
-  computed: mapState({
-    chart: state => (state as State).chart
-  })
-})
-</script>
 
 <style>
 #top-bar {

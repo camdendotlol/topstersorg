@@ -1,3 +1,23 @@
+<script setup lang="ts">
+import { downloadChart } from '../../helpers/chart'
+import { ref } from 'vue'
+import { BIconFileEarmarkArrowDown, BIconArrowRepeat } from 'bootstrap-icons-vue'
+import { useStore } from '../../store'
+
+const loading = ref(false)
+
+const store = useStore()
+
+const saveChart = async () => {
+  loading.value = true
+
+  await downloadChart(store.state.chart)
+
+  loading.value = false
+}
+
+</script>
+
 <template>
   <button
     type="button"
@@ -14,40 +34,6 @@
     />
   </button>
 </template>
-
-<script lang="ts">
-import { downloadChart } from '@/helpers/chart'
-import { State } from '@/store'
-import { defineComponent } from '@vue/runtime-core'
-import { BIconFileEarmarkArrowDown, BIconArrowRepeat } from 'bootstrap-icons-vue'
-import { mapState } from 'vuex'
-
-export default defineComponent({
-  components: {
-    BIconFileEarmarkArrowDown,
-    BIconArrowRepeat
-  },
-  data () {
-    return {
-      loading: false
-    }
-  },
-  methods: {
-    async saveChart () {
-      this.loading = true
-
-      await downloadChart(this.chart)
-
-      this.loading = false
-    }
-  },
-  computed: {
-    ...mapState({
-      chart: state => (state as State).chart
-    })
-  }
-})
-</script>
 
 <style scoped>
 #loading-icon {

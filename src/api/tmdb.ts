@@ -1,5 +1,5 @@
-import { encodeQuery } from '@/helpers/search'
-import { MovieResult, TVResult } from '@/types'
+import { encodeQuery } from '../helpers/search'
+import type { MovieResult, TVResult } from '../types'
 import { errorMessages } from './errors'
 
 const queryTmdb = async (url: string): Promise<Array<MovieResult | TVResult>> => {
@@ -29,7 +29,7 @@ export const tmdbMovieSearch = async (query: string): Promise<MovieResult[]> => 
 
   const encodedQuery = encodeQuery(query)
 
-  const url = `${process.env.VUE_APP_BACKEND_URL}/api/tmdb/search/movie/${encodedQuery}`
+  const url = `${import.meta.env.VITE_BACKEND_URL}/api/tmdb/search/movie/${encodedQuery}`
 
   return await queryTmdb(url) as MovieResult[]
 }
@@ -41,7 +41,7 @@ export const tmdbTVSearch = async (query: string): Promise<TVResult[]> => {
 
   const encodedQuery = encodeQuery(query)
 
-  const url = `${process.env.VUE_APP_BACKEND_URL}/api/tmdb/search/tv/${encodedQuery}`
+  const url = `${import.meta.env.VITE_BACKEND_URL}/api/tmdb/search/tv/${encodedQuery}`
 
   return await queryTmdb(url) as TVResult[]
 }
