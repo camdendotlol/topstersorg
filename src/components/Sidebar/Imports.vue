@@ -20,12 +20,19 @@ const importTopsters2ChartsPicked = (event: Event) => {
   const fileReader = new FileReader()
   fileReader.addEventListener('load', () => {
     try {
+      const textDecoder = new TextDecoder()
+
+      // now why'd he do that...
+      const unshifted = atob((fileReader.result as string)
+        .split('')
+        .map(e => String.fromCharCode(e.charCodeAt(0) - 17))
+        .join(''))
+
       // Parse JSON file
-      const charts = JSON.parse(fileReader.result as string)[0]
+      const charts = JSON.parse(unshifted)[0]
       const options = JSON.parse(charts.options)
 
       // Import each chart
-      const textDecoder = new TextDecoder()
       const storedCharts = getStoredCharts()
       const failed = []
       for (const chart of Object.entries(options.charts)) {
