@@ -1,3 +1,32 @@
+<script setup lang="ts">
+import { Ref, ref } from 'vue'
+import Sidebar from './components/Sidebar/index.vue'
+import ChartBuilder from './components/ChartBuilder/index.vue'
+import { BIconGearFill, BIconPlusLg, BIconHouse } from 'bootstrap-icons-vue'
+import MobileOptionsSidebar from './components/MobileOptionsSidebar.vue'
+import MobileSearchSidebar from './components/MobileSearchSidebar.vue'
+import Popup from './components/Popup.vue'
+import DownloadButton from './components/buttons/Download.vue'
+
+const showMobileOptions: Ref<boolean> = ref(false)
+const showMobileSearch: Ref<boolean> = ref(false)
+
+const toggleMobileSearchDisplay = () => {
+  showMobileOptions.value = false
+  showMobileSearch.value = !showMobileSearch.value
+}
+
+const toggleMobileOptionsDisplay = () => {
+  showMobileSearch.value = false
+  showMobileOptions.value = !showMobileOptions.value
+}
+
+const returnToHomepage = () => {
+  showMobileSearch.value = false
+  showMobileOptions.value = false
+}
+</script>
+
 <template>
   <div class="main">
     <div class="sidebar-div">
@@ -33,53 +62,6 @@
     <ChartBuilder />
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import Sidebar from './components/Sidebar/index.vue'
-import ChartBuilder from './components/ChartBuilder/index.vue'
-import { BIconGearFill, BIconPlusLg, BIconHouse } from 'bootstrap-icons-vue'
-import MobileOptionsSidebar from './components/MobileOptionsSidebar.vue'
-import MobileSearchSidebar from './components/MobileSearchSidebar.vue'
-import Popup from './components/Popup.vue'
-import DownloadButton from './components/buttons/Download.vue'
-
-export default defineComponent({
-  name: 'Topsters 3',
-  components: {
-    Sidebar,
-    MobileOptionsSidebar,
-    MobileSearchSidebar,
-    ChartBuilder,
-    Popup,
-    BIconGearFill,
-    BIconPlusLg,
-    BIconHouse,
-    DownloadButton
-  },
-  data () {
-    return {
-      showMobileSearch: false,
-      showMobileOptions: false
-    }
-  },
-  methods: {
-    toggleMobileSearchDisplay () {
-      this.showMobileOptions = false
-      this.showMobileSearch = !this.showMobileSearch
-    },
-    toggleMobileOptionsDisplay () {
-      this.showMobileSearch = false
-      this.showMobileOptions = !this.showMobileOptions
-    },
-    returnToHomepage () {
-      this.showMobileSearch = false
-      this.showMobileOptions = false
-    }
-  }
-})
-
-</script>
 
 <style>
 #app {
