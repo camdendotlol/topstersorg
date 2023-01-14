@@ -53,7 +53,6 @@ const changeCustomImageData = (attr: 'title' | 'creator', value: string): void =
 }
 
 const handleSearch = async (): Promise<unknown[] | null> => {
-  console.log(searchbox)
   if (loading.value) {
     return null
   }
