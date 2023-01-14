@@ -1,3 +1,18 @@
+<script setup lang="ts">
+import PageTitle from '../PageTitle.vue'
+import SearchBox from './SearchBox/index.vue'
+import Options from './Options.vue'
+import Imports from './Imports.vue'
+import { BIconCaretDownFill, BIconCaretUpFill } from 'bootstrap-icons-vue'
+import FAQ from './FAQ.vue'
+import { ref, Ref } from 'vue'
+
+const searchDisplayed: Ref<boolean> = ref(true)
+const optionsDisplayed: Ref<boolean> = ref(false)
+const importsDisplayed: Ref<boolean> = ref(false)
+const faqDisplayed: Ref<boolean> = ref(false)
+</script>
+
 <template>
   <div class="sidebar">
     <div class="sidebar-content">
@@ -5,50 +20,50 @@
       <div>
         <button
           class="section-toggle"
-          :class="{ 'active-section-toggle': this.searchDisplayed }"
-          @click="this.searchDisplayed = !this.searchDisplayed"
+          :class="{ 'active-section-toggle': searchDisplayed }"
+          @click="searchDisplayed = !searchDisplayed"
         >
           <span>Add Items</span>
-          <BIconCaretUpFill v-if="this.searchDisplayed" class="caret" />
+          <BIconCaretUpFill v-if="searchDisplayed" class="caret" />
           <BIconCaretDownFill v-else class="caret" />
         </button>
-        <SearchBox v-if="this.searchDisplayed" />
+        <SearchBox v-if="searchDisplayed" />
       </div>
       <div>
         <button
           class="section-toggle"
-          :class="{ 'active-section-toggle': this.optionsDisplayed }"
-          @click="this.optionsDisplayed = !this.optionsDisplayed"
+          :class="{ 'active-section-toggle': optionsDisplayed }"
+          @click="optionsDisplayed = !optionsDisplayed"
         >
           <span>Chart Options</span>
-          <BIconCaretUpFill v-if="this.optionsDisplayed" class="caret" />
+          <BIconCaretUpFill v-if="optionsDisplayed" class="caret" />
           <BIconCaretDownFill v-else class="caret" />
         </button>
-        <Options v-if="this.optionsDisplayed" />
+        <Options v-if="optionsDisplayed" />
       </div>
       <div>
         <button
           class="section-toggle"
-          :class="{ 'active-section-toggle': this.importsDisplayed }"
-          @click="this.importsDisplayed = !this.importsDisplayed"
+          :class="{ 'active-section-toggle': importsDisplayed }"
+          @click="importsDisplayed = !importsDisplayed"
         >
           <span>Imports</span>
-          <BIconCaretUpFill v-if="this.importsDisplayed" class="caret" />
+          <BIconCaretUpFill v-if="importsDisplayed" class="caret" />
           <BIconCaretDownFill v-else class="caret" />
         </button>
-        <Imports v-if="this.importsDisplayed" />
+        <Imports v-if="importsDisplayed" />
       </div>
       <div>
         <button
           class="section-toggle"
-          :class="{ 'active-section-toggle': this.faqDisplayed }"
-          @click="this.faqDisplayed = !this.faqDisplayed"
+          :class="{ 'active-section-toggle': faqDisplayed }"
+          @click="faqDisplayed = !faqDisplayed"
         >
           <span>FAQ</span>
-          <BIconCaretUpFill v-if="this.faqDisplayed" class="caret" />
+          <BIconCaretUpFill v-if="faqDisplayed" class="caret" />
           <BIconCaretDownFill v-else class="caret" />
         </button>
-        <FAQ v-if="this.faqDisplayed" />
+        <FAQ v-if="faqDisplayed" />
       </div>
       <div id="credits">
         <p>Data from:</p>
@@ -71,36 +86,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import PageTitle from '../PageTitle.vue'
-import SearchBox from './SearchBox/index.vue'
-import Options from './Options.vue'
-import Imports from './Imports.vue'
-import { defineComponent } from 'vue'
-import { BIconCaretDownFill, BIconCaretUpFill } from 'bootstrap-icons-vue'
-import FAQ from './FAQ.vue'
-
-export default defineComponent({
-  components: {
-    PageTitle,
-    SearchBox,
-    Options,
-    Imports,
-    FAQ,
-    BIconCaretDownFill,
-    BIconCaretUpFill
-  },
-  data () {
-    return {
-      searchDisplayed: true,
-      optionsDisplayed: false,
-      importsDisplayed: false,
-      faqDisplayed: false
-    }
-  }
-})
-</script>
 
 <style scoped>
 .sidebar-content {
