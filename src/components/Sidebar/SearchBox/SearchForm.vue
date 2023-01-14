@@ -6,7 +6,7 @@ import queryLastFM from '../../../api/lastfm'
 import queryIGDB from '../../../api/igdb'
 import { tmdbMovieSearch, tmdbTVSearch } from '../../../api/tmdb'
 import type { CustomResult, SearchTypes } from '../../../types'
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 
 interface Props {
   searchType: SearchTypes
@@ -16,7 +16,7 @@ const props = defineProps<Props>()
 
 const results = ref([])
 const loading = ref(false)
-const customImageData = reactive({
+const customImageData = ref({
   title: '',
   creator: ''
 })
@@ -38,7 +38,7 @@ const focusSearchBox = () => {
 }
 
 const changeCustomImageData = (attr: 'title' | 'creator', value: string): void => {
-  customImageData[attr] = value
+  customImageData.value[attr] = value
   const item = results.value[0] as CustomResult
   item[attr] = value
 }
@@ -109,16 +109,17 @@ const handleSearch = async (): Promise<unknown[] | null> => {
     }
     case 'custom':
     {
+      console.log(query)
       loading.value = true
       results.value = [
         {
-          title: customImageData.title,
-          creator: customImageData.creator,
+          title: customImageData.value.title,
+          creator: customImageData.value.creator,
           imageURL: query,
           type: 'custom'
         }
       ]
-      emit('updateResults', results)
+      emit('updateResults', results.value)
       loading.value = false
       break
     }
