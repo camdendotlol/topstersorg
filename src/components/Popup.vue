@@ -1,38 +1,24 @@
-<template>
-  <div id="popup" v-if="text">
-    <p>{{ text }}</p>
-  </div>
-</template>
+<script setup lang="ts">
+import { useStore } from '../store'
 
-<script lang="ts">
-import { State } from '../store'
-import { defineComponent } from 'vue'
-import { mapMutations, mapState } from 'vuex'
+const store = useStore()
 
-export default defineComponent({
-  methods: {
-    ...mapMutations([
-      'setPopup'
-    ])
-  },
-  watch: {
-    text () {
-      // Make sure not to reset the popup when something else has been added.
-      const oldText = this.text
-      setTimeout(() => {
-        if (this.text === oldText) {
-          this.setPopup(null)
-        }
-      }, 1500)
+store.watch(state => state.popupText, () => {
+  // Make sure not to reset the popup when something else has been added.
+  const oldText = store.state.popupText
+  setTimeout(() => {
+    if (store.state.popupText === oldText) {
+      store.commit('setPopup', null)
     }
-  },
-  computed: {
-    ...mapState({
-      text: state => (state as State).popupText
-    })
-  }
+  }, 1500)
 })
 </script>
+
+<template>
+  <div id="popup" v-if="store.state.popupText">
+    <p>{{ store.state.popupText }}</p>
+  </div>
+</template>
 
 <style>
 #popup {
