@@ -1,31 +1,28 @@
+<script setup lang="ts">
+const emit = defineEmits([
+  'toggleAnnouncement'
+])
+
+const notice = {
+  header: 'Ostrakon is now Topsters.org',
+  message: 'It looks like this is your first time here, so you\'ve been automatically redirected. Welcome to the site!'
+}
+</script>
+
 <template>
   <div class="modal-container">
     <div class="announcement-modal">
-      <h1>{{ this.header }}</h1>
-      <p>{{ this.message }}</p>
+      <h1>{{ notice.header }}</h1>
+      <p>{{ notice.message }}</p>
       <button
         class="ok-button"
-        @click="this.$emit('toggleAnnouncement')"
+        @click="emit('toggleAnnouncement')"
       >
         OK
       </button>
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  data () {
-    return {
-      header: 'Ostrakon is now Topsters.org',
-      message: 'It looks like this is your first time here, so you\'ve been automatically redirected. Welcome to the site!'
-    }
-  },
-  emits: ['toggleAnnouncement']
-})
-</script>
 
 <style scoped>
 .modal-container {
