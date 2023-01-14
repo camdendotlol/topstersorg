@@ -42,7 +42,8 @@ const drawingCtx = computed(() => {
     return ctx
 })
 
-watch(store.state.chart, () => {
+store.watch(state => state.chart, () => {
+  console.log('chart updated')
   imagesStillLoading.value = true
   renderChart()
 })
