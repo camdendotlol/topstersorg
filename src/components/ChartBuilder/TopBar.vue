@@ -54,12 +54,12 @@ const deleteChart = () => {
     initializeFirstRun()
     store.commit('reset')
   } else {
-    // Fall back to the first chart in the array.
-    newStoredCharts[0].currentlyActive = true
+    // Fall back to the most recent chart in the array.
+    newStoredCharts[newStoredCharts.length - 1].currentlyActive = true
     setStoredCharts(newStoredCharts)
 
-    addImgElements(newStoredCharts[0].data)
-    store.commit('setEntireChart', newStoredCharts[0].data)
+    addImgElements(newStoredCharts[newStoredCharts.length - 1].data)
+    store.commit('setEntireChart', newStoredCharts[newStoredCharts.length - 1].data)
   }
 }
 
