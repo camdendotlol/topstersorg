@@ -14,6 +14,9 @@ import { useStore } from '../../../store'
 import ResultItem from './ResultItem.vue'
 
 interface Props {
+  // Disable the "any" type warning because TS gets confused with
+  // the filter functions below.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   results: any[],
   resultsType: SearchTypes,
   isLoading?: boolean

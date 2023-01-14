@@ -6,6 +6,7 @@ interface Props {
   searchType: SearchTypes
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps<Props>()
 
 const emit = defineEmits([

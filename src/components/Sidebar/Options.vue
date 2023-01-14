@@ -31,7 +31,7 @@ store.watch(state => state.chart, () => {
   populateForm(chart.value)
 })
 
-onMounted(() => { 
+onMounted(() => {
   backgroundType.value = chart.value.background.type
   setupFromLocalstorage()
 })
@@ -103,12 +103,12 @@ const setupFromLocalstorage = (): void => {
 }
 
 const populateForm = (chart: Chart): void => {
-  displayTitlesRef.value.checked = chart.showTitles;
+  displayTitlesRef.value.checked = chart.showTitles
 
-  xAxisRef.value.value = chart.size.x;
-  yAxisRef.value.value = chart.size.y;
+  xAxisRef.value.value = chart.size.x
+  yAxisRef.value.value = chart.size.y
 
-  titleRef.value.value = chart.title;
+  titleRef.value.value = chart.title
 
   backgroundTypeInputRef.value.value = chart.background.type
 
@@ -118,12 +118,12 @@ const populateForm = (chart: Chart): void => {
     backgroundImageInputRef.value.value = chart.background.value
   }
 
-  gapRef.value.value = chart.gap;
+  gapRef.value.value = chart.gap
 
-  textColorRef.value.value = chart.textColor;
+  textColorRef.value.value = chart.textColor
 
-  showNumbersRef.value.checked = chart.showNumbers;
-  showShadowsRef.value.checked = chart.shadows;
+  showNumbersRef.value.checked = chart.showNumbers
+  showShadowsRef.value.checked = chart.shadows
 
   fontRef.value.value = chart.font
 

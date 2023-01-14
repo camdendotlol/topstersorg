@@ -8,15 +8,6 @@ import { tmdbMovieSearch, tmdbTVSearch } from '../../../api/tmdb'
 import type { CustomResult, SearchTypes } from '../../../types'
 import { ref, reactive } from 'vue'
 
-interface FormData {
-  results: unknown[],
-  loading: boolean,
-  customImageData: {
-    title: string,
-    creator: string
-  }
-}
-
 interface Props {
   searchType: SearchTypes
 }
@@ -48,7 +39,7 @@ const focusSearchBox = () => {
 
 const changeCustomImageData = (attr: 'title' | 'creator', value: string): void => {
   customImageData[attr] = value
-  const item = results[0] as CustomResult
+  const item = results.value[0] as CustomResult
   item[attr] = value
 }
 

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import { onMounted } from 'vue'
 import Home from './Home.vue'
 import AnnouncementModal from './components/AnnouncementModal.vue'
@@ -15,21 +14,21 @@ const toggleAnnouncement = () => {
 }
 
 onMounted(async () => {
-    // Redirect new users to topsters.org
-    if (window.location.href.includes('ostrakon.xyz')) {
-      redirectUsers()
-    }
+  // Redirect new users to topsters.org
+  if (window.location.href.includes('ostrakon.xyz')) {
+    redirectUsers()
+  }
 
-    // Display redirect notice
-    if (
-      document.referrer.includes('ostrakon.xyz') &&
-      window.location.href.includes('topsters.org') &&
-      !localStorage.getItem('seenAnnouncement')
-    ) {
-      displayAnnouncement = true
-    }
+  // Display redirect notice
+  if (
+    document.referrer.includes('ostrakon.xyz') &&
+    window.location.href.includes('topsters.org') &&
+    !localStorage.getItem('seenAnnouncement')
+  ) {
+    displayAnnouncement = true
+  }
 
-    await ping()
+  await ping()
 })
 </script>
 

@@ -35,11 +35,11 @@ const store = useStore()
 
 const drawingCtx = computed(() => {
   const ctx = canvas.value.getContext('2d')
-    if (!ctx) {
-      return null
-    }
+  if (!ctx) {
+    return null
+  }
 
-    return ctx
+  return ctx
 })
 
 store.watch(state => state.chart, () => {
@@ -188,7 +188,7 @@ const checkDroppability = (event: InteractionEvent | DragEvent) => {
 }
 
 const drawImageAtMouse = (image: HTMLImageElement, coords: { x: number, y: number }) => {
-  if (!drawingCtx) {
+  if (!drawingCtx.value) {
     throw new Error('Canvas context not found, the canvas must have loaded incorrectly.')
   }
 

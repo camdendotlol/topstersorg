@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
-    "preview": "vite preview --port 5050"
+    "preview": "vite preview --port 5050",
+    "lint": "eslint ."
   },
   "dependencies": {
     "bootstrap-icons-vue": "^1.8.1",

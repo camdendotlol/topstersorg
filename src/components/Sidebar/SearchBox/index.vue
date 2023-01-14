@@ -2,10 +2,10 @@
 import { Ref, ref } from 'vue'
 import SearchForm from './SearchForm.vue'
 import SearchDropdown from './SearchDropdown.vue'
-import { SearchTypes } from '../../../types'
+import { Result, SearchTypes } from '../../../types'
 
 const searchType: Ref<SearchTypes> = ref(SearchTypes.Music)
-const results: Ref<any[]> = ref([])
+const results: Ref<Result[]> = ref([])
 
 const setSearchType = (value: SearchTypes) => {
   results.value = []
