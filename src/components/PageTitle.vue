@@ -1,22 +1,14 @@
+<script setup lang="ts">
+const subtitles = [
+  'over 9000 charts served',
+  'yet another chart site'
+]
+</script>
+
 <template>
   <h1>topsters.org</h1>
   <h3>{{ subtitles[Math.floor(Math.random() * subtitles.length)] }}</h3>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  data () {
-    return {
-      subtitles: [
-        'over 9000 charts served',
-        'yet another chart site'
-      ]
-    }
-  }
-})
-</script>
 
 <style scoped>
 h1 {
