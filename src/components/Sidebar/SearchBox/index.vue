@@ -1,3 +1,23 @@
+<script setup lang="ts">
+import { Ref, ref } from 'vue'
+import SearchForm from './SearchForm.vue'
+import SearchDropdown from './SearchDropdown.vue'
+import { SearchTypes } from '../../../types'
+
+const searchType: Ref<SearchTypes> = ref(SearchTypes.Music)
+const results: Ref<any[]> = ref([])
+
+const setSearchType = (value: SearchTypes) => {
+  results.value = []
+  searchType.value = value
+  localStorage.setItem('activeTab', value)
+}
+
+const updateResults = (newResults: []) => {
+  results.value = newResults
+}
+</script>
+
 <template>
   <div id="searchbox">
     <div class="container">
@@ -14,36 +34,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-import SearchForm from './SearchForm.vue'
-import SearchDropdown from './SearchDropdown.vue'
-import { SearchTypes } from '../../../types'
-
-export default defineComponent({
-  components: {
-    SearchForm,
-    SearchDropdown
-  },
-  data () {
-    return {
-      searchType: SearchTypes.Music,
-      results: []
-    }
-  },
-  methods: {
-    setSearchType (value: string) {
-      this.results = []
-      this.searchType = value
-      localStorage.setItem('activeTab', value)
-    },
-    updateResults (newResults: []) {
-      this.results = newResults
-    }
-  }
-})
-</script>
 
 <style scoped>
 #searchbox {
