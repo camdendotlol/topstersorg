@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, computed, watch, ref, Ref } from 'vue'
+import { onMounted, computed, ref, Ref } from 'vue'
 import { useStore } from '../../store'
 import generateChart from 'topster'
 import { BackgroundTypes, Chart, ChartItem, StoredChart } from '../../types'

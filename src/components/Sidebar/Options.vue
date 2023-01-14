@@ -1,3 +1,148 @@
+<script setup lang="ts">
+import { getStoredCharts } from '../../helpers/localStorage'
+import { useStore } from '../../store'
+import { BackgroundTypes, Chart, StoredChart } from '../../types'
+import { onMounted, ref, Ref } from 'vue'
+
+const store = useStore()
+
+const gap: Ref<number> = ref(0)
+const backgroundType: Ref<BackgroundTypes> = ref(BackgroundTypes.Image)
+
+const chart: Ref<Chart> = ref(store.state.chart)
+
+// Buckle up, here come the elemnt refs 🤠
+const displayTitlesRef: Ref<HTMLFormElement> = ref(null)
+const xAxisRef: Ref<HTMLFormElement> = ref(null)
+const yAxisRef: Ref<HTMLFormElement> = ref(null)
+const titleRef: Ref<HTMLFormElement> = ref(null)
+const backgroundTypeInputRef: Ref<HTMLFormElement> = ref(null)
+const backgroundColorInputRef: Ref<HTMLFormElement> = ref(null)
+const backgroundImageInputRef: Ref<HTMLFormElement> = ref(null)
+const gapRef: Ref<HTMLFormElement> = ref(null)
+const textColorRef: Ref<HTMLFormElement> = ref(null)
+const showNumbersRef: Ref<HTMLFormElement> = ref(null)
+const showShadowsRef: Ref<HTMLFormElement> = ref(null)
+const fontRef: Ref<HTMLFormElement> = ref(null)
+
+store.watch(state => state.chart, () => {
+  chart.value = store.state.chart
+  backgroundType.value = chart.value.background.type
+  populateForm(chart.value)
+})
+
+onMounted(() => { 
+  backgroundType.value = chart.value.background.type
+  setupFromLocalstorage()
+})
+
+const updateTitle = (event: Event): void => {
+  const title = (event.target as HTMLFormElement).value
+  console.log(title)
+  return store.commit('changeTitle', title)
+}
+
+const updateBackgroundColor = (event: Event): void => {
+  const color = (event.target as HTMLFormElement).value
+  return store.commit('changeBackgroundColor', color)
+}
+
+const updateSizeX = (event: Event): void => {
+  const value = parseInt((event.target as HTMLFormElement).value)
+  return store.commit('changeSize', { axis: 'x', value })
+}
+
+const updateSizeY = (event: Event): void => {
+  const value = parseInt((event.target as HTMLFormElement).value)
+  return store.commit('changeSize', { axis: 'y', value })
+}
+
+const updateGap = (event: Event): void => {
+  const value = parseInt((event.target as HTMLFormElement).value)
+  gap.value = value
+  return store.commit('changeGap', value)
+}
+
+const changeShowNumbers = (event: Event): void => {
+  const value = (event.target as HTMLFormElement).checked
+  return store.commit('toggleNumbers', value)
+}
+
+const changeShowShadows = (event: Event): void => {
+  const value = (event.target as HTMLFormElement).checked
+  return store.commit('toggleShadows', value)
+}
+
+const updateFont = (event: Event): void => {
+  const value = (event.target as HTMLFormElement).value
+  return store.commit('changeFont', value)
+}
+
+const updateTextColor = (event: Event): void => {
+  const value = (event.target as HTMLFormElement).value
+  return store.commit('changeTextColor', value)
+}
+
+const changeShowTitles = (event: Event): void => {
+  const value: boolean = (event.target as HTMLFormElement).checked
+  return store.commit('toggleTitles', value)
+}
+
+const setupFromLocalstorage = (): void => {
+  const savedCharts = getStoredCharts()
+
+  let activeChart: StoredChart | undefined
+
+  if (savedCharts.length > 0) {
+    activeChart = savedCharts.find(chart => chart.currentlyActive)
+  }
+
+  if (activeChart) {
+    populateForm(activeChart.data)
+  }
+}
+
+const populateForm = (chart: Chart): void => {
+  displayTitlesRef.value.checked = chart.showTitles;
+
+  xAxisRef.value.value = chart.size.x;
+  yAxisRef.value.value = chart.size.y;
+
+  titleRef.value.value = chart.title;
+
+  backgroundTypeInputRef.value.value = chart.background.type
+
+  if (chart.background.type === BackgroundTypes.Color) {
+    backgroundColorInputRef.value.value = chart.background.value
+  } else if (chart.background.type === BackgroundTypes.Image) {
+    backgroundImageInputRef.value.value = chart.background.value
+  }
+
+  gapRef.value.value = chart.gap;
+
+  textColorRef.value.value = chart.textColor;
+
+  showNumbersRef.value.checked = chart.showNumbers;
+  showShadowsRef.value.checked = chart.shadows;
+
+  fontRef.value.value = chart.font
+
+  gap.value = chart.gap
+}
+
+const changeBackgroundType = (event: Event): void => {
+  const newType = ((event.target as HTMLFormElement).value)
+  if (newType === BackgroundTypes.Color || newType === BackgroundTypes.Image) {
+    backgroundType.value = newType
+  }
+}
+
+const updateBackgroundImage = (event: Event): void => {
+  const url = ((event.target as HTMLFormElement).value)
+  store.commit('setBackgroundImage', url)
+}
+</script>
+
 <template>
   <div id="chart-options">
     <div class="content">
@@ -11,7 +156,7 @@
               type="text"
               name="title"
               id="title"
-              ref="title"
+              ref="titleRef"
               @input="updateTitle"
             >
           </td>
@@ -24,7 +169,7 @@
             <input
               type="checkbox"
               name="display-titles"
-              ref="display-titles"
+              ref="displayTitlesRef"
               id="display-titles"
               @change="changeShowTitles"
             >
@@ -43,7 +188,7 @@
               type="range"
               name="x-axis"
               id="x-axis"
-              ref="x-axis"
+              ref="xAxisRef"
               class="dimension-input"
               @input="updateSizeX"
             >
@@ -62,7 +207,7 @@
               type="range"
               name="y-axis"
               id="y-axis"
-              ref="y-axis"
+              ref="yAxisRef"
               class="dimension-input"
               @input="updateSizeY"
             >
@@ -76,7 +221,7 @@
             <select
               name="background-type"
               id="background-type"
-              ref="background-type"
+              ref="backgroundTypeInputRef"
               @change="changeBackgroundType"
             >
               <option value="color">Color</option>
@@ -94,7 +239,7 @@
               name="background-color"
               id="background-color"
               class="color-picker"
-              ref="background-color"
+              ref="backgroundColorInputRef"
               @change="updateBackgroundColor"
             >
           </td>
@@ -108,7 +253,7 @@
               type="text"
               name="background-image"
               id="background-image"
-              ref="background-image"
+              ref="backgroundImageInputRef"
               @change="updateBackgroundImage"
             >
           </td>
@@ -125,7 +270,7 @@
               max="150"
               value="0"
               name="gap"
-              ref="gap"
+              ref="gapRef"
               id="gap"
               @input="updateGap"
             >
@@ -139,7 +284,7 @@
             <input
               type="checkbox"
               name="show-numbers"
-              ref="show-numbers"
+              ref="showNumbersRef"
               id="show-numbers"
               @change="changeShowNumbers"
             >
@@ -147,13 +292,13 @@
         </tr>
         <tr>
           <td>
-            <label for="display-titles">Show Shadows</label>
+            <label for="show-shadows">Show Shadows</label>
           </td>
           <td>
             <input
               type="checkbox"
               name="show-shadows"
-              ref="show-shadows"
+              ref="showShadowsRef"
               id="show-shadows"
               @change="changeShowShadows"
             >
@@ -167,7 +312,7 @@
             <input
               type="text"
               name="font"
-              ref="font"
+              ref="fontRef"
               id="font"
               @input="updateFont"
             >
@@ -183,7 +328,7 @@
               name="text-color"
               id="text-color"
               class="color-picker"
-              ref="text-color"
+              ref="textColorRef"
               @change="updateTextColor"
             >
           </td>
@@ -192,143 +337,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { getStoredCharts } from '../../helpers/localStorage'
-import type { State } from '../../store'
-import { BackgroundTypes, Chart } from '../../types'
-import { defineComponent } from 'vue'
-import { mapMutations, mapState } from 'vuex'
-
-export default defineComponent({
-  data () {
-    return {
-      gap: 0,
-      backgroundType: BackgroundTypes.Image
-    }
-  },
-  mounted () {
-    this.backgroundType = this.chart.background.type
-    this.setupFromLocalstorage()
-  },
-  methods: {
-    ...mapMutations([
-      'changeTitle',
-      'changeBackgroundColor',
-      'setBackgroundImage',
-      'changeSize',
-      'changeGap',
-      'changeFont',
-      'changeTextColor',
-      'toggleTitles',
-      'toggleNumbers',
-      'toggleShadows'
-    ]),
-    updateTitle (event: Event): void {
-      const title = (event.target as HTMLFormElement).value
-      return this.changeTitle(title)
-    },
-    updateBackgroundColor (event: Event): void {
-      const color = (event.target as HTMLFormElement).value
-      return this.changeBackgroundColor(color)
-    },
-    updateSizeX (event: Event): void {
-      const value = parseInt((event.target as HTMLFormElement).value)
-      return this.changeSize({ axis: 'x', value })
-    },
-    updateSizeY (event: Event): void {
-      const value = parseInt((event.target as HTMLFormElement).value)
-      return this.changeSize({ axis: 'y', value })
-    },
-    updateGap (event: Event): void {
-      const value = parseInt((event.target as HTMLFormElement).value)
-      this.gap = value
-      return this.changeGap(value)
-    },
-    changeShowNumbers (event: Event): void {
-      const value = (event.target as HTMLFormElement).checked
-      return this.toggleNumbers(value)
-    },
-    changeShowShadows (event: Event): void {
-      const value = (event.target as HTMLFormElement).checked
-      return this.toggleShadows(value)
-    },
-    updateFont (event: Event): void {
-      const value = (event.target as HTMLFormElement).value
-      return this.changeFont(value)
-    },
-    updateTextColor (event: Event): void {
-      const value = (event.target as HTMLFormElement).value
-      return this.changeTextColor(value)
-    },
-    changeShowTitles (event: Event): void {
-      const value: boolean = (event.target as HTMLFormElement).checked
-      return this.toggleTitles(value)
-    },
-    setupFromLocalstorage (): void {
-      const savedCharts = getStoredCharts()
-
-      let activeChart
-
-      if (savedCharts.length > 0) {
-        activeChart = savedCharts.find(chart => chart.currentlyActive)
-      }
-
-      if (activeChart) {
-        this.populateForm(activeChart.data)
-      }
-    },
-    populateForm (chart: Chart): void {
-      (this.$refs['display-titles'] as HTMLFormElement).checked = chart.showTitles;
-
-      (this.$refs['x-axis'] as HTMLFormElement).value = chart.size.x;
-      (this.$refs['y-axis'] as HTMLFormElement).value = chart.size.y;
-
-      (this.$refs.title as HTMLFormElement).value = chart.title;
-
-      (this.$refs['background-type'] as HTMLFormElement).value = chart.background.type
-
-      if (chart.background.type === BackgroundTypes.Color) {
-        (this.$refs['background-color'] as HTMLFormElement).value = chart.background.value
-      } else if (chart.background.type === BackgroundTypes.Image) {
-        (this.$refs['background-image'] as HTMLFormElement).value = chart.background.value
-      }
-
-      (this.$refs.gap as HTMLFormElement).value = chart.gap;
-
-      (this.$refs['text-color'] as HTMLFormElement).value = chart.textColor;
-
-      (this.$refs['show-numbers'] as HTMLFormElement).checked = chart.showNumbers;
-      (this.$refs['show-shadows'] as HTMLFormElement).checked = chart.shadows;
-
-      (this.$refs.font as HTMLFormElement).value = chart.font
-
-      this.gap = chart.gap
-    },
-    changeBackgroundType (event: Event): void {
-      const newType = ((event.target as HTMLFormElement).value)
-      if (newType === BackgroundTypes.Color || newType === BackgroundTypes.Image) {
-        this.backgroundType = newType
-      }
-    },
-    updateBackgroundImage (event: Event): void {
-      const url = ((event.target as HTMLFormElement).value)
-      this.setBackgroundImage(url)
-    }
-  },
-  watch: {
-    chart () {
-      this.backgroundType = this.chart.background.type
-      this.populateForm(this.chart)
-    }
-  },
-  computed: {
-    ...mapState({
-      chart: state => (state as State).chart
-    })
-  }
-})
-</script>
 
 <style scoped>
 #chart-options {
