@@ -20,12 +20,12 @@ const importTopsters2ChartsPicked = (event: Event) => {
   const fileReader = new FileReader()
   fileReader.addEventListener('load', () => {
     try {
-      const textDecoder = new TextDecoder()
-
-      // now why'd he do that...
+      // Topsters 2 exports have their charcodes shifted up
+      // 17 points, and then are encoded in base64. This
+      // may have been a response to our import feature lol
       const unshifted = atob((fileReader.result as string)
         .split('')
-        .map(e => String.fromCharCode(e.charCodeAt(0) - 17))
+        .map(char => String.fromCharCode(char.charCodeAt(0) - 17))
         .join(''))
 
       // Parse JSON file
@@ -83,6 +83,8 @@ const importTopsters2ChartsPicked = (event: Event) => {
               background = '#000000'
             }
           }
+
+          const textDecoder = new TextDecoder()
 
           // Chart cards are compressed with zlib + encoded with base64
           const chartCards = charts[prefix + 'cards'] // Get base64 string
