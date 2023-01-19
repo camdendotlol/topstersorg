@@ -42,7 +42,12 @@ const drawingCtx = computed(() => {
   return ctx
 })
 
-store.watch(state => state.chart, () => {
+store.subscribe((mutation, state) => {
+  if (mutation.type === 'setBackgroundImage') {
+    state.chart.background.img.onload = () => {
+      renderChart()
+    }
+  }
   imagesStillLoading.value = true
   renderChart()
 })
@@ -114,13 +119,14 @@ const renderChart = () => {
   if (store.state.chart.background.type === BackgroundTypes.Image && store.state.chart.background.img?.src) {
     const bgImg = new Image()
     bgImg.src = store.state.chart.background.value
-    bgImg.onload = () => {
-      renderChart()
-    }
     store.state.chart.background.img = bgImg
   }
 
   hydrateImages(store.state.chart)
+
+  if (!canvas.value) {
+    return console.log('The canvas doesn\'nt exist! Maybe it tried to re-render after being unmounted.')
+  }
 
   generateChart(
     canvas.value,
