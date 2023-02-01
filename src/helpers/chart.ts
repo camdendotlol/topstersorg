@@ -169,14 +169,14 @@ const saveChartImage = (url: string): void => {
   document.body.removeChild(link)
 }
 
-export const createNewChart = () => {
+export const createNewChart = (name = null) => {
   const storedCharts = getStoredCharts()
 
   const newStoredChartsArray = storedCharts.map(chart => chart.currentlyActive ? { ...chart, currentlyActive: false } : chart)
 
   const newChart: StoredChart = {
     timestamp: new Date().getTime(),
-    name: null,
+    name,
     data: initialState.chart,
     currentlyActive: true
   }

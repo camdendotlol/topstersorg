@@ -167,7 +167,6 @@ const importTopsters2ChartsPicked = (event: Event) => {
 }
 
 const importLastFmChart = async () => {
-  console.log('hello')
   const username = lastFmUsername.value.value
 
   if (!username) return null
@@ -209,17 +208,29 @@ const importLastFmChart = async () => {
     }
   })
 
-  createNewChart()
+  createNewChart(`${username}'s ${periodHeaders[period]} Chart`)
+
+  const getSize = (length) => {
+    for (let i = 1; i <= 10; i++) {
+      if (length < (i * i)) {
+        return {
+          x: i,
+          y: i
+        }
+      }
+    }
+  }
 
   store.commit('setEntireChart', {
     ...initialState.chart,
     title: `${username}'s ${periodHeaders[period]} Chart`,
-    items: newItems
+    items: newItems,
+    size: getSize(newItems.length)
   })
 
   if (missingCovers.length > 0) {
     alert(
-      `Couldn't add the following albums because they're missing cover art on Last.fm: ${missingCovers.join(', ')}`
+      `Couldn't add the following albums because they're missing cover art on Last.fm:\n\n${missingCovers.join('\n\n')}`
     )
   }
 }
@@ -267,24 +278,28 @@ const importLastFmChart = async () => {
         <button
           type="submit"
           id="lastfmImportButton"
+          class="import-button"
         >
           Import from Last.fm
         </button>
       </form>
       <div id="topsters2ImportForm">
-        <h2>Topsters 2</h2>
-        <button
-          @click="importTopsters2Charts"
-        >
-          Import file from Topsters 2
-        </button>
-        <input
-          type="file"
-          style="display: none"
-          ref="importTopsters2"
-          accept="application/json"
-          @change="importTopsters2ChartsPicked"
-        />
+        <form>
+          <h2>Topsters 2</h2>
+          <button
+            class="import-button"
+            @click="importTopsters2Charts"
+          >
+            Import file from Topsters 2
+          </button>
+          <input
+            type="file"
+            style="display: none"
+            ref="importTopsters2"
+            accept="application/json"
+            @change="importTopsters2ChartsPicked"
+          />
+        </form>
       </div>
     </div>
   </div>
@@ -318,9 +333,9 @@ const importLastFmChart = async () => {
    margin: 0;
  }
 
- #lastfmImportButton {
+ .import-button {
    max-width: 200px;
-   align-self: flex-end;
+   align-self: center;
  }
 
  #topsters2ImportForm {

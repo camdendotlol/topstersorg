@@ -48,6 +48,7 @@ store.subscribe((mutation, state) => {
       renderChart()
     }
   }
+
   imagesStillLoading.value = true
   renderChart()
 })
@@ -99,13 +100,15 @@ const hydrateImages = async (chart: Chart) => {
       const img = new Image()
       img.src = item.coverURL
       item.coverImg = img
-      // make sure they all load in
-      item.coverImg.onload = () => {
-        renderChart()
-      }
+
       // handle 404 errors, etc.
       item.coverImg.onerror = () => {
         img.src = '/not_found.jpg'
+      }
+
+      // make sure they all load in
+      item.coverImg.onload = () => {
+        renderChart()
       }
     }
   }
