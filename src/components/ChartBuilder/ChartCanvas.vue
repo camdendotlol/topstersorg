@@ -103,6 +103,10 @@ const hydrateImages = async (chart: Chart) => {
       item.coverImg.onload = () => {
         renderChart()
       }
+      // handle 404 errors, etc.
+      item.coverImg.onerror = () => {
+        img.src = '/not_found.jpg'
+      }
     }
   }
 
