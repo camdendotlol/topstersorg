@@ -1,9 +1,16 @@
 // Functions for filling in the chart.
 
 import { initialState } from '../store'
-import { type Chart, type ChartItem, type Result, BackgroundTypes } from '../types'
-import { setStoredCharts } from './localStorage'
-import { isBookResult, isCustomResult, isGameResult, isMovieResult, isMusicResult, isTVResult } from './typeGuards'
+import { type Chart, type ChartItem, type Result, BackgroundTypes, StoredChart } from '../types'
+import { getStoredCharts, setStoredCharts } from './localStorage'
+import {
+  isBookResult,
+  isCustomResult,
+  isGameResult,
+  isMovieResult,
+  isMusicResult,
+  isTVResult
+} from './typeGuards'
 import fetchImageURL from '../api/fetchImage'
 import generateChart from 'topster'
 
@@ -160,4 +167,28 @@ const saveChartImage = (url: string): void => {
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
+}
+
+export const createNewChart = () => {
+  const storedCharts = getStoredCharts()
+
+  const newStoredChartsArray = storedCharts.map(chart => chart.currentlyActive ? { ...chart, currentlyActive: false } : chart)
+
+  const newChart: StoredChart = {
+    timestamp: new Date().getTime(),
+    name: null,
+    data: initialState.chart,
+    currentlyActive: true
+  }
+
+  setStoredCharts([...newStoredChartsArray, newChart])
+}
+
+export const periodHeaders = {
+  overall: 'All-Time',
+  '7day': 'Weekly',
+  '1month': 'Monthly',
+  '3month': '3 Month',
+  '6month': '6 Month',
+  '12month': 'Yearly'
 }
