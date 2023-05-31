@@ -219,6 +219,11 @@ const importLastFmChart = async () => {
         }
       }
     }
+
+    return {
+      x: 10,
+      y: 10
+    }
   }
 
   store.commit('setEntireChart', {
