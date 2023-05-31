@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { ref, Ref } from 'vue'
 import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
-import { BackgroundTypes, StoredChart, ChartItem } from '../../types'
-import { useStore } from '../../store'
+import { BackgroundTypes, StoredChart, ChartItem, Period, LastfmChartResponseItem } from '../../types'
+import { initialState, useStore } from '../../store'
 import pako from 'pako'
+import { getLastfmChart } from '../../api/lastfm'
+import { createNewChart, periodHeaders } from '../../helpers/chart'
 
 const store = useStore()
 
 const topsters2ImportRef: Ref<HTMLInputElement> = ref(null)
+
+const lastFmUsername: Ref<HTMLInputElement> = ref(null)
+const lastFmPeriodDropdown: Ref<HTMLSelectElement> = ref(null)
 
 const importTopsters2Charts = () => {
   topsters2ImportRef.value.click()
@@ -150,7 +155,8 @@ const importTopsters2ChartsPicked = (event: Event) => {
       }
 
       setStoredCharts(storedCharts)
-      store.commit('setEntireChart', storedCharts.filter((chart) => chart.currentlyActive)[0].data) // Force update, possibly a better way of doing this?
+      // Force update, possibly a better way of doing this?
+      store.commit('setEntireChart', storedCharts.filter((chart) => chart.currentlyActive)[0].data)
     } catch (e) {
       console.error(e)
       alert('The file selected is not a valid Topsters 2 backup: ' + e)
@@ -159,22 +165,147 @@ const importTopsters2ChartsPicked = (event: Event) => {
 
   fileReader.readAsText(files[0])
 }
+
+const importLastFmChart = async () => {
+  const username = lastFmUsername.value.value
+
+  if (!username) return null
+
+  const periodDropdown = lastFmPeriodDropdown.value
+  const period = periodDropdown.options[periodDropdown.selectedIndex].value as Period
+
+  let results: LastfmChartResponseItem[]
+
+  try {
+    results = await getLastfmChart(username, 'albums', period)
+  } catch {
+    alert('Something went wrong when downloading your Last.fm data! Is your username spelled correctly?')
+    return null
+  }
+  const missingCovers: string[] = []
+
+  const filtered = results.filter((item: LastfmChartResponseItem) => {
+    const coverURL = item.image.find((i) => i.size === 'extralarge')['#text']
+
+    if (coverURL === '') {
+      missingCovers.push(`${item.artist.name} - ${item.name}`)
+      return false
+    }
+
+    return true
+  })
+
+  const newItems: ChartItem[] = filtered.map((item: LastfmChartResponseItem) => {
+    const coverURL = item.image.find((i) => i.size === 'extralarge')['#text']
+    const coverImg = new Image()
+    coverImg.src = coverURL
+
+    return {
+      title: item.name,
+      creator: item.artist.name,
+      coverImg,
+      coverURL
+    }
+  })
+
+  createNewChart(`${username}'s ${periodHeaders[period]} Chart`)
+
+  const getSize = (length) => {
+    for (let i = 1; i <= 10; i++) {
+      if (length < (i * i)) {
+        return {
+          x: i,
+          y: i
+        }
+      }
+    }
+
+    return {
+      x: 10,
+      y: 10
+    }
+  }
+
+  store.commit('setEntireChart', {
+    ...initialState.chart,
+    title: `${username}'s ${periodHeaders[period]} Chart`,
+    items: newItems,
+    size: getSize(newItems.length)
+  })
+
+  if (missingCovers.length > 0) {
+    alert(
+      `Couldn't add the following albums because they're missing cover art on Last.fm:\n\n${missingCovers.join('\n\n')}`
+    )
+  }
+}
 </script>
 
 <template>
   <div id="imports">
     <div class="container">
-      <button
-        @click="importTopsters2Charts"
+      <p>Imported data will be added to a new chart.</p>
+      <form
+        id="lastFmImportChart"
+        @submit.prevent="importLastFmChart"
       >
-        Import from Topsters 2
-      </button>
-      <input
-        type="file"
-        style="display: none"
-        ref="topsters2ImportRef"
-        accept="application/json"
-        @change="importTopsters2ChartsPicked"/>
+        <h2>Last.fm</h2>
+        <div class="form-item">
+          <label for="lastfm-username">
+            Username
+          </label>
+          <input
+            type="text"
+            ref="lastFmUsername"
+            id="lastFmUsername"
+            name="lastFmUsername"
+            placeholder="username"
+            required
+          />
+        </div>
+        <div class="form-item">
+          <label for="lastFmPeriodDropdown">
+            Period
+          </label>
+          <select
+            id="lastFmPeriodDropdown"
+            name="lastFmPeriodDropdown"
+            ref="lastFmPeriodDropdown"
+          >
+            <option value="overall">Overall</option>
+            <option value="7day">7 day</option>
+            <option value="1month">1 month</option>
+            <option value="3month">3 month</option>
+            <option value="6month">6 month</option>
+            <option value="12month">12 month</option>
+          </select>
+        </div>
+        <button
+          type="submit"
+          id="lastfmImportButton"
+          class="import-button"
+        >
+          Import from Last.fm
+        </button>
+      </form>
+      <div id="topsters2ImportForm">
+        <form>
+          <h2>Topsters 2</h2>
+          <button
+            class="import-button"
+            @click="importTopsters2Charts"
+          >
+            Import file from Topsters 2
+          </button>
+          <input
+            type="file"
+            style="display: none"
+            ref="importTopsters2"
+            accept="application/json"
+            @change="importTopsters2ChartsPicked"
+          />
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -193,7 +324,44 @@ const importTopsters2ChartsPicked = (event: Event) => {
 
 .container {
   width: 100%;
-  padding: 10px;
-}
+  padding: 20px;
+   display: flex;
+   gap: 20px;
+   flex-flow: column;
+ }
+
+ h2 {
+   margin-top: 0;
+ }
+
+ p {
+   margin: 0;
+ }
+
+ .import-button {
+   max-width: 200px;
+   align-self: center;
+ }
+
+ #topsters2ImportForm {
+   display: flex;
+   flex-flow: column;
+   align-items: center;
+ }
+
+ #topsters2ImportForm button {
+   max-width: 240px;
+ }
+
+#lastFmImportChart {
+   display: flex;
+   flex-flow: column;
+   gap: 10px;
+ }
+ .form-item {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   align-items: center;
+ }
 
 </style>

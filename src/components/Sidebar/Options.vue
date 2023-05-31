@@ -11,7 +11,7 @@ const backgroundType: Ref<BackgroundTypes> = ref(BackgroundTypes.Image)
 
 const chart: Ref<Chart> = ref(store.state.chart)
 
-// Buckle up, here come the elemnt refs 🤠
+// Buckle up, here come the element refs 🤠
 const displayTitlesRef: Ref<HTMLFormElement> = ref(null)
 const xAxisRef: Ref<HTMLFormElement> = ref(null)
 const yAxisRef: Ref<HTMLFormElement> = ref(null)
