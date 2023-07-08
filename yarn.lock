@@ -1385,6 +1385,11 @@ json5@^1.0.1:
   dependencies:
     minimist "^1.2.0"
 
+konva@^9.2.0:
+  version "9.2.0"
+  resolved "https://registry.yarnpkg.com/konva/-/konva-9.2.0.tgz#3739e539724b0e6b76d697a322efdaa01baa1508"
+  integrity sha512-+woI76Sk+VFVl9z7zPkuTnN2zFpEYg27YWz8BCdQXpt5IS3pdnSPAPQVPPMidcbDi9/G5b/IOIp35/KqMGiYPA==
+
 levn@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/levn/-/levn-0.4.1.tgz#ae4562c007473b932a6200d403268dd2fffc6ade"
@@ -1907,6 +1912,11 @@ vue-eslint-parser@^9.0.0, vue-eslint-parser@^9.0.1:
     esquery "^1.4.0"
     lodash "^4.17.21"
     semver "^7.3.6"
+
+vue-konva@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/vue-konva/-/vue-konva-3.0.2.tgz#72393d5cd3b9ac4f798e5d381de5ef451456d810"
+  integrity sha512-FNWKtPPVDihNuQcq7F4GzuVPkPaEfg8lnWezpRqgiC2VetdvONOiYOFD800jNL5kt/lEYnSOYvhqqdTPbv2c8w==
 
 vue-template-compiler@^2.7.14:
   version "2.7.14"
