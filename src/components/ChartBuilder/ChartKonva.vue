@@ -4,14 +4,20 @@ import { ref } from 'vue'
 
 const store = useStore()
 
-const konvaChart = ref(null)
+const scaleFactor = ref(0)
+const container = ref(null)
 
-console.log(konvaChart.value)
+// watch(container, () => {
+//   console.log(container.value)
+//   scaleFactor.value = container.value && container.value.clientWidth
+//     ? pixelDimensions.x / container.value.parentElement.clientWidth
+//     : 0
+// })
 
 const maxItemTitleWidth = 0
 
 // height/width of each square cell
-const CELL_SIZE = 260
+const CELL_SIZE = 360
 
 const chartTitleMargin = store.state.chart.title === '' ? 0 : 60
 
@@ -29,8 +35,8 @@ const configKonva = {
   width: pixelDimensions.x,
   height: pixelDimensions.y,
   scale: {
-    x: konvaChart.value ? pixelDimensions.x / konvaChart.value.parentElement.clientWidth : 1,
-    y: konvaChart.value ? pixelDimensions.y / konvaChart.value.parentElement.clientWidth : 1
+    x: 0.5,
+    y: 0.5
   }
 }
 
@@ -46,11 +52,13 @@ const configChartBg = {
 </script>
 
 <template>
-  <v-stage :config="configKonva" id="chart-canvas">
-    <v-layer>
-      <v-rect :config="configChartBg"></v-rect>
-    </v-layer>
-  </v-stage>
+  <div class="container" ref="container">
+    <v-stage :config="configKonva" id="chart-canvas">
+      <v-layer>
+        <v-rect :config="configChartBg"></v-rect>
+      </v-layer>
+    </v-stage>
+  </div>
 </template>
 
 <style scoped>
@@ -80,12 +88,14 @@ const configChartBg = {
   width: 1.8rem;
 }
 
-#chart-canvas {
+.container {
   max-width: 95%;
   max-height: 85vh;
   margin: auto;
   margin-top: 50px;
   border-radius: 5px;
+  height: 100%;
+  width: 100%;
 }
 
 @media screen and (max-width: 1000px) {

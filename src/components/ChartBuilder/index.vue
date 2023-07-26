@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import ChartKonva from './ChartKonva.vue'
+import Editor from './Editor.vue'
 import TopBar from './TopBar.vue'
 </script>
 
 <template>
   <div class="chart-builder">
     <div class="chart-builder-contents">
-      <TopBar />
+      <!-- <TopBar /> -->
       <!-- <ChartCanvas /> -->
-      <ChartKonva />
+      <!-- <ChartKonva /> -->
+      <Editor />
     </div>
   </div>
 </template>
