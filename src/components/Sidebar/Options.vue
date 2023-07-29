@@ -38,7 +38,6 @@ onMounted(() => {
 
 const updateTitle = (event: Event): void => {
   const title = (event.target as HTMLFormElement).value
-  console.log(title)
   return store.commit('changeTitle', title)
 }
 
