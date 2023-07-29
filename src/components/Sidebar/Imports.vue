@@ -14,7 +14,8 @@ const topsters2ImportRef: Ref<HTMLInputElement> = ref(null)
 const lastFmUsername: Ref<HTMLInputElement> = ref(null)
 const lastFmPeriodDropdown: Ref<HTMLSelectElement> = ref(null)
 
-const importTopsters2Charts = () => {
+const importTopsters2Charts = (e) => {
+  e.preventDefault()
   topsters2ImportRef.value.click()
 }
 
@@ -300,7 +301,7 @@ const importLastFmChart = async () => {
           <input
             type="file"
             style="display: none"
-            ref="importTopsters2"
+            ref="topsters2ImportRef"
             accept="application/json"
             @change="importTopsters2ChartsPicked"
           />
