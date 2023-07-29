@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from 'vue'
+import ControlPanel from './ControlPanel.vue'
+import Chart from './Chart.vue'
 
 const container = ref(null)
 
@@ -14,12 +16,10 @@ const resizeObserver = new ResizeObserver((els) => {
 })
 
 onMounted(() => {
-  console.log('resizeObserver observing.')
   resizeObserver.observe(container.value)
 })
 
 onUnmounted(() => {
-  console.log('resizeObserver disconnecting.')
   resizeObserver.disconnect()
 })
 
@@ -56,6 +56,8 @@ watch([containerHeight, containerWidth], () => {
       <v-layer>
         <v-rect :config="configEditorBg"></v-rect>
       </v-layer>
+      <Chart />
+      <ControlPanel :key="configEditorBg.width" :margin-left="Math.max((configEditorBg.width / 2) - 200)" />
     </v-stage>
   </div>
 </template>
@@ -63,7 +65,7 @@ watch([containerHeight, containerWidth], () => {
 <style scoped>
 .container {
   height: 100vh;
-  width: 100%;
+  width: auto;
   margin: 0;
   padding: 0;
 }

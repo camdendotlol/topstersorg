@@ -32,34 +32,36 @@ const returnToHomepage = () => {
     <div class="sidebar-div">
       <Sidebar />
     </div>
-    <button type="button" class="toggle-button" id="mobile-search-toggle" @click="toggleMobileSearchDisplay">
-      <BIconPlusLg />
-    </button>
-    <button
-      type="button"
-      class="toggle-button"
-      id="home-button"
-      @click="returnToHomepage"
-      v-if="showMobileOptions || showMobileSearch"
-    >
-      <BIconHouse />
-    </button>
-    <div
-      v-if="!showMobileOptions && !showMobileSearch"
-    >
-      <DownloadButton />
+    <div>
+      <button type="button" class="toggle-button" id="mobile-search-toggle" @click="toggleMobileSearchDisplay">
+        <BIconPlusLg />
+      </button>
+      <button
+        type="button"
+        class="toggle-button"
+        id="home-button"
+        @click="returnToHomepage"
+        v-if="showMobileOptions || showMobileSearch"
+      >
+        <BIconHouse />
+      </button>
+      <div
+        v-if="!showMobileOptions && !showMobileSearch"
+      >
+        <DownloadButton />
+      </div>
+      <button type="button" class="toggle-button" id="mobile-options-toggle" @click="toggleMobileOptionsDisplay">
+        <BIconGearFill />
+      </button>
+      <div class="mobile-options-visibility-manager" :class="showMobileOptions ? 'visible-mobile-options' : 'invisible-mobile-options'">
+        <MobileOptionsSidebar />
+      </div>
+      <div class="mobile-search-visibility-manager" :class="showMobileSearch ? 'visible-mobile-search' : 'invisible-mobile-search'">
+        <MobileSearchSidebar />
+      </div>
+      <Popup />
+      <ChartBuilder />
     </div>
-    <button type="button" class="toggle-button" id="mobile-options-toggle" @click="toggleMobileOptionsDisplay">
-      <BIconGearFill />
-    </button>
-    <div class="mobile-options-visibility-manager" :class="showMobileOptions ? 'visible-mobile-options' : 'invisible-mobile-options'">
-      <MobileOptionsSidebar />
-    </div>
-    <div class="mobile-search-visibility-manager" :class="showMobileSearch ? 'visible-mobile-search' : 'invisible-mobile-search'">
-      <MobileSearchSidebar />
-    </div>
-    <Popup />
-    <ChartBuilder />
   </div>
 </template>
 
@@ -91,11 +93,13 @@ select {
 .main {
   height: 100vh;
   width: 100vw;
-  display: flex;
+  max-width: 100vw;
+  display: grid;
+  /* Why doesn't 1fr work here? */
+  grid-template-columns: 400px calc(100vw - 400px);
   position: absolute;
   top: 0px;
   left: 0px;
-  margin: 0;
 }
 
 .hidden {
@@ -145,8 +149,6 @@ select {
 .sidebar-div {
   margin: 0;
   padding: 0;
-  width: 400px;
-  flex-shrink: 0;
   overflow-y: scroll;
   background: var(--green-bg);
   box-shadow: 2px 0 3px -1px gray;

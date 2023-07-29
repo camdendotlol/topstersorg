@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import Editor from './Editor.vue'
-import TopBar from './TopBar.vue'
+import Editor from './Editor/index.vue'
 </script>
 
 <template>
   <div class="chart-builder">
     <div class="chart-builder-contents">
-      <!-- <TopBar /> -->
-      <!-- <ChartCanvas /> -->
-      <!-- <ChartKonva /> -->
       <Editor />
     </div>
   </div>
@@ -25,11 +21,6 @@ import TopBar from './TopBar.vue'
 .chart-builder-contents {
   margin: 0 auto;
   padding: 0;
-}
-
-@media screen and (max-width: 1000px) {
-  .chart-builder {
-    width: 100%;
-  }
+  width: 100%;
 }
 </style>
