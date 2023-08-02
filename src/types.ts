@@ -116,3 +116,8 @@ export interface LastfmChartResponseItem {
 }
 
 export type Result = BookResult | MusicResult | GameResult | MovieResult | TVResult | CustomResult
+
+export interface ChangelogItem {
+  date: string,
+  text: string
+}

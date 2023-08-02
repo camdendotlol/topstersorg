@@ -6,11 +6,13 @@ import Imports from './Imports.vue'
 import { BIconCaretDownFill, BIconCaretUpFill } from 'bootstrap-icons-vue'
 import FAQ from './FAQ.vue'
 import { ref, Ref } from 'vue'
+import Changelog from './Changelog.vue'
 
 const searchDisplayed: Ref<boolean> = ref(true)
 const optionsDisplayed: Ref<boolean> = ref(false)
 const importsDisplayed: Ref<boolean> = ref(false)
 const faqDisplayed: Ref<boolean> = ref(false)
+const changelogDisplayed: Ref<boolean> = ref(false)
 </script>
 
 <template>
@@ -64,6 +66,18 @@ const faqDisplayed: Ref<boolean> = ref(false)
           <BIconCaretDownFill v-else class="caret" />
         </button>
         <FAQ v-if="faqDisplayed" />
+      </div>
+      <div>
+        <button
+          class="section-toggle"
+          :class="{ 'active-section-toggle': changelogDisplayed }"
+          @click="changelogDisplayed = !changelogDisplayed"
+        >
+          <span>Changelog</span>
+          <BIconCaretUpFill v-if="changelogDisplayed" class="caret" />
+          <BIconCaretDownFill v-else class="caret" />
+        </button>
+        <Changelog v-if="changelogDisplayed" />
       </div>
       <div id="credits">
         <p>Data from:</p>
