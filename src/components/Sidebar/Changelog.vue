@@ -5,6 +5,18 @@ const changes: ChangelogItem[] = [
   {
     date: new Date('August 2, 2023').toLocaleDateString(),
     text: 'Updated the search backend for games to support double the previous number of searches per second. This should fix the intermittently failing game searches.'
+  },
+  {
+    date: new Date('July 29, 2023').toLocaleDateString(),
+    text: 'Fixed the Topsters 2 import feature, which had been broken since the previous update.'
+  },
+  {
+    date: new Date('May 30, 2023').toLocaleDateString(),
+    text: 'Added the ability to build a chart with your Last.fm listening stats in the Imports panel.'
+  },
+  {
+    date: new Date('January 14, 2023').toLocaleDateString(),
+    text: 'Overhauled the frontend build process to use Vite and a newer version of Vue. No visible changes, but it should improve performance and make updates easier.'
   }
 ]
 </script>
