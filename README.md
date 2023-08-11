@@ -2,6 +2,8 @@
 
 A website for creating charts with books, music, and games.
 
+![Screenshot of topsters.org](/screenshot.png)
+
 ## Contributing
 
 I'm happy to accept contributions for anything in the list of issues. Please leave a comment when you begin to work on an issue so no one else duplicates your work.
