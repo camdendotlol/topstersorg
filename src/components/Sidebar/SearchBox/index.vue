@@ -38,8 +38,6 @@ const updateResults = (newResults: []) => {
 <style scoped>
 #searchbox {
   border-radius: 0 0 5px 5px;
-  color: var(--off-white);
-  background: var(--blue-bg);
 }
 
 .container {

@@ -172,15 +172,13 @@ const initDrag = (event: DragEvent, result: Result): void => {
 #results-div {
   max-height: 600px;
   overflow-y: scroll;
-  background: var(--dark-blue);
 }
 
 ul {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   align-items: center;
-  justify-content: space-around;
   gap: 6px;
-  flex-wrap: wrap;
   padding: 0px;
 }
 
@@ -189,7 +187,7 @@ li {
 }
 
 li img {
-  width: 80px;
+  width: 100%;
 }
 
 li img:hover {

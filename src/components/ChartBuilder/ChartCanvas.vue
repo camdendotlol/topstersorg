@@ -477,9 +477,9 @@ const allowDragAndDrop = (event: DragEvent) => {
   margin-top: 20px;
   padding: 20px;
   border-radius: 50%;
-  border: 2px solid var(--off-white);
+  border: 2px solid var(--text-color);
   background: transparent;
-  color: var(--off-white);
+  color: var(--text-color);
   height: 5rem;
   width: 5rem;
   font-size: 0.8rem;
@@ -488,7 +488,7 @@ const allowDragAndDrop = (event: DragEvent) => {
 
 #save-button:hover {
   cursor: pointer;
-  background: var(--off-white);
+  background: var(--text-color);
   color: var(--dark-blue);
 }
 

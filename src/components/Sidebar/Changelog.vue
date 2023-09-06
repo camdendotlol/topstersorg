@@ -22,33 +22,18 @@ const changes: ChangelogItem[] = [
 </script>
 
 <template>
-  <div id="changelog">
-    <div class="container">
-      <ul>
-        <li
-          v-for="change in changes"
-          v-bind:key="change.date"
-        >
-          <strong>{{ change.date }}</strong>
-          {{ change.text }}
-        </li>
-      </ul>
-    </div>
-  </div>
+  <ul>
+    <li
+      v-for="change in changes"
+      v-bind:key="change.date"
+    >
+      <strong>{{ change.date }}</strong>
+      {{ change.text }}
+    </li>
+  </ul>
 </template>
 
 <style scoped>
-#changelog {
-  display: flex;
-  background: var(--blue-bg);
-  margin-top: 0;
-  padding: 0;
-  border-radius: 0 0 5px 5px;
-  text-align: left;
-  overflow-y: scroll;
-  max-height: 500px;
-}
-
 ul {
   padding: 0;
 }
@@ -56,11 +41,6 @@ ul {
 li {
   list-style-type: none;
   margin-bottom: 10px;
-}
-
-.container {
-  width: 100%;
-  margin: auto 10px;
 }
 
 </style>

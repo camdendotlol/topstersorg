@@ -186,10 +186,6 @@ const handleSearch = async (): Promise<unknown[] | null> => {
   flex-grow: 1;
 }
 
-input {
-  width: 90%;
-}
-
 .form-flex {
   display: flex;
   justify-content: space-between;
@@ -203,7 +199,6 @@ input {
   height: 20px;
   width: 20px;
   position: relative;
-  background: var(--off-white);
   margin-left: -36px;
   top: 8px;
   padding: 0;
@@ -221,7 +216,6 @@ input {
 svg {
   height: 25px;
   width: 25px;
-  color: black;
 }
 
 .loading-icon {
@@ -232,7 +226,6 @@ svg {
 
 .custom-form-item {
   margin-top: 10px;
-  color: var(--dark-blue);
 }
 
 .custom-metadata-form > label {

@@ -28,7 +28,7 @@ export const initialState = {
     showNumbers: false,
     showTitles: true,
     gap: 20,
-    font: 'Ubuntu Mono',
+    font: 'monospace',
     textColor: '#ffffff',
     shadows: false
   }

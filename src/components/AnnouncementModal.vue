@@ -39,7 +39,7 @@ const notice = {
 
 .announcement-modal {
   position: absolute;
-  background: var(--green-bg);
+  background: var(--ui-bg);
   padding: 20px;
   border-radius: 20px;
   max-width: 500px;

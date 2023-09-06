@@ -7,8 +7,8 @@ const updateWithShim = (chart: Chart): Chart => {
   const clone = { ...chart }
 
   if (!clone.font) {
-    console.log('no font found! setting to Ubuntu Mono')
-    clone.font = 'Ubuntu Mono'
+    console.log('no font found! setting to monospace')
+    clone.font = 'monospace'
   }
 
   if (!Object.prototype.hasOwnProperty.call(clone, 'showNumbers')) {

@@ -243,92 +243,78 @@ const importLastFmChart = async () => {
 </script>
 
 <template>
-  <div id="imports">
-    <div class="container">
-      <p>Imported data will be added to a new chart.</p>
-      <form
-        id="lastFmImportChart"
-        @submit.prevent="importLastFmChart"
-      >
-        <h2>Last.fm</h2>
-        <div class="form-item">
-          <label for="lastfm-username">
-            Username
-          </label>
-          <input
-            type="text"
-            ref="lastFmUsername"
-            id="lastFmUsername"
-            name="lastFmUsername"
-            placeholder="username"
-            required
-          />
-        </div>
-        <div class="form-item">
-          <label for="lastFmPeriodDropdown">
-            Period
-          </label>
-          <select
-            id="lastFmPeriodDropdown"
-            name="lastFmPeriodDropdown"
-            ref="lastFmPeriodDropdown"
-          >
-            <option value="overall">Overall</option>
-            <option value="7day">7 day</option>
-            <option value="1month">1 month</option>
-            <option value="3month">3 month</option>
-            <option value="6month">6 month</option>
-            <option value="12month">12 month</option>
-          </select>
-        </div>
-        <button
-          type="submit"
-          id="lastfmImportButton"
-          class="import-button"
-        >
-          Import from Last.fm
-        </button>
-      </form>
-      <div id="topsters2ImportForm">
-        <form>
-          <h2>Topsters 2</h2>
-          <button
-            class="import-button"
-            @click="importTopsters2Charts"
-          >
-            Import file from Topsters 2
-          </button>
-          <input
-            type="file"
-            style="display: none"
-            ref="topsters2ImportRef"
-            accept="application/json"
-            @change="importTopsters2ChartsPicked"
-          />
-        </form>
+  <div class="container">
+    <p>Imported data will be added to a new chart.</p>
+    <form
+      id="lastFmImportChart"
+      @submit.prevent="importLastFmChart"
+    >
+      <h2>Last.fm</h2>
+      <div class="form-item">
+        <label for="lastfm-username">
+          Username
+        </label>
+        <input
+          type="text"
+          ref="lastFmUsername"
+          id="lastFmUsername"
+          name="lastFmUsername"
+          placeholder="username"
+          required
+        />
       </div>
+      <div class="form-item">
+        <label for="lastFmPeriodDropdown">
+          Period
+        </label>
+        <select
+          id="lastFmPeriodDropdown"
+          name="lastFmPeriodDropdown"
+          ref="lastFmPeriodDropdown"
+        >
+          <option value="overall">Overall</option>
+          <option value="7day">7 day</option>
+          <option value="1month">1 month</option>
+          <option value="3month">3 month</option>
+          <option value="6month">6 month</option>
+          <option value="12month">12 month</option>
+        </select>
+      </div>
+      <button
+        type="submit"
+        id="lastfmImportButton"
+        class="import-button"
+      >
+        Import from Last.fm
+      </button>
+    </form>
+    <div id="topsters2ImportForm">
+      <form>
+        <h2>Topsters 2</h2>
+        <button
+          class="import-button"
+          @click="importTopsters2Charts"
+        >
+          Import file from Topsters 2
+        </button>
+        <input
+          type="file"
+          style="display: none"
+          ref="topsters2ImportRef"
+          accept="application/json"
+          @change="importTopsters2ChartsPicked"
+        />
+      </form>
     </div>
   </div>
 </template>
 
 <style scoped>
-#imports {
-  display: flex;
-  background: var(--blue-bg);
-  margin-top: 0;
-  padding: 0;
-  border-radius: 0 0 5px 5px;
-  text-align: left;
-  overflow-y: scroll;
-  max-height: 500px;
-}
-
 .container {
   width: 100%;
-  padding: 20px;
-   display: flex;
-   gap: 20px;
-   flex-flow: column;
+  display: flex;
+  gap: 20px;
+  flex-flow: column;
  }
 
  h2 {

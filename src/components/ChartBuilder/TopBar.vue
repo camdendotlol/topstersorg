@@ -103,7 +103,7 @@ const deleteChart = () => {
 #top-bar {
   width: calc(100% - 500px);
   height: 40px;
-  background: var(--green-bg);
+  background: var(--ui-bg);
   position: absolute;
   display: block;
   top: 0;
@@ -113,7 +113,6 @@ const deleteChart = () => {
   padding: 0;
   gap: 50px;
   color: white;
-  box-shadow: 0 1px 2px var(--dark-blue);
 }
 
 .download-button {
@@ -123,7 +122,6 @@ const deleteChart = () => {
   bottom: 35px;
   float: right;
   position: relative;
-  font-family: "Ubuntu Mono", monospace;
 }
 
 #save-icon {
