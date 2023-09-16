@@ -331,9 +331,7 @@ const importLastFmChart = async () => {
  }
 
  #topsters2ImportForm {
-   display: flex;
-   flex-flow: column;
-   align-items: center;
+  text-align: center;
  }
 
  #topsters2ImportForm button {
@@ -341,10 +339,11 @@ const importLastFmChart = async () => {
  }
 
 #lastFmImportChart {
-   display: flex;
-   flex-flow: column;
-   gap: 10px;
+  display: flex;
+  flex-flow: column;
+  gap: 10px;
  }
+
  .form-item {
    display: grid;
    grid-template-columns: 1fr 1fr;

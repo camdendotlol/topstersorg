@@ -69,18 +69,22 @@ const returnToHomepage = () => {
   color: var(--text-color);
   overflow-y: hidden;
   box-sizing: border-box;
-  scrollbar-color: #F3CFC6 black;
+  scrollbar-color: var(--accent) black;
   scrollbar-width: thin;
+  accent-color: var(--accent);
 }
 
 h1, h2, h3, h4 {
-  color: #F3CFC6;
+  color: var(--accent);
 }
 
 body {
   background: #2a2a2a;
-  box-sizing: border-box;
   touch-action: manipulation;
+}
+
+button {
+  font-family: monospace;
 }
 
 input {
@@ -153,9 +157,13 @@ select {
   cursor: pointer;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 .sidebar-div {
   margin: 0;
-  padding: 0;
+  padding: 0 12px;
   width: 400px;
   flex-shrink: 0;
   overflow-y: scroll;

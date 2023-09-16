@@ -49,9 +49,7 @@ const isOpen: Ref<boolean> = ref(props.defaultOpen)
 
 .sidebar-item-content {
   display: flex;
-  margin-top: 0;
   margin-left: 10px;
-  padding: 0;
   text-align: left;
   overflow-y: scroll;
 }
@@ -85,7 +83,7 @@ li {
 .container {
   width: 100%;
   margin: auto;
-  margin-left: 30px;
+  padding-left: 30px;
 }
 
 </style>
