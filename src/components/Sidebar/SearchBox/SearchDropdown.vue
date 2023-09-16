@@ -176,9 +176,10 @@ const initDrag = (event: DragEvent, result: Result): void => {
 
 ul {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, 70px);
   align-items: center;
-  gap: 6px;
+  justify-content: space-evenly;
+  gap: 4px;
   padding: 0px;
 }
 

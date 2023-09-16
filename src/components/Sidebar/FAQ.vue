@@ -6,10 +6,6 @@
     <p>I'm using OpenLibrary, which is affiliated with the Internet Archive and runs on donations. The music and games APIs are both from companies that can afford top-tier reliability. But OpenLibrary is a bit less reliable. Don't judge them too much for it, and maybe <a href="https://archive.org/donate/?platform=ol&origin=olwww-TopNavDonateButton">donate to them</a> to help them improve their services.</p>
     <h3>What is "Ubuntu Mono"?</h3>
     <p>In the past, Topsters 3 downloaded the Ubuntu Mono font from Google Fonts and set it as the default font for new charts. Although I think Ubuntu Mono is a nice font, removing it from Topsters 3 will make the site a bit lighter and will slightly improve load times.</p>
-    <h3>Where can I donate?</h3>
-    <p>This site is cheap to run so donations would just complicate things.</p>
-    <h3>What are your thoughts on the nineteenth century German philosopher Georg Wilhelm Friedrich Hegel?</h3>
-    <p>:|</p>
   </div>
 </template>
 

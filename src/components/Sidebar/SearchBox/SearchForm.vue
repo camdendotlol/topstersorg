@@ -178,12 +178,12 @@ const handleSearch = async (): Promise<unknown[] | null> => {
 </template>
 
 <style scoped>
-.add-form {
-  margin-bottom: 10px;
-}
-
 .searchbox-div {
   flex-grow: 1;
+}
+
+#searchbox {
+  width: 100%;
 }
 
 .form-flex {
@@ -191,6 +191,7 @@ const handleSearch = async (): Promise<unknown[] | null> => {
   justify-content: space-between;
   gap: 5px;
   align-items: center;
+  width: 100%;
 }
 
 .submit-button {

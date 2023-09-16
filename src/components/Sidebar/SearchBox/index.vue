@@ -36,10 +36,6 @@ const updateResults = (newResults: []) => {
 </template>
 
 <style scoped>
-#searchbox {
-  border-radius: 0 0 5px 5px;
-}
-
 .container {
   padding: 10px;
 }
