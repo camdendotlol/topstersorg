@@ -90,9 +90,11 @@ button {
 input {
   padding: 8px;
   border: none;
-  border-radius: 3px;
+  border-radius: 2px;
   font-family: monospace;
   font-size: 14px;
+  background-color: var(--input-bg);
+  color: black;
 }
 
 select {
@@ -100,7 +102,9 @@ select {
   font-family: monospace;
   font-size: 14px;
   padding: 4px;
-  border-radius: 3px;
+  border-radius: 2px;
+  background-color: var(--input-bg);
+  color: black;
 }
 
 .main {

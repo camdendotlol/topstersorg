@@ -79,7 +79,8 @@ onMounted(() => {
   display: inline;
 }
 
-#search-type-dropdown * {
-  font-size: 1rem;
+select {
+  width: 100px;
+  height: 30px;
 }
 </style>

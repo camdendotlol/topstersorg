@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import queryOpenLibrary from '../../../api/openlibrary'
 import TypeDropdown from './TypeDropdown.vue'
-import { BIconArrowRight, BIconArrowRepeat } from 'bootstrap-icons-vue'
 import queryLastFM from '../../../api/lastfm'
 import queryIGDB from '../../../api/igdb'
 import { tmdbMovieSearch, tmdbTVSearch } from '../../../api/tmdb'
 import type { CustomResult, SearchTypes } from '../../../types'
 import { ref } from 'vue'
+import LoadingEllipses from './LoadingEllipses.vue'
 
 interface Props {
   searchType: SearchTypes
@@ -140,18 +140,16 @@ const handleSearch = async (): Promise<unknown[] | null> => {
         :searchType="searchType"
         @setSearchType="changeSearchType"
       />
-      <div class="searchbox-div">
-        <input
-          id="searchbox"
-          ref="searchbox"
-          @click="searchType === 'custom' ? focusSearchBox() : null"
-          :placeholder="searchType === 'custom' ? 'Enter URL' : null"
-        />
-        <button type="submit" class="submit-button">
-          <BIconArrowRepeat class="loading-icon" v-if="loading" />
-          <BIconArrowRight v-else />
-        </button>
-      </div>
+      <input
+        id="searchbox"
+        ref="searchbox"
+        @click="searchType === 'custom' ? focusSearchBox() : null"
+        :placeholder="searchType === 'custom' ? 'Enter URL' : null"
+      />
+      <button type="submit" class="submit-button">
+        <LoadingEllipses v-if="loading" />
+        <span v-else>🔎</span>
+      </button>
     </div>
     <div
       v-if="searchType === 'custom' && results.length > 0"
@@ -178,51 +176,25 @@ const handleSearch = async (): Promise<unknown[] | null> => {
 </template>
 
 <style scoped>
-.searchbox-div {
-  flex-grow: 1;
-}
-
 #searchbox {
-  width: 100%;
+  flex-grow: 1;
+  height: 30px;
 }
 
 .form-flex {
   display: flex;
   justify-content: space-between;
-  gap: 5px;
   align-items: center;
+  gap: 6px;
   width: 100%;
 }
 
 .submit-button {
-  border-radius: 50%;
+  border-radius: 2px;
   border: none;
-  height: 20px;
-  width: 20px;
-  position: relative;
-  margin-left: -36px;
-  top: 8px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: filter 0.2s;
-}
-
-.submit-button:hover {
-  cursor: pointer;
-  filter: brightness(0.8);
-}
-
-svg {
-  height: 25px;
-  width: 25px;
-}
-
-.loading-icon {
-  animation: rotation 1.5s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
+  height: 30px;
+  width: 30px;
+  background-color: var(--input-bg);
 }
 
 .custom-form-item {
@@ -232,14 +204,4 @@ svg {
 .custom-metadata-form > label {
   margin-bottom: 4px;
 }
-
-@keyframes rotation {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(359deg);
-  }
-}
-
 </style>
