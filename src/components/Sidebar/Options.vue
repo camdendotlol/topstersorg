@@ -275,7 +275,7 @@ const updateBackgroundImage = (event: Event): void => {
     </tr>
     <tr>
       <td>
-        <label for="display-numbers">Show Numbers</label>
+        <label for="show-numbers">Show Numbers</label>
       </td>
       <td>
         <input
@@ -334,11 +334,11 @@ const updateBackgroundImage = (event: Event): void => {
 </template>
 
 <style scoped>
-.options-table {
+/* .options-table {
   display: flex;
   flex-flow: column;
   gap: 10px;
-}
+} */
 
 .color-picker {
   height: 30px;
@@ -346,10 +346,6 @@ const updateBackgroundImage = (event: Event): void => {
   border: none;
   padding: 0;
   overflow: hidden;
-}
-
-#x-axis, #y-axis {
-  width: 100px;
 }
 
 .cell-with-value {
@@ -369,11 +365,12 @@ input {
 tr {
   display: grid;
   grid-template-columns: 120px 1fr;
-  gap: 10px;
+  margin: 10px 0;
 }
 
 td {
   display: flex;
   align-items: center;
+  margin-right: 10px;
 }
 </style>

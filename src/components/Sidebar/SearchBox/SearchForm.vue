@@ -177,16 +177,14 @@ const handleSearch = async (): Promise<unknown[] | null> => {
 
 <style scoped>
 #searchbox {
-  flex-grow: 1;
   height: 30px;
 }
 
 .form-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: auto auto auto;
   gap: 6px;
-  width: 100%;
+  width: 50px;
 }
 
 .submit-button {

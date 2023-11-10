@@ -6,7 +6,8 @@ const updateWithShim = (chart: Chart): Chart => {
   // Avoid mutating the original
   const clone = { ...chart }
 
-  if (!clone.font) {
+  // TODO: Remove the Ubuntu Mono check eventually
+  if (!clone.font || clone.font === 'Ubuntu Mono') {
     console.log('no font found! setting to monospace')
     clone.font = 'monospace'
   }

@@ -36,7 +36,4 @@ const updateResults = (newResults: []) => {
 </template>
 
 <style scoped>
-.container {
-  padding: 10px;
-}
 </style>
