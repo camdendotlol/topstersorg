@@ -5,12 +5,12 @@
 
 <style scoped>
 h1 {
-  margin: 0 auto;
-  margin-top: 20px;
+  margin: 0;
   font-size: 1.8rem;
 }
 
 h2 {
   font-size: 1rem;
+  margin: 0;
 }
 </style>

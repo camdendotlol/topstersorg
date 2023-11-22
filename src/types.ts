@@ -125,8 +125,6 @@ export interface ChangelogItem {
 export enum Tabs {
   AddItems = 'Add Items',
   Options = 'Options',
-  Exports = 'Exports',
-  Imports = 'Imports',
-  FAQ = 'FAQ',
-  Changelog = 'Changelog'
+  ImportsExports = 'Import / Export',
+  Info = 'Info'
 }

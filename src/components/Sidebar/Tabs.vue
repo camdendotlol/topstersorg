@@ -36,21 +36,27 @@ const emit = defineEmits([
 .nav-list {
   display: flex;
   margin: 0;
-  padding: 10px 0;
-  gap: 5px;
+  padding: 0;
   border-radius: 10px 10px 0 0;
-  width: 400px;
-  justify-content: space-around;
-  position: absolute;
-  background: black;
+  width: 100%;
+  gap: 4px;
+  /* justify-content: space-between; */
 }
 
 .nav-list-item {
   list-style-type: none;
 }
 
+.tab-item {
+  border: none;
+  font-size: 1rem;
+  padding: 6px;
+  background: #808080;
+  border-radius: 5px 5px 0 0;
+}
+
 .active {
-  color: red;
+  background: rgba(20, 20, 20, 0.8);
 }
 
 .tab-item:hover {

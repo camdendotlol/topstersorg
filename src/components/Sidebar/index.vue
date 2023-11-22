@@ -3,8 +3,7 @@ import PageTitle from '../PageTitle.vue'
 import SearchBox from './SearchBox/index.vue'
 import Options from './Options.vue'
 import Imports from './Imports.vue'
-import FAQ from './FAQ.vue'
-import Changelog from './Changelog.vue'
+import Info from './Info.vue'
 import Tabs from './Tabs.vue'
 import { Ref, ref } from 'vue'
 import { Tabs as TabsEnum } from '../../types'
@@ -12,33 +11,14 @@ import { Tabs as TabsEnum } from '../../types'
 const tabs: TabsEnum[] = [
   TabsEnum.AddItems,
   TabsEnum.Options,
-  TabsEnum.Exports,
-  TabsEnum.Imports,
-  TabsEnum.FAQ,
-  TabsEnum.Changelog
+  TabsEnum.ImportsExports,
+  TabsEnum.Info
 ]
 
-const currentTab: Ref<TabsEnum> = ref(Tabs.AddItems)
+const currentTab: Ref<TabsEnum> = ref(TabsEnum.AddItems)
 
 const setCurrentTab = (tab: TabsEnum) => {
   currentTab.value = tab
-}
-
-const getTabComponent = (selected: TabsEnum) => {
-  switch (selected) {
-    case TabsEnum.AddItems:
-      return SearchBox
-    case TabsEnum.Options:
-      return Options
-    case TabsEnum.Imports:
-      return Imports
-    case TabsEnum.Exports:
-      return Imports
-    case TabsEnum.Changelog:
-      return Changelog
-    case TabsEnum.FAQ:
-      return FAQ
-  }
 }
 </script>
 
@@ -47,7 +27,7 @@ const getTabComponent = (selected: TabsEnum) => {
     <div class="sidebar-block">
       <PageTitle />
     </div>
-    <div class="sidebar-block">
+    <div class="tabbed-sidebar-block">
       <Tabs
         :tabs="tabs"
         :currentTab="currentTab"
@@ -55,11 +35,9 @@ const getTabComponent = (selected: TabsEnum) => {
       />
       <div class="sidebar-content">
         <SearchBox v-if="currentTab === TabsEnum.AddItems" />
-        <Options v-if="currentTab === TabsEnum.Options" />
-        <Imports v-if="currentTab === TabsEnum.Imports" />
-        <Imports v-if="currentTab === TabsEnum.Exports" />
-        <Changelog v-if="currentTab === TabsEnum.Changelog" />
-        <FAQ v-if="currentTab === TabsEnum.FAQ" />
+        <Options v-else-if="currentTab === TabsEnum.Options" />
+        <Imports v-else-if="currentTab === TabsEnum.ImportsExports" />
+        <Info v-else-if="currentTab === TabsEnum.Info" />
       </div>
     </div>
     <div class="sidebar-block">
@@ -79,7 +57,7 @@ const getTabComponent = (selected: TabsEnum) => {
             <img src="/tmdb.svg" alt="The Movie DB" id="tmdb-logo">
           </a>
         </div>
-        <p>topsters.org is not affiliated with or endorsed by any of the above services.</p>
+        <p>Topsters 3 is not affiliated with or endorsed by any of the above services.</p>
       </div>
     </div>
   </div>
@@ -87,19 +65,27 @@ const getTabComponent = (selected: TabsEnum) => {
 
 <style scoped>
 .sidebar-block {
-  margin: 12px;
+  margin: 10px;
   width: 400px;
-  flex-shrink: 0;
-  overflow-y: scroll;
   background: rgba(20, 20, 20, 0.8);
   border-radius: 10px;
+  text-align: center;
+  padding: 16px;
+}
+
+.tabbed-sidebar-block {
+  margin: 10px;
+  width: 400px;
   text-align: center;
 }
 
 .sidebar-content {
-  padding: 20px;
   text-align: left;
-  max-height: 600px;
+  max-height: 480px;
+  overflow-y: auto;
+  background: rgba(20, 20, 20, 0.8);
+  border-radius: 0 0 10px 10px;
+  padding: 16px;
 }
 
 #credits-flex {
