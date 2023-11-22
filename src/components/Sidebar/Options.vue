@@ -334,12 +334,6 @@ const updateBackgroundImage = (event: Event): void => {
 </template>
 
 <style scoped>
-/* .options-table {
-  display: flex;
-  flex-flow: column;
-  gap: 10px;
-} */
-
 .color-picker {
   height: 30px;
   width: 30px;

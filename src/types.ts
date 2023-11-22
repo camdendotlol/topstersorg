@@ -121,3 +121,12 @@ export interface ChangelogItem {
   date: string,
   text: string
 }
+
+export enum Tabs {
+  AddItems = 'Add Items',
+  Options = 'Options',
+  Exports = 'Exports',
+  Imports = 'Imports',
+  FAQ = 'FAQ',
+  Changelog = 'Changelog'
+}

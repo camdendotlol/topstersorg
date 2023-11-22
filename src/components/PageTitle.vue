@@ -7,10 +7,10 @@
 h1 {
   margin: 0 auto;
   margin-top: 20px;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
 }
 
 h2 {
-  font-size: 12px;
+  font-size: 1rem;
 }
 </style>

@@ -29,9 +29,7 @@ const returnToHomepage = () => {
 
 <template>
   <div class="main">
-    <div class="sidebar-div">
-      <Sidebar />
-    </div>
+    <Sidebar />
     <button type="button" class="toggle-button" id="mobile-search-toggle" @click="toggleMobileSearchDisplay">
       <BIconPlusLg />
     </button>
@@ -65,7 +63,7 @@ const returnToHomepage = () => {
 
 <style>
 #app {
-  font-family: monospace;
+  font-family: "Nunito";
   color: var(--text-color);
   overflow-y: hidden;
   box-sizing: border-box;
@@ -84,14 +82,14 @@ body {
 }
 
 button {
-  font-family: monospace;
+  font-family: "Nunito";
 }
 
 input {
   padding: 8px;
   border: none;
   border-radius: 2px;
-  font-family: monospace;
+  font-family: "Nunito";
   font-size: 14px;
   background-color: var(--input-bg);
   color: black;
@@ -99,7 +97,7 @@ input {
 
 select {
   border: none;
-  font-family: monospace;
+  font-family: "Nunito";
   font-size: 14px;
   padding: 4px;
   border-radius: 2px;
@@ -165,16 +163,6 @@ select {
   box-sizing: border-box;
 }
 
-.sidebar-div {
-  margin: 0;
-  padding: 0 12px;
-  width: 400px;
-  flex-shrink: 0;
-  overflow-y: scroll;
-  background: var(--ui-bg);
-  text-align: center;
-}
-
 .mobile-options-visibility-manager {
   display: none;
 }
@@ -187,10 +175,6 @@ select {
   .main {
     flex-flow: column;
     overflow-x: hidden;
-  }
-
-  .sidebar-div {
-    display: none;
   }
 
   .toggle-button {
