@@ -44,13 +44,6 @@ const changes: ChangelogItem[] = [
 </template>
 
 <style scoped>
-#faq {
-  margin-top: 0;
-  padding: 0;
-  text-align: left;
-  height: 400px;
-}
-
 ul {
   padding: 0;
 }

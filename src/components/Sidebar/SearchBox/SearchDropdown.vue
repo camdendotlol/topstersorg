@@ -14,9 +14,6 @@ import { useStore } from '../../../store'
 import ResultItem from './ResultItem.vue'
 
 interface Props {
-  // Disable the "any" type warning because TS gets confused with
-  // the filter functions below.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   results: any[],
   resultsType: SearchTypes,
   isLoading?: boolean
@@ -139,7 +136,7 @@ const initDrag = (event: DragEvent, result: Result): void => {
         />
       </li>
     </ul>
-    <ul v-else-if="resultsType === SearchTypes.TV">
+    <ul v-else-if="resultsType === SearchTypes.Shows">
       <li
         v-for="(result, index) in filterTV(results)"
         :key="index"
@@ -172,6 +169,7 @@ const initDrag = (event: DragEvent, result: Result): void => {
 #results-div {
   max-height: 600px;
   overflow-y: scroll;
+  margin: 0 10px;
 }
 
 ul {

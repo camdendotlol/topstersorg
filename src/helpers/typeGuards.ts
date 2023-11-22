@@ -1,4 +1,4 @@
-import type { BookResult, CustomResult, GameResult, MovieResult, MusicResult, Result, TVResult } from '../types'
+import type { BookResult, CustomResult, GameResult, MovieResult, MusicResult, Result, SearchTypes, TVResult } from '../types'
 
 export const isBookResult = (item: Result): item is BookResult => {
   if ((item as BookResult).cover_edition_key) {
@@ -47,3 +47,7 @@ export const isCustomResult = (item: Result): item is CustomResult => {
     return false
   }
 }
+
+export const isValidSearchType = (str: string): str is SearchTypes => (
+  ['music', 'books', 'games', 'movies', 'shows', 'custom'].includes(str)
+)

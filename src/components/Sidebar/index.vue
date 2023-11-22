@@ -84,7 +84,7 @@ const setCurrentTab = (tab: TabsEnum) => {
   max-height: 480px;
   overflow-y: auto;
   background: rgba(20, 20, 20, 0.8);
-  border-radius: 0 0 10px 10px;
+  border-radius: 0 10px 10px 10px;
   padding: 16px;
 }
 

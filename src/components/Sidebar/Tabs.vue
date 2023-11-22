@@ -40,7 +40,6 @@ const emit = defineEmits([
   border-radius: 10px 10px 0 0;
   width: 100%;
   gap: 4px;
-  /* justify-content: space-between; */
 }
 
 .nav-list-item {
@@ -50,13 +49,15 @@ const emit = defineEmits([
 .tab-item {
   border: none;
   font-size: 1rem;
-  padding: 6px;
-  background: #808080;
+  padding: 4px;
+  background: #b5b5b5;
   border-radius: 5px 5px 0 0;
+  color: black;
 }
 
 .active {
   background: rgba(20, 20, 20, 0.8);
+  color: var(--accent);
 }
 
 .tab-item:hover {

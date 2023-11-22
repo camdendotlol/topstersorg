@@ -88,7 +88,7 @@ export enum SearchTypes {
   Books = 'books',
   Games = 'games',
   Movies = 'movies',
-  TV = 'tv',
+  Shows = 'shows',
   Custom = 'custom'
 }
 
