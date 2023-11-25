@@ -3,7 +3,7 @@ import {
   BIconBook,
   BIconController,
   BIconFilm,
-  BIconGear,
+  BIconTools,
   BIconMusicNoteBeamed,
   BIconTv
 } from 'bootstrap-icons-vue'
@@ -69,7 +69,7 @@ const isActive = (type: SearchTypes) => {
       @click="emit('setSearchType', SearchTypes.Custom)"
       :class="isActive(SearchTypes.Custom)"
     >
-      <BIconGear />
+      <BIconTools />
       <span>Custom</span>
     </li>
   </ul>
@@ -89,6 +89,7 @@ li {
   margin: 0;
   font-size: 0.8rem;
   text-align: center;
+  padding: 6px;
 }
 
 li:hover {
@@ -102,5 +103,6 @@ svg {
 
 .active-search-type {
   color: var(--accent);
+  border-radius: 10px;
 }
 </style>

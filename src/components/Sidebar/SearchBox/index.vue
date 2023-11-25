@@ -27,7 +27,6 @@ onMounted(() => {
 })
 
 const updateResults = (newResults: []) => {
-  console.log(newResults)
   results.value = newResults
 }
 </script>

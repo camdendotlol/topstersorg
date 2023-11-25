@@ -149,15 +149,20 @@ const initDrag = (event: DragEvent, result: Result): void => {
         />
       </li>
     </ul>
-    <ul v-else-if="resultsType === SearchTypes.Custom">
+    <ul
+      class="single-result-list"
+      v-else-if="resultsType === SearchTypes.Custom"
+    >
       <li>
         <ResultItem
           :imageData="{ src: results[0].imageURL, alt: results[0].title }"
           @click="addToChart(results[0])"
           draggable="true"
           @dragstart="(event) => initDrag(event, results[0])"
+          class="centered-item"
         />
       </li>
+      <p>Click or drag to add this item to the chart.</p>
     </ul>
     <div v-else>
       <p>Search for {{ props.resultsType }} has not been implemented yet.</p>
@@ -167,8 +172,6 @@ const initDrag = (event: DragEvent, result: Result): void => {
 
 <style scoped>
 #results-div {
-  max-height: 600px;
-  overflow-y: scroll;
   margin: 0 10px;
 }
 
@@ -199,4 +202,16 @@ li img:hover {
   align-items: center;
 }
 
+.single-result-list {
+  display: initial;
+}
+
+.single-result-list li {
+  margin: auto;
+  max-width: 90px;
+}
+
+.single-result-list p {
+  text-align: center;
+}
 </style>

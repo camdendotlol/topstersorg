@@ -19,6 +19,16 @@ const emit = defineEmits([
 
 const searchbox = ref(null)
 
+// Hacky workaround to an annoying Vue bug:
+// Emit arguments don't seem to be passed when the emit
+// goes through two layers of child components. So here
+// we must create a normal function that calls the parent
+// component's emit, and then pass this as an emit to the
+// child component. Ugh.
+const emitUpdateResults = (results: unknown[]) => {
+  emit('updateResults', results)
+}
+
 const handleSearch = async () => {
   if (loading.value) {
     return null
@@ -46,7 +56,7 @@ const getInputPlaceholder = () => {
 <template>
   <CustomItemForm
     v-if="searchType === 'custom'"
-    @updateResults="$emit('updateResults')"
+    @updateResults="emitUpdateResults"
   />
   <form
     class="add-form"

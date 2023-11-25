@@ -63,7 +63,7 @@ const returnToHomepage = () => {
 
 <style>
 #app {
-  font-family: "Nunito";
+  font-family: "Nunito", sans-serif;
   color: var(--text-color);
   overflow-y: hidden;
   box-sizing: border-box;
@@ -82,14 +82,14 @@ body {
 }
 
 button {
-  font-family: "Nunito";
+  font-family: "Nunito", sans-serif;
 }
 
 input {
   padding: 8px;
   border: none;
   border-radius: 2px;
-  font-family: "Nunito";
+  font-family: "Nunito", sans-serif;
   font-size: 14px;
   background-color: var(--input-bg);
   color: black;
@@ -97,7 +97,7 @@ input {
 
 select {
   border: none;
-  font-family: "Nunito";
+  font-family: "Nunito", sans-serif;
   font-size: 14px;
   padding: 4px;
   border-radius: 2px;

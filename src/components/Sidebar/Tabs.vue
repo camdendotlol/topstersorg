@@ -57,7 +57,7 @@ const emit = defineEmits([
 
 .active {
   background: rgba(20, 20, 20, 0.8);
-  color: var(--accent);
+  color: white;
 }
 
 .tab-item:hover {
