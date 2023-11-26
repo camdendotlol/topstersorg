@@ -2,7 +2,7 @@
 import PageTitle from '../PageTitle.vue'
 import SearchBox from './SearchBox/index.vue'
 import Options from './Options.vue'
-import Imports from './Imports.vue'
+import Imports from './Imports/index.vue'
 import Info from './Info.vue'
 import Tabs from './Tabs.vue'
 import { Ref, ref } from 'vue'

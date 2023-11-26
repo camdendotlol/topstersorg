@@ -20,19 +20,19 @@ const updateChartList = () => {
 
 const changeChart = (event: Event) => {
   // Using the Unix timestamp as a unique ID here
-  const id = parseInt((event.target as HTMLFormElement).value)
+  const id = (event.target as HTMLFormElement).value
   const savedCharts = getStoredCharts()
 
   // Clear the currentlyActive flag on all other charts
   const otherChartsInactive = savedCharts.map(savedChart => {
-    if (savedChart.timestamp === id) {
+    if (savedChart.uuid === id) {
       return { ...savedChart, currentlyActive: true }
     } else {
       return { ...savedChart, currentlyActive: false }
     }
   })
 
-  const savedChartData = otherChartsInactive.find(chart => chart.timestamp === id)
+  const savedChartData = otherChartsInactive.find(chart => chart.uuid === id)
 
   if (!savedChartData) {
     return null
@@ -55,7 +55,7 @@ const changeChart = (event: Event) => {
     >
       <option
         v-for="(chart, index) in charts"
-        :value="chart.timestamp"
+        :value="chart.uuid"
         :key="index"
         :selected="chart.currentlyActive ? true : false"
       >

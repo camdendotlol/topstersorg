@@ -1,25 +1,75 @@
-<script setup lang="ts">
-import { ref, Ref } from 'vue'
-import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
-import { BackgroundTypes, StoredChart, ChartItem, Period, LastfmChartResponseItem } from '../../types'
-import { initialState, useStore } from '../../store'
+// Functions related to importing and exporting charts
+
 import pako from 'pako'
-import { getLastfmChart } from '../../api/lastfm'
-import { createNewChart, periodHeaders } from '../../helpers/chart'
+import { appendStoredCharts, getStoredCharts, setStoredCharts } from './localStorage'
+import { BackgroundTypes, ChartItem, StoredChart } from '../types'
+import { Store } from 'vuex'
+import { State } from '../store'
+import { v4 as uuidv4 } from 'uuid'
 
-const store = useStore()
+const downloadChartData = (data: string) => {
+  const blob = new Blob([data], {
+    type: 'application/json'
+  })
 
-const topsters2ImportRef: Ref<HTMLInputElement> = ref(null)
+  const blobUrl = URL.createObjectURL(blob)
 
-const lastFmUsername: Ref<HTMLInputElement> = ref(null)
-const lastFmPeriodDropdown: Ref<HTMLSelectElement> = ref(null)
+  const link = document.createElement('a')
 
-const importTopsters2Charts = (e) => {
-  e.preventDefault()
-  topsters2ImportRef.value.click()
+  link.href = blobUrl
+  link.download = 'topster3charts.json'
+  document.body.appendChild(link)
+
+  link.click()
+  link.remove()
 }
 
-const importTopsters2ChartsPicked = (event: Event) => {
+export const exportCharts = () => {
+  const rawJson = localStorage.getItem('charts')
+
+  const compressed = btoa(pako.deflate(rawJson).toString())
+
+  downloadChartData(compressed)
+}
+
+export const parseUploadedText = (text: string) => {
+  const uintArray = Uint8Array.from(atob(text).split(',').map(num => parseInt(num)))
+
+  const textDecoder = new TextDecoder()
+
+  return textDecoder.decode(pako.inflate(uintArray))
+}
+
+export const importCharts = async (event: Event) => {
+  const files = (event.target as HTMLInputElement).files
+
+  try {
+    const text = await files[0].text()
+    const results = parseUploadedText(text)
+    const json = JSON.parse(results) as StoredChart[]
+
+    if (!Array.isArray(json)) {
+      throw new Error('Invalid data')
+    }
+
+    json.forEach(r => {
+      // Set all to inactive so we don't end up
+      // with multiple currently active charts.
+      r.currentlyActive = false
+      // Reset all imported charts' UUIDs to avoid collisions.
+      r.uuid = uuidv4()
+    })
+
+    appendStoredCharts(json)
+
+    alert(`${json.length} charts imported successfully!`)
+  } catch (e) {
+    console.error(e)
+    alert(`Failed to import charts: ${e}`)
+  }
+}
+
+export const importTopsters2 = (event: Event, store: Store<State>) => {
   if (event.target === null) return
   const files = (event.target as HTMLInputElement).files
   if (files === null) return
@@ -28,7 +78,7 @@ const importTopsters2ChartsPicked = (event: Event) => {
     try {
       // Topsters 2 exports have their charcodes shifted up
       // 17 points, and then are encoded in base64. This
-      // may have been a response to our import feature lol
+      // may have been a response to our import feature lol.
       const unshifted = atob((fileReader.result as string)
         .split('')
         .map(char => String.fromCharCode(char.charCodeAt(0) - 17))
@@ -139,7 +189,8 @@ const importTopsters2ChartsPicked = (event: Event) => {
               gap: custom.padding * 5,
               font: custom.fontFamily
             },
-            currentlyActive: false
+            currentlyActive: false,
+            uuid: uuidv4()
           }
 
           storedCharts.push(newChart)
@@ -166,188 +217,3 @@ const importTopsters2ChartsPicked = (event: Event) => {
 
   fileReader.readAsText(files[0])
 }
-
-const importLastFmChart = async () => {
-  const username = lastFmUsername.value.value
-
-  if (!username) return null
-
-  const periodDropdown = lastFmPeriodDropdown.value
-  const period = periodDropdown.options[periodDropdown.selectedIndex].value as Period
-
-  let results: LastfmChartResponseItem[]
-
-  try {
-    results = await getLastfmChart(username, 'albums', period)
-  } catch {
-    alert('Something went wrong when downloading your Last.fm data! Is your username spelled correctly?')
-    return null
-  }
-  const missingCovers: string[] = []
-
-  const filtered = results.filter((item: LastfmChartResponseItem) => {
-    const coverURL = item.image.find((i) => i.size === 'extralarge')['#text']
-
-    if (coverURL === '') {
-      missingCovers.push(`${item.artist.name} - ${item.name}`)
-      return false
-    }
-
-    return true
-  })
-
-  const newItems: ChartItem[] = filtered.map((item: LastfmChartResponseItem) => {
-    const coverURL = item.image.find((i) => i.size === 'extralarge')['#text']
-    const coverImg = new Image()
-    coverImg.src = coverURL
-
-    return {
-      title: item.name,
-      creator: item.artist.name,
-      coverImg,
-      coverURL
-    }
-  })
-
-  createNewChart(`${username}'s ${periodHeaders[period]} Chart`)
-
-  const getSize = (length) => {
-    for (let i = 1; i <= 10; i++) {
-      if (length < (i * i)) {
-        return {
-          x: i,
-          y: i
-        }
-      }
-    }
-
-    return {
-      x: 10,
-      y: 10
-    }
-  }
-
-  store.commit('setEntireChart', {
-    ...initialState.chart,
-    title: `${username}'s ${periodHeaders[period]} Chart`,
-    items: newItems,
-    size: getSize(newItems.length)
-  })
-
-  if (missingCovers.length > 0) {
-    alert(
-      `Couldn't add the following albums because they're missing cover art on Last.fm:\n\n${missingCovers.join('\n\n')}`
-    )
-  }
-}
-</script>
-
-<template>
-  <div class="container">
-    <p>Imported data will be added to a new chart.</p>
-    <form
-      id="lastFmImportChart"
-      @submit.prevent="importLastFmChart"
-    >
-      <h2>Last.fm</h2>
-      <div class="form-item">
-        <label for="lastfm-username">
-          Username
-        </label>
-        <input
-          type="text"
-          ref="lastFmUsername"
-          id="lastFmUsername"
-          name="lastFmUsername"
-          placeholder="username"
-          required
-        />
-      </div>
-      <div class="form-item">
-        <label for="lastFmPeriodDropdown">
-          Period
-        </label>
-        <select
-          id="lastFmPeriodDropdown"
-          name="lastFmPeriodDropdown"
-          ref="lastFmPeriodDropdown"
-        >
-          <option value="overall">Overall</option>
-          <option value="7day">7 day</option>
-          <option value="1month">1 month</option>
-          <option value="3month">3 month</option>
-          <option value="6month">6 month</option>
-          <option value="12month">12 month</option>
-        </select>
-      </div>
-      <button
-        type="submit"
-        id="lastfmImportButton"
-        class="import-button"
-      >
-        Import from Last.fm
-      </button>
-    </form>
-    <div id="topsters2ImportForm">
-      <form>
-        <h2>Topsters 2</h2>
-        <button
-          class="import-button"
-          @click="importTopsters2Charts"
-        >
-          Import file from Topsters 2
-        </button>
-        <input
-          type="file"
-          style="display: none"
-          ref="topsters2ImportRef"
-          accept="application/json"
-          @change="importTopsters2ChartsPicked"
-        />
-      </form>
-    </div>
-  </div>
-</template>
-
-<style scoped>
-.container {
-  width: 100%;
-  display: flex;
-  gap: 20px;
-  flex-flow: column;
- }
-
- h2 {
-   margin-top: 0;
- }
-
- p {
-   margin: 0;
- }
-
- .import-button {
-   max-width: 200px;
-   align-self: center;
- }
-
- #topsters2ImportForm {
-  text-align: center;
- }
-
- #topsters2ImportForm button {
-   max-width: 240px;
- }
-
-#lastFmImportChart {
-  display: flex;
-  flex-flow: column;
-  gap: 10px;
- }
-
- .form-item {
-   display: grid;
-   grid-template-columns: 1fr 1fr;
-   align-items: center;
- }
-
-</style>

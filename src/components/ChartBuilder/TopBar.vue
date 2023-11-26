@@ -6,6 +6,7 @@ import Switcher from './Switcher.vue'
 import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
 import { StoredChart } from '../../types'
 import { addImgElements, downloadChart, initializeFirstRun } from '../../helpers/chart'
+import { v4 as uuidv4 } from 'uuid'
 
 const store = useStore()
 
@@ -28,7 +29,8 @@ const startNewChart = () => {
     timestamp: new Date().getTime(),
     name: null,
     data: initialState.chart,
-    currentlyActive: true
+    currentlyActive: true,
+    uuid: uuidv4()
   }
 
   setStoredCharts([...newStoredChartsArray, newChart])

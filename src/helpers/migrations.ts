@@ -1,8 +1,27 @@
 // This helper library updates old charts to new formats
 
-import type { Chart } from '../types'
+import type { Chart, StoredChart } from '../types'
+import { v4 as uuidv4 } from 'uuid'
 
-const updateWithShim = (chart: Chart): Chart => {
+// This was added when UUIDs were added to charts to make
+// sure that pre-existing charts get UUIDs. As this runs
+// constantly while the site is open, we should be able
+// to remove this migration eventually once we're sure that
+// >99% of users with old stored charts have opened the site.
+export const localStorageMigrations = (charts: StoredChart[]) => {
+  return charts.map(c => {
+    if (c.uuid) {
+      return c
+    }
+
+    return {
+      ...c,
+      uuid: uuidv4()
+    }
+  })
+}
+
+const updateWithMigrations = (chart: Chart): Chart => {
   // Avoid mutating the original
   const clone = { ...chart }
 
@@ -30,4 +49,4 @@ const updateWithShim = (chart: Chart): Chart => {
   return clone
 }
 
-export default updateWithShim
+export default updateWithMigrations

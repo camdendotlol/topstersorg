@@ -13,6 +13,7 @@ import {
 } from './typeGuards'
 import fetchImageURL from '../api/fetchImage'
 import generateChart from 'topster'
+import { v4 as uuidv4 } from 'uuid'
 
 // Add the proper <img> elements into the chart state.
 // This is needed when loading a saved chart from localstorage.
@@ -43,7 +44,8 @@ export const initializeFirstRun = (): void => {
       timestamp: new Date().getTime(),
       name: null,
       data: initialState.chart,
-      currentlyActive: true
+      currentlyActive: true,
+      uuid: uuidv4()
     }
   ]
 
@@ -178,7 +180,8 @@ export const createNewChart = (name = null) => {
     timestamp: new Date().getTime(),
     name,
     data: initialState.chart,
-    currentlyActive: true
+    currentlyActive: true,
+    uuid: uuidv4()
   }
 
   setStoredCharts([...newStoredChartsArray, newChart])

@@ -40,6 +40,7 @@ export interface IgdbItem {
 // Charts stored in localStorage
 export interface StoredChart {
   timestamp: number,
+  uuid: string,
   name: string | null,
   data: Chart,
   currentlyActive: boolean

@@ -6,7 +6,8 @@ import { BackgroundTypes, Chart, ChartItem, StoredChart } from '../../types'
 import { getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
 import { getScaledDimensions } from 'topster/dist/lib'
 import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
-import updateWithShim from '../../helpers/shim'
+import updateWithMigrations from '../../helpers/migrations'
+import { v4 as uuidv4 } from 'uuid'
 
 // Topsters 3 supports drag and drop for both mouse and touch events.
 type InteractionEvent = MouseEvent | TouchEvent
@@ -62,7 +63,7 @@ onMounted(() => {
   const activeChart = savedCharts.find(chart => chart.currentlyActive === true)
 
   if (activeChart) {
-    const updatedChart = updateWithShim(activeChart.data)
+    const updatedChart = updateWithMigrations(activeChart.data)
     if (updatedChart.background.type === BackgroundTypes.Image) {
       const bgImg = new Image()
       bgImg.src = updatedChart.background.value
@@ -161,7 +162,8 @@ const saveToLocalStorage = (chart: Chart) => {
         timestamp: new Date().getTime(),
         name: null,
         data: chart,
-        currentlyActive: true
+        currentlyActive: true,
+        uuid: uuidv4()
       }
     ]
 
@@ -460,9 +462,7 @@ const allowDragAndDrop = (event: DragEvent) => {
     @touchmove="updateCursor"
     @touchend="dropItem"
     @touchleave="resetCursor"
-  >
-    TODO: text mode charts for accessibility
-  </canvas>
+  ></canvas>
 </template>
 
 <style scoped>
