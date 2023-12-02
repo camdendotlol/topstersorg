@@ -26,7 +26,7 @@ const notice = {
 
 <style scoped>
 .modal-container {
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   background: rgba(0, 0, 0, 0.75);
   position: fixed;

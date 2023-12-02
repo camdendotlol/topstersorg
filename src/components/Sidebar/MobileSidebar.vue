@@ -44,7 +44,7 @@ const setCurrentTab = (tab: TabsEnum) => {
   z-index: 10000;
   padding: 10px 10px 60px;
   margin: auto;
-  max-height: 100vh;
+  max-height: 100dvh;
   overflow-y: auto;
 }
 

@@ -499,7 +499,7 @@ const allowDragAndDrop = (event: DragEvent) => {
 
 canvas {
   max-width: 95%;
-  max-height: 85vh;
+  max-height: 85dvh;
   margin: auto;
   margin-top: 50px;
 }

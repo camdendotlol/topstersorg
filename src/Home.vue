@@ -106,8 +106,8 @@ select {
 }
 
 .main {
-  height: 100vh;
-  max-height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
   width: 100vw;
   display: flex;
   position: absolute;
@@ -183,7 +183,7 @@ select {
   .mobile-options-visibility-manager {
     display: initial;
     width: 100%;
-    min-height: 100vh;
+    min-height: 100dvh;
     position: absolute;
     left: -100vw;
     padding: 0;
@@ -195,7 +195,7 @@ select {
   .mobile-search-visibility-manager {
     display: initial;
     width: 100%;
-    min-height: 100vh;
+    min-height: 100dvh;
     position: absolute;
     right: -100vw;
     padding: 0;

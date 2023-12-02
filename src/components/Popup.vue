@@ -24,7 +24,7 @@ store.watch(state => state.popupText, () => {
 #popup {
   position: fixed;
   width: 200px;
-  top: 70vh;
+  top: 70dvh;
   left: calc(50vw - 100px);
   border-radius: 10px;
   background: rgba(100, 100, 100, 0.8);
