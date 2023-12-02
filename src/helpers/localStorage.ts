@@ -11,11 +11,9 @@ export const setStoredCharts = (charts: StoredChart[]): void => {
 export const getStoredCharts = (): StoredChart[] => {
   const charts = JSON.parse(localStorage.getItem('charts') || '[]') as StoredChart[]
 
-  const sortedCharts = charts.sort((a: StoredChart, b: StoredChart) => {
+  return charts.sort((a: StoredChart, b: StoredChart) => {
     return a.timestamp - b.timestamp
   })
-
-  return sortedCharts
 }
 
 export const appendStoredCharts = (newCharts: StoredChart[]): void => {

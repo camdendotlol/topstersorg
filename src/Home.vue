@@ -3,8 +3,8 @@ import { Ref, ref } from 'vue'
 import Sidebar from './components/Sidebar/index.vue'
 import ChartBuilder from './components/ChartBuilder/index.vue'
 import { BIconGearFill, BIconPlusLg, BIconHouse } from 'bootstrap-icons-vue'
-import MobileOptionsSidebar from './components/MobileOptionsSidebar.vue'
-import MobileSearchSidebar from './components/MobileSearchSidebar.vue'
+import MobileOptionsSidebar from './components/Sidebar/MobileSidebar.vue'
+import MobileSearchSidebar from './components/Sidebar/SearchBox/MobileSearch.vue'
 import Popup from './components/Popup.vue'
 import DownloadButton from './components/buttons/Download.vue'
 
@@ -107,16 +107,13 @@ select {
 
 .main {
   height: 100vh;
+  max-height: 100vh;
   width: 100vw;
   display: flex;
   position: absolute;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   margin: 0;
-}
-
-.hidden {
-  display: none;
 }
 
 .toggle-button {
@@ -126,6 +123,8 @@ select {
   height: 50px;
   width: 50px;
   z-index: 10001;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
 }
 
 #mobile-search-toggle {

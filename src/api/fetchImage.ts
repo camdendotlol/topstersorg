@@ -1,5 +1,5 @@
 const fetchImageURL = async (url: string): Promise<string> => {
-  let blob
+  let blob: Blob
 
   // If the origin site has CORS * headers, we're all set!
   // Otherwise we need to go through our CORS proxy.
@@ -22,8 +22,7 @@ const fetchImageURL = async (url: string): Promise<string> => {
     blob = await proxyData.blob()
   }
 
-  const localUrl = URL.createObjectURL(blob)
-  return localUrl
+  return URL.createObjectURL(blob)
 }
 
 export default fetchImageURL
