@@ -5,6 +5,7 @@ import AnnouncementModal from './components/AnnouncementModal.vue'
 import { ping } from './api/metadata'
 import { redirectUsers } from './helpers/redirect'
 import './global.css'
+import { localStorageMigrations } from './helpers/localStorage'
 
 let displayAnnouncement = false
 
@@ -27,6 +28,8 @@ onMounted(async () => {
   ) {
     displayAnnouncement = true
   }
+
+  localStorageMigrations()
 
   await ping()
 })

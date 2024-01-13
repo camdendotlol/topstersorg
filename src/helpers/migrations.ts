@@ -1,25 +1,6 @@
 // This helper library updates old charts to new formats
 
-import type { Chart, StoredChart } from '../types'
-import { v4 as uuidv4 } from 'uuid'
-
-// This was added when UUIDs were added to charts to make
-// sure that pre-existing charts get UUIDs. As this runs
-// constantly while the site is open, we should be able
-// to remove this migration eventually once we're sure that
-// >99% of users with old stored charts have opened the site.
-export const localStorageMigrations = (charts: StoredChart[]) => {
-  return charts.map(c => {
-    if (c.uuid) {
-      return c
-    }
-
-    return {
-      ...c,
-      uuid: uuidv4()
-    }
-  })
-}
+import type { Chart } from '../types'
 
 const updateWithMigrations = (chart: Chart): Chart => {
   // Avoid mutating the original

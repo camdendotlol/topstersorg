@@ -1,13 +1,14 @@
 // Functions related to importing and exporting charts
 
 import pako from 'pako'
-import { appendStoredCharts, getStoredCharts, setStoredCharts } from './localStorage'
+import { appendChart, getStoredCharts, setStoredCharts, updateStoredChart } from './localStorage'
 import { BackgroundTypes, ChartItem, StoredChart } from '../types'
 import { Store } from 'vuex'
 import { State } from '../store'
 import { v4 as uuidv4 } from 'uuid'
+import { forceRefresh } from './chart'
 
-const downloadChartData = (data: string) => {
+const downloadChartData = (data: string, title: string) => {
   const blob = new Blob([data], {
     type: 'application/json'
   })
@@ -17,19 +18,18 @@ const downloadChartData = (data: string) => {
   const link = document.createElement('a')
 
   link.href = blobUrl
-  link.download = 'topster3charts.json'
+  link.download = `${title}.json`
   document.body.appendChild(link)
 
   link.click()
   link.remove()
 }
 
-export const exportCharts = () => {
-  const rawJson = localStorage.getItem('charts')
+export const exportCurrentChart = () => {
+  const chart = getStoredCharts().find(ch => ch.currentlyActive)
+  const compressed = btoa(pako.deflate(JSON.stringify(chart)).toString())
 
-  const compressed = btoa(pako.deflate(rawJson).toString())
-
-  downloadChartData(compressed)
+  downloadChartData(compressed, chart.data.title)
 }
 
 export const parseUploadedText = (text: string) => {
@@ -40,29 +40,34 @@ export const parseUploadedText = (text: string) => {
   return textDecoder.decode(pako.inflate(uintArray))
 }
 
-export const importCharts = async (event: Event) => {
+export const importChart = async (event: Event, store: Store<State>) => {
   const files = (event.target as HTMLInputElement).files
 
   try {
     const text = await files[0].text()
     const results = parseUploadedText(text)
-    const json = JSON.parse(results) as StoredChart[]
+    const json = JSON.parse(results) as StoredChart
 
-    if (!Array.isArray(json)) {
-      throw new Error('Invalid data')
+    const newChartUuid = json.uuid
+    const existingChart = getStoredCharts().find(ch => ch.uuid === newChartUuid)
+
+    let overwriteConsent = false
+
+    if (existingChart) {
+      if (window.confirm('This chart already exists locally. Do you want to overwrite it?')) {
+        overwriteConsent = true
+        updateStoredChart(json)
+        forceRefresh(store)
+      }
+    } else {
+      overwriteConsent = true
+      appendChart(json)
+      forceRefresh(store)
     }
 
-    json.forEach(r => {
-      // Set all to inactive so we don't end up
-      // with multiple currently active charts.
-      r.currentlyActive = false
-      // Reset all imported charts' UUIDs to avoid collisions.
-      r.uuid = uuidv4()
-    })
-
-    appendStoredCharts(json)
-
-    alert(`${json.length} charts imported successfully!`)
+    if (overwriteConsent) {
+      alert(`"${json.data.title}" imported successfully!`)
+    }
   } catch (e) {
     console.error(e)
     alert(`Failed to import charts: ${e}`)
@@ -207,8 +212,7 @@ export const importTopsters2 = (event: Event, store: Store<State>) => {
       }
 
       setStoredCharts(storedCharts)
-      // Force update, possibly a better way of doing this?
-      store.commit('setEntireChart', storedCharts.filter((chart) => chart.currentlyActive)[0].data)
+      forceRefresh(store)
     } catch (e) {
       console.error(e)
       alert('The file selected is not a valid Topsters 2 backup: ' + e)

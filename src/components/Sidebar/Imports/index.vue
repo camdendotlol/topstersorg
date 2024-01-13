@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import LastFmImport from './LastFmImport.vue'
 import {
-  exportCharts,
-  importCharts,
+  exportCurrentChart,
+  importChart,
   importTopsters2
 } from '../../../helpers/imports'
 import {
@@ -33,7 +33,7 @@ const importTopsters2Charts = (event) => {
 }
 
 const callImportCharts = async (event) => {
-  await importCharts(event)
+  await importChart(event, store)
 }
 </script>
 
@@ -41,7 +41,7 @@ const callImportCharts = async (event) => {
   <div class="container">
     <div id="import-export">
     <button
-      @click="exportCharts"
+      @click="exportCurrentChart"
     >
       <BIconArrowDownSquare />
       <span>Export chart data</span>
@@ -60,22 +60,21 @@ const callImportCharts = async (event) => {
       <span>Import from Topsters 2</span>
     </button>
   </div>
-  <p>(Imported charts will be created in the background)</p>
-    <LastFmImport />
-    <input
-      type="file"
-      style="display: none"
-      ref="topsters2ImportRef"
-      accept="application/json"
-      @change="importTopsters2Charts"
-    />
-    <input
-      type="file"
-      style="display: none"
-      ref="uploadRef"
-      accept="application/txt"
-      @change="callImportCharts"
-    />
+  <LastFmImport />
+  <input
+    type="file"
+    style="display: none"
+    ref="topsters2ImportRef"
+    accept="application/json"
+    @change="importTopsters2Charts"
+  />
+  <input
+    type="file"
+    style="display: none"
+    ref="uploadRef"
+    accept="application/txt"
+    @change="callImportCharts"
+  />
   </div>
 </template>
 

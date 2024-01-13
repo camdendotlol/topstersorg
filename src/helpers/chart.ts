@@ -1,6 +1,6 @@
 // Functions for filling in the chart.
 
-import { initialState } from '../store'
+import { State, initialState } from '../store'
 import { type Chart, type ChartItem, type Result, BackgroundTypes, StoredChart } from '../types'
 import { getStoredCharts, setStoredCharts } from './localStorage'
 import {
@@ -14,6 +14,7 @@ import {
 import fetchImageURL from '../api/fetchImage'
 import generateChart from 'topster'
 import { v4 as uuidv4 } from 'uuid'
+import { Store } from 'vuex'
 
 // Add the proper <img> elements into the chart state.
 // This is needed when loading a saved chart from localstorage.
@@ -185,6 +186,14 @@ export const createNewChart = (name = null) => {
   }
 
   setStoredCharts([...newStoredChartsArray, newChart])
+}
+
+// Forces the chart to re-render from localStorage.
+// Useful in situations where we update the charts
+// there such as imports.
+export const forceRefresh = (store: Store<State>) => {
+  const storedCharts = getStoredCharts()
+  store.commit('setEntireChart', storedCharts.find((chart) => chart.currentlyActive).data)
 }
 
 export const periodHeaders = {

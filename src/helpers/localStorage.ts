@@ -1,11 +1,10 @@
 // Functions for dealing with localStorage
 
 import type { StoredChart } from '../types'
-import { localStorageMigrations } from './migrations'
+import { v4 as uuidv4 } from 'uuid'
 
 export const setStoredCharts = (charts: StoredChart[]): void => {
-  const migrated = localStorageMigrations(charts)
-  localStorage.setItem('charts', JSON.stringify(migrated))
+  localStorage.setItem('charts', JSON.stringify(charts))
 }
 
 export const getStoredCharts = (): StoredChart[] => {
@@ -16,10 +15,31 @@ export const getStoredCharts = (): StoredChart[] => {
   })
 }
 
-export const appendStoredCharts = (newCharts: StoredChart[]): void => {
-  const existing = getStoredCharts()
+export const updateStoredChart = (updatedChart: StoredChart) => {
+  const charts = getStoredCharts()
 
-  const combined = existing.concat(newCharts)
+  setStoredCharts(charts.map(ch => {
+    if (ch.uuid === updatedChart.uuid) {
+      return { ...updatedChart, currentlyActive: true }
+    } else {
+      return { ...ch, currentlyActive: false }
+    }
+  }))
+}
 
-  setStoredCharts(combined)
+export const appendChart = (newChart: StoredChart) => {
+  const charts = getStoredCharts().map(ch => ({ ...ch, currentlyActive: false }))
+
+  setStoredCharts(charts.concat({ ...newChart, currentlyActive: true }))
+}
+
+// This was added when UUIDs were added to charts to make
+// sure that pre-existing charts get UUIDs. As this runs
+// constantly while the site is open, we should be able
+// to remove this migration eventually once we're sure that
+// >99% of users with old stored charts have opened the site.
+export const localStorageMigrations = () => {
+  const charts = getStoredCharts()
+
+  setStoredCharts(charts.map(c => ({ ...c, uuid: c.uuid || uuidv4() })))
 }
