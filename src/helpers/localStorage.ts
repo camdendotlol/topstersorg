@@ -83,6 +83,9 @@ export const localStorageMigrations = () => {
   // If the `charts` value is an array instead of an object,
   // we know we're on the old data model.
   if (Array.isArray(charts)) {
+    // Let's back up this data bc this whole process is kinda scary
+    localStorage.setItem('oldChartsBackup', JSON.stringify(charts))
+
     const newObj: { [uuid: string]: StoredChart } = {}
     let activeUuid = null
 

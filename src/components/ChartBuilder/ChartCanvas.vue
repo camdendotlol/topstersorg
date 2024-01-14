@@ -5,7 +5,7 @@ import generateChart from 'topster'
 import { BackgroundTypes, Chart, ChartItem } from '../../types'
 import { getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
 import { getScaledDimensions } from 'topster/dist/lib'
-import { appendChart, getActiveChart, getActiveChartUuid, setActiveChart, updateStoredChart } from '../../helpers/localStorage'
+import { appendChart, getActiveChart, getActiveChartUuid, localStorageMigrations, setActiveChart, updateStoredChart } from '../../helpers/localStorage'
 import updateWithMigrations from '../../helpers/migrations'
 
 // Topsters 3 supports drag and drop for both mouse and touch events.
@@ -57,6 +57,8 @@ onMounted(() => {
   if (!canvas.value) {
     throw new Error('Couldn\'t find canvas. Something must have gone wrong with page loading, please refresh.')
   }
+
+  localStorageMigrations()
 
   const activeChart = getActiveChart()
 
@@ -153,7 +155,14 @@ const saveToLocalStorage = (chart: Chart) => {
   const activeChartUuid = getActiveChartUuid()
   const activeChart = getActiveChart()
 
-  if (!activeChart) {
+  if (activeChart) {
+    const updatedChart = {
+      ...activeChart,
+      data: chart
+    }
+
+    updateStoredChart(updatedChart, activeChartUuid)
+  } else {
     const newUuid = appendChart({
       timestamp: new Date().getTime(),
       name: null,
@@ -162,13 +171,6 @@ const saveToLocalStorage = (chart: Chart) => {
 
     setActiveChart(newUuid)
   }
-
-  const updatedChart = {
-    ...activeChart,
-    data: chart
-  }
-
-  updateStoredChart(updatedChart, activeChartUuid)
 }
 
 const checkDroppability = (event: InteractionEvent | DragEvent) => {
