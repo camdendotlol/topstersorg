@@ -1,46 +1,38 @@
 <script setup lang='ts'>
-import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
-import { StoredChart } from '../../types'
+import { getActiveChartUuid, getStoredCharts, getUuids, setActiveChart } from '../../helpers/localStorage'
+import { StoredCharts } from '../../types'
 import { Ref, ref } from 'vue'
 import { useStore } from '../../store'
 import { addImgElements } from '../../helpers/chart'
 
 const store = useStore()
 
-const charts: Ref<StoredChart[]> = ref(null)
+const activeChartUuid: Ref<string> = ref(getActiveChartUuid())
+const charts: Ref<StoredCharts> = ref(getStoredCharts())
+const chartUuids: Ref<string[]> = ref(getUuids())
 
 store.watch(state => state.chart, () => {
   updateChartList()
 })
 
+const sortUuids = (uuidArr: string[]) => (
+  uuidArr.toSorted((a, b) => charts.value[b].timestamp - charts.value[a].timestamp)
+)
+
 const updateChartList = () => {
-  const storedCharts = getStoredCharts()
-  charts.value = storedCharts
+  activeChartUuid.value = getActiveChartUuid()
+  charts.value = getStoredCharts()
+  chartUuids.value = sortUuids(getUuids())
 }
 
 const changeChart = (event: Event) => {
-  // Using the Unix timestamp as a unique ID here
-  const id = (event.target as HTMLFormElement).value
-  const savedCharts = getStoredCharts()
+  const uuid = (event.target as HTMLFormElement).value
 
-  // Clear the currentlyActive flag on all other charts
-  const otherChartsInactive = savedCharts.map(savedChart => {
-    if (savedChart.uuid === id) {
-      return { ...savedChart, currentlyActive: true }
-    } else {
-      return { ...savedChart, currentlyActive: false }
-    }
-  })
+  const newActiveChart = setActiveChart(uuid)
 
-  const savedChartData = otherChartsInactive.find(chart => chart.uuid === id)
+  const chartToSwitchTo = addImgElements(newActiveChart.data)
 
-  if (!savedChartData) {
-    return null
-  }
-
-  setStoredCharts(otherChartsInactive)
-
-  const chartToSwitchTo = addImgElements(savedChartData.data)
+  activeChartUuid.value = uuid
 
   store.commit('setEntireChart', chartToSwitchTo)
 }
@@ -54,12 +46,12 @@ const changeChart = (event: Event) => {
       @change="changeChart"
     >
       <option
-        v-for="(chart, index) in charts"
-        :value="chart.uuid"
+        v-for="(uuid, index) in chartUuids"
+        :value="uuid"
         :key="index"
-        :selected="chart.currentlyActive ? true : false"
+        :selected="uuid === activeChartUuid"
       >
-        {{ chart.name ? chart.name : `Untitled (${new Date(chart.timestamp).toUTCString()})` }}
+        {{ charts[uuid]?.name ? charts[uuid]?.name : `Untitled (${new Date(charts[uuid]?.timestamp).toUTCString()})` }}
       </option>
     </select>
   </div>

@@ -15,6 +15,15 @@ export enum BackgroundTypes {
   Image = 'image'
 }
 
+export enum SearchTypes {
+  Music = 'music',
+  Books = 'books',
+  Games = 'games',
+  Movies = 'movies',
+  Shows = 'shows',
+  Custom = 'custom'
+}
+
 export interface Chart {
   title: string,
   items: Array<ChartItem | null>,
@@ -38,12 +47,28 @@ export interface IgdbItem {
 }
 
 // Charts stored in localStorage
-export interface StoredChart {
+export interface OldStoredChart {
   timestamp: number,
   uuid: string,
   name: string | null,
   data: Chart,
   currentlyActive: boolean
+}
+
+export interface StoredChart {
+  timestamp: number,
+  name: string | null,
+  data: Chart
+}
+
+export interface StoredCharts {
+  [uuid: string]: StoredChart
+}
+
+export interface LocalStorageContent {
+  activeTab: SearchTypes,
+  charts: StoredCharts,
+  currentlyActive: string
 }
 
 // There's way more stuff from the APIs but this is all that's relevant here.
@@ -82,15 +107,6 @@ export interface CustomResult {
   creator?: string,
   imageURL: string,
   type: 'custom'
-}
-
-export enum SearchTypes {
-  Music = 'music',
-  Books = 'books',
-  Games = 'games',
-  Movies = 'movies',
-  Shows = 'shows',
-  Custom = 'custom'
 }
 
 export type Period = 'overall' | '7day' | '1month' | '3month' | '6month' | '12month'

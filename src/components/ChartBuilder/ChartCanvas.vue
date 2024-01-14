@@ -2,12 +2,11 @@
 import { onMounted, computed, ref, Ref } from 'vue'
 import { useStore } from '../../store'
 import generateChart from 'topster'
-import { BackgroundTypes, Chart, ChartItem, StoredChart } from '../../types'
+import { BackgroundTypes, Chart, ChartItem } from '../../types'
 import { getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
 import { getScaledDimensions } from 'topster/dist/lib'
-import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
+import { appendChart, getActiveChart, getActiveChartUuid, setActiveChart, updateStoredChart } from '../../helpers/localStorage'
 import updateWithMigrations from '../../helpers/migrations'
-import { v4 as uuidv4 } from 'uuid'
 
 // Topsters 3 supports drag and drop for both mouse and touch events.
 type InteractionEvent = MouseEvent | TouchEvent
@@ -59,8 +58,7 @@ onMounted(() => {
     throw new Error('Couldn\'t find canvas. Something must have gone wrong with page loading, please refresh.')
   }
 
-  const savedCharts: StoredChart[] = getStoredCharts()
-  const activeChart = savedCharts.find(chart => chart.currentlyActive === true)
+  const activeChart = getActiveChart()
 
   if (activeChart) {
     const updatedChart = updateWithMigrations(activeChart.data)
@@ -152,22 +150,17 @@ const renderChart = () => {
 }
 
 const saveToLocalStorage = (chart: Chart) => {
-  const savedCharts = getStoredCharts()
-
-  const activeChart = savedCharts.find(chart => chart.currentlyActive)
+  const activeChartUuid = getActiveChartUuid()
+  const activeChart = getActiveChart()
 
   if (!activeChart) {
-    const newChartArray = [
-      {
-        timestamp: new Date().getTime(),
-        name: null,
-        data: chart,
-        currentlyActive: true,
-        uuid: uuidv4()
-      }
-    ]
+    const newUuid = appendChart({
+      timestamp: new Date().getTime(),
+      name: null,
+      data: chart
+    })
 
-    return setStoredCharts(newChartArray)
+    setActiveChart(newUuid)
   }
 
   const updatedChart = {
@@ -175,15 +168,7 @@ const saveToLocalStorage = (chart: Chart) => {
     data: chart
   }
 
-  const updatedArray = savedCharts.map(savedChart => {
-    if (savedChart.currentlyActive) {
-      return updatedChart
-    } else {
-      return savedChart
-    }
-  })
-
-  setStoredCharts(updatedArray)
+  updateStoredChart(updatedChart, activeChartUuid)
 }
 
 const checkDroppability = (event: InteractionEvent | DragEvent) => {

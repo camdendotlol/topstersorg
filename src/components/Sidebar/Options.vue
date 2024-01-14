@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { getStoredCharts } from '../../helpers/localStorage'
+import { getActiveChart } from '../../helpers/localStorage'
 import { useStore } from '../../store'
-import { BackgroundTypes, Chart, StoredChart } from '../../types'
+import { BackgroundTypes, Chart } from '../../types'
 import { onMounted, ref, Ref } from 'vue'
 
 const store = useStore()
@@ -88,13 +88,7 @@ const changeShowTitles = (event: Event): void => {
 }
 
 const setupFromLocalstorage = (): void => {
-  const savedCharts = getStoredCharts()
-
-  let activeChart: StoredChart | undefined
-
-  if (savedCharts.length > 0) {
-    activeChart = savedCharts.find(chart => chart.currentlyActive)
-  }
+  const activeChart = getActiveChart()
 
   if (activeChart) {
     populateForm(activeChart.data)

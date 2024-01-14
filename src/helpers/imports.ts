@@ -1,11 +1,10 @@
 // Functions related to importing and exporting charts
 
 import pako from 'pako'
-import { appendChart, getStoredCharts, setStoredCharts, updateStoredChart } from './localStorage'
-import { BackgroundTypes, ChartItem, StoredChart } from '../types'
+import { appendChart, findByUuid, getActiveChart, getActiveChartUuid, getNewestChartUuid, setActiveChart, updateStoredChart } from './localStorage'
+import { BackgroundTypes, ChartItem, StoredChart, StoredCharts } from '../types'
 import { Store } from 'vuex'
 import { State } from '../store'
-import { v4 as uuidv4 } from 'uuid'
 import { forceRefresh } from './chart'
 
 const downloadChartData = (data: string, title: string) => {
@@ -26,10 +25,15 @@ const downloadChartData = (data: string, title: string) => {
 }
 
 export const exportCurrentChart = () => {
-  const chart = getStoredCharts().find(ch => ch.currentlyActive)
-  const compressed = btoa(pako.deflate(JSON.stringify(chart)).toString())
+  const uuid = getActiveChartUuid()
 
-  downloadChartData(compressed, chart.data.title)
+  const exportObj: StoredCharts = {
+    [uuid]: getActiveChart()
+  }
+
+  const compressed = btoa(pako.deflate(JSON.stringify(exportObj)).toString())
+
+  downloadChartData(compressed, exportObj[uuid].data.title)
 }
 
 export const parseUploadedText = (text: string) => {
@@ -46,27 +50,30 @@ export const importChart = async (event: Event, store: Store<State>) => {
   try {
     const text = await files[0].text()
     const results = parseUploadedText(text)
-    const json = JSON.parse(results) as StoredChart
+    const json = JSON.parse(results) as StoredCharts
 
-    const newChartUuid = json.uuid
-    const existingChart = getStoredCharts().find(ch => ch.uuid === newChartUuid)
+    const newChartUuid = Object.keys(json)[0]
+    const existingChart = findByUuid(newChartUuid)
+    const newChart = json[newChartUuid]
 
     let overwriteConsent = false
 
     if (existingChart) {
       if (window.confirm('This chart already exists locally. Do you want to overwrite it?')) {
         overwriteConsent = true
-        updateStoredChart(json)
+        updateStoredChart(newChart, newChartUuid)
+        setActiveChart(newChartUuid)
         forceRefresh(store)
       }
     } else {
       overwriteConsent = true
-      appendChart(json)
+      appendChart(newChart, newChartUuid)
+      setActiveChart(newChartUuid)
       forceRefresh(store)
     }
 
     if (overwriteConsent) {
-      alert(`"${json.data.title}" imported successfully!`)
+      alert(`"${newChart.data.title}" imported successfully!`)
     }
   } catch (e) {
     console.error(e)
@@ -94,7 +101,7 @@ export const importTopsters2 = (event: Event, store: Store<State>) => {
       const options = JSON.parse(charts.options)
 
       // Import each chart
-      const storedCharts = getStoredCharts()
+      const newCharts: StoredChart[] = []
       const failed = []
       for (const chart of Object.entries(options.charts)) {
         let prefix = chart[0] + '-'
@@ -193,12 +200,10 @@ export const importTopsters2 = (event: Event, store: Store<State>) => {
               showTitles: charts[prefix + 'titled'] === 'true',
               gap: custom.padding * 5,
               font: custom.fontFamily
-            },
-            currentlyActive: false,
-            uuid: uuidv4()
+            }
           }
 
-          storedCharts.push(newChart)
+          newCharts.push(newChart)
         } catch (e) {
           console.error(e)
           failed.push(name)
@@ -211,7 +216,10 @@ export const importTopsters2 = (event: Event, store: Store<State>) => {
         alert('Charts imported successfully!')
       }
 
-      setStoredCharts(storedCharts)
+      newCharts.forEach(ch => appendChart(ch))
+
+      // Set the newly imported chart to currently active
+      setActiveChart(getNewestChartUuid())
       forceRefresh(store)
     } catch (e) {
       console.error(e)
