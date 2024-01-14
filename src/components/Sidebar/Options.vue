@@ -350,10 +350,15 @@ input {
   width: 100%;
 }
 
+table {
+  width: 100%;
+}
+
 tr {
   display: grid;
   grid-template-columns: 120px 1fr;
   margin: 10px 0;
+  width: 100%;
 }
 
 td {

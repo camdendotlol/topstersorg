@@ -14,6 +14,7 @@ import Credits from '../Credits.vue'
 <style scoped>
 .container {
   width: 90%;
+  max-width: 500px;
   margin: auto;
   z-index: 10000;
 }

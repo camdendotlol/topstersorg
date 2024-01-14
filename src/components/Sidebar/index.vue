@@ -54,7 +54,7 @@ const setCurrentTab = (tab: TabsEnum) => {
   background: rgba(20, 20, 20, 0.8);
   border-radius: 10px;
   text-align: center;
-  padding: 16px;
+  padding: 10px;
 }
 
 .tabbed-sidebar-block {

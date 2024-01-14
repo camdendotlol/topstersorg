@@ -62,7 +62,6 @@ li {
   list-style-type: none;
   margin-bottom: 10px;
 }
-
 #faq {
   font-size: 0.9rem;
 }

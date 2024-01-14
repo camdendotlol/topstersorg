@@ -35,42 +35,42 @@ const isActive = (type: SearchTypes) => {
       :class="isActive(SearchTypes.Music)"
     >
       <BIconMusicNoteBeamed />
-      <span>Music</span>
+      <label>Music</label>
     </li>
     <li
       @click="emit('setSearchType', SearchTypes.Games)"
       :class="isActive(SearchTypes.Games)"
     >
       <BIconController />
-      <span>Games</span>
+      <label>Games</label>
     </li>
     <li
       @click="emit('setSearchType', SearchTypes.Books)"
       :class="isActive(SearchTypes.Books)"
     >
       <BIconBook />
-      <span>Books</span>
+      <label>Books</label>
     </li>
     <li
       @click="emit('setSearchType', SearchTypes.Movies)"
       :class="isActive(SearchTypes.Movies)"
     >
       <BIconFilm />
-      <span>Movies</span>
+      <label>Movies</label>
     </li>
     <li
       @click="emit('setSearchType', SearchTypes.Shows)"
       :class="isActive(SearchTypes.Shows)"
     >
       <BIconTv />
-      <span>Shows</span>
+      <label>Shows</label>
     </li>
     <li
       @click="emit('setSearchType', SearchTypes.Custom)"
       :class="isActive(SearchTypes.Custom)"
     >
       <BIconTools />
-      <span>Custom</span>
+      <label>Custom</label>
     </li>
   </ul>
 </template>
@@ -99,6 +99,10 @@ li:hover {
 svg {
   height: 24px;
   width: 24px;
+}
+
+label {
+  display: block;
 }
 
 .active-search-type {

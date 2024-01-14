@@ -4,7 +4,7 @@
 
 <template>
   <div id="credits">
-    <p>Data credits:</p>
+    <p>Data credits</p>
     <div id="credits-flex">
       <a href="https://www.last.fm/">
         <img src="/lastfm_logo.svg" alt="Last.fm">
@@ -19,13 +19,15 @@
         <img src="/tmdb.svg" alt="The Movie DB" id="tmdb-logo">
       </a>
     </div>
-    <p>Topsters 3 is not affiliated with or endorsed by any of the above services.</p>
+    <p class="disclaimer">Topsters 3 is not affiliated with or endorsed by any of the above services.</p>
   </div>
 </template>
 
 <style scoped>
 #credits {
+  margin: auto;
   text-align: center;
+  max-width: 400px;
 }
 
 #credits-flex {
@@ -45,5 +47,9 @@
 #ia-logo {
   filter: invert(1);
   height: 44px;
+}
+
+.disclaimer {
+  font-size: 0.8rem;
 }
 </style>

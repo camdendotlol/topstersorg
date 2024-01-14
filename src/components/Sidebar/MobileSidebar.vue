@@ -41,11 +41,12 @@ const setCurrentTab = (tab: TabsEnum) => {
 <style scoped>
 .container {
   width: 100%;
-  z-index: 10000;
   padding: 10px 10px 60px;
   margin: auto;
   max-height: 100dvh;
+  max-width: 500px;
   overflow-y: auto;
+  z-index: 10000;
 }
 
 .title-container {
