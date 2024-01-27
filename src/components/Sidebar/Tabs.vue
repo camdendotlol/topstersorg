@@ -37,7 +37,7 @@ const emit = defineEmits([
   display: flex;
   margin: 0;
   padding: 0;
-  border-radius: 10px 10px 0 0;
+  border-radius: 6px 6px 0 0;
   width: 100%;
   gap: 4px;
 }
@@ -51,7 +51,7 @@ const emit = defineEmits([
   font-size: 1rem;
   padding: 4px;
   background: #b5b5b5;
-  border-radius: 5px 5px 0 0;
+  border-radius: 6px 6px 0 0;
   color: black;
 }
 
@@ -62,5 +62,11 @@ const emit = defineEmits([
 
 .tab-item:hover {
   cursor: pointer;
+}
+
+@media screen and (max-width: 1000px) {
+  .active {
+    text-decoration: underline;
+  }
 }
 </style>

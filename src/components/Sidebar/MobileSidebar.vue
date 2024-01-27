@@ -56,7 +56,7 @@ const setCurrentTab = (tab: TabsEnum) => {
 
 .sidebar-content {
   background: rgba(20, 20, 20, 0.6);
-  border-radius: 0 10px 10px 10px;
+  border-radius: 0 6px 6px 6px;
   padding: 6px;
 }
 </style>

@@ -98,7 +98,7 @@ const deleteChart = () => {
   display: block;
   top: 0;
   left: 450px;
-  border-radius: 0 0 8px 8px;
+  border-radius: 0 0 6px 6px;
   margin: 0 auto;
   padding: 0;
   gap: 50px;

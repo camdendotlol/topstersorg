@@ -104,7 +104,7 @@ p {
   background: #393939;
   border: none;
   font-size: 0.8rem;
-  border-radius: 5px;
+  border-radius: 6px;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -97,7 +97,7 @@ const getInputPlaceholder = () => {
 }
 
 .submit-button {
-  border-radius: 2px;
+  border-radius: 6px;
   border: none;
   height: 36px;
   width: 36px;

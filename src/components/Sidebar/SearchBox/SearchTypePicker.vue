@@ -107,7 +107,6 @@ label {
 
 .active-search-type {
   color: var(--accent);
-  border-radius: 10px;
   text-decoration: underline;
 }
 </style>

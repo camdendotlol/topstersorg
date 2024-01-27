@@ -52,7 +52,7 @@ const setCurrentTab = (tab: TabsEnum) => {
   margin: 10px;
   width: 400px;
   background: rgba(20, 20, 20, 0.8);
-  border-radius: 10px;
+  border-radius: 6px;
   text-align: center;
   padding: 10px;
 }
@@ -68,7 +68,7 @@ const setCurrentTab = (tab: TabsEnum) => {
   max-height: 480px;
   overflow-y: auto;
   background: rgba(20, 20, 20, 0.8);
-  border-radius: 0 10px 10px 10px;
+  border-radius: 0 6px 6px 6px;
   padding: 16px;
 }
 

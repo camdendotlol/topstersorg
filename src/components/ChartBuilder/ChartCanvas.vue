@@ -454,7 +454,7 @@ const allowDragAndDrop = (event: DragEvent) => {
 
 <style scoped>
 #chart-canvas {
-  border-radius: 5px;
+  border-radius: 6px;
   touch-action: none;
 }
 
