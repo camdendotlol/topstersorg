@@ -185,7 +185,6 @@ export const importTopsters2 = (event: Event, store: Store<State>) => {
           // Create new chart
           const newChart: StoredChart = {
             timestamp: new Date().getTime(),
-            name,
             data: {
               title: '',
               items,
