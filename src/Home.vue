@@ -11,24 +11,41 @@ import DownloadButton from './components/buttons/Download.vue'
 const showMobileOptions: Ref<boolean> = ref(false)
 const showMobileSearch: Ref<boolean> = ref(false)
 
+const mainDivRef: Ref<HTMLFormElement> = ref(null)
+
+const scrollToTop = () => {
+  if (mainDivRef.value &&
+  !showMobileSearch.value &&
+  !showMobileOptions.value
+  ) {
+    mainDivRef.value.scrollTo(0, -1)
+  }
+}
+
 const toggleMobileSearchDisplay = () => {
   showMobileOptions.value = false
   showMobileSearch.value = !showMobileSearch.value
+
+  scrollToTop()
 }
 
 const toggleMobileOptionsDisplay = () => {
   showMobileSearch.value = false
   showMobileOptions.value = !showMobileOptions.value
+
+  scrollToTop()
 }
 
 const returnToHomepage = () => {
   showMobileSearch.value = false
   showMobileOptions.value = false
+
+  scrollToTop()
 }
 </script>
 
 <template>
-  <div class="main">
+  <div class="main" ref="mainDivRef">
     <Sidebar />
     <button type="button" class="toggle-button" id="mobile-search-toggle" @click="toggleMobileSearchDisplay">
       <BIconPlusLg />
