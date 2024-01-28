@@ -72,7 +72,7 @@ const callImportCharts = async (event) => {
     type="file"
     style="display: none"
     ref="uploadRef"
-    accept="application/txt"
+    accept=".topster"
     @change="callImportCharts"
   />
   </div>

@@ -17,7 +17,7 @@ const downloadChartData = (data: string, title: string) => {
   const link = document.createElement('a')
 
   link.href = blobUrl
-  link.download = `${title}.json`
+  link.download = `${title}.topster`
   document.body.appendChild(link)
 
   link.click()
