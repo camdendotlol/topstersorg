@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { getStoredCharts } from '../../helpers/localStorage'
+import { getActiveChart } from '../../helpers/localStorage'
 import { useStore } from '../../store'
-import { BackgroundTypes, Chart, StoredChart } from '../../types'
+import { BackgroundTypes, Chart } from '../../types'
 import { onMounted, ref, Ref } from 'vue'
 
 const store = useStore()
@@ -88,13 +88,7 @@ const changeShowTitles = (event: Event): void => {
 }
 
 const setupFromLocalstorage = (): void => {
-  const savedCharts = getStoredCharts()
-
-  let activeChart: StoredChart | undefined
-
-  if (savedCharts.length > 0) {
-    activeChart = savedCharts.find(chart => chart.currentlyActive)
-  }
+  const activeChart = getActiveChart()
 
   if (activeChart) {
     populateForm(activeChart.data)
@@ -143,222 +137,203 @@ const updateBackgroundImage = (event: Event): void => {
 </script>
 
 <template>
-  <div id="chart-options">
-    <div class="content">
-      <table>
-        <tr>
-          <td>
-            <label for="title">Title</label>
-          </td>
-          <td>
-            <input
-              type="text"
-              name="title"
-              id="title"
-              ref="titleRef"
-              @input="updateTitle"
-            >
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <label for="display-titles">Display Titles</label>
-          </td>
-          <td>
-            <input
-              type="checkbox"
-              name="display-titles"
-              ref="displayTitlesRef"
-              id="display-titles"
-              @change="changeShowTitles"
-            >
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <label for="chart-size">Width</label>
-          </td>
-          <td class="cell-with-value">
-            <span>{{ chart.size.x }}</span>
-            <input
-              min=1
-              max=12
-              value=5
-              type="range"
-              name="x-axis"
-              id="x-axis"
-              ref="xAxisRef"
-              class="dimension-input"
-              @input="updateSizeX"
-            >
-          </td>
-        </tr>
-        <tr class="axis-row">
-          <td>
-            <label for="y-axis">Height</label>
-          </td>
-          <td class="cell-with-value">
-            <span>{{ chart.size.y }}</span>
-            <input
-              min=1
-              max=12
-              value=5
-              type="range"
-              name="y-axis"
-              id="y-axis"
-              ref="yAxisRef"
-              class="dimension-input"
-              @input="updateSizeY"
-            >
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <label for="background-type">Background type</label>
-          </td>
-          <td>
-            <select
-              name="background-type"
-              id="background-type"
-              ref="backgroundTypeInputRef"
-              @change="changeBackgroundType"
-            >
-              <option value="color">Color</option>
-              <option value="image">Image</option>
-            </select>
-          </td>
-        </tr>
-        <tr :class="backgroundType === 'color' ? '' : 'hidden'">
-          <td>
-            <label for="background-color">Background color</label>
-          </td>
-          <td>
-            <input
-              type="color"
-              name="background-color"
-              id="background-color"
-              class="color-picker"
-              ref="backgroundColorInputRef"
-              @change="updateBackgroundColor"
-            >
-          </td>
-        </tr>
-        <tr :class="backgroundType === 'image' ? '' : 'hidden'">
-          <td>
-            <label for="background-image">Background image</label>
-          </td>
-          <td>
-            <input
-              type="text"
-              name="background-image"
-              id="background-image"
-              ref="backgroundImageInputRef"
-              @change="updateBackgroundImage"
-            >
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <label for="gap">Gap</label>
-          </td>
-          <td class="cell-with-value">
-            <span>{{ gap }}</span>
-            <input
-              type="range"
-              min="0"
-              max="150"
-              value="0"
-              name="gap"
-              ref="gapRef"
-              id="gap"
-              @input="updateGap"
-            >
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <label for="display-numbers">Show Numbers</label>
-          </td>
-          <td>
-            <input
-              type="checkbox"
-              name="show-numbers"
-              ref="showNumbersRef"
-              id="show-numbers"
-              @change="changeShowNumbers"
-            >
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <label for="show-shadows">Show Shadows</label>
-          </td>
-          <td>
-            <input
-              type="checkbox"
-              name="show-shadows"
-              ref="showShadowsRef"
-              id="show-shadows"
-              @change="changeShowShadows"
-            >
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <label for="font">Font</label>
-          </td>
-          <td class="cell-with-value">
-            <input
-              type="text"
-              name="font"
-              ref="fontRef"
-              id="font"
-              @input="updateFont"
-            >
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <label for="text-color">Text color</label>
-          </td>
-          <td>
-            <input
-              type="color"
-              name="text-color"
-              id="text-color"
-              class="color-picker"
-              ref="textColorRef"
-              @change="updateTextColor"
-            >
-          </td>
-        </tr>
-      </table>
-    </div>
-  </div>
+  <table class="options-table">
+    <tr>
+      <td>
+        <label for="title">Title</label>
+      </td>
+      <td>
+        <input
+          type="text"
+          name="title"
+          id="title"
+          ref="titleRef"
+          @input="updateTitle"
+        >
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="display-titles">Display Titles</label>
+      </td>
+      <td>
+        <input
+          type="checkbox"
+          name="display-titles"
+          ref="displayTitlesRef"
+          id="display-titles"
+          @change="changeShowTitles"
+        >
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="chart-size">Width</label>
+      </td>
+      <td class="cell-with-value">
+        <span>{{ chart.size.x }}</span>
+        <input
+          min=1
+          max=12
+          value=5
+          type="range"
+          name="x-axis"
+          id="x-axis"
+          ref="xAxisRef"
+          class="dimension-input"
+          @input="updateSizeX"
+        >
+      </td>
+    </tr>
+    <tr class="axis-row">
+      <td>
+        <label for="y-axis">Height</label>
+      </td>
+      <td class="cell-with-value">
+        <span>{{ chart.size.y }}</span>
+        <input
+          min=1
+          max=12
+          value=5
+          type="range"
+          name="y-axis"
+          id="y-axis"
+          ref="yAxisRef"
+          class="dimension-input"
+          @input="updateSizeY"
+        >
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="background-type">Background type</label>
+      </td>
+      <td>
+        <select
+          name="background-type"
+          id="background-type"
+          ref="backgroundTypeInputRef"
+          @change="changeBackgroundType"
+        >
+          <option value="color">Color</option>
+          <option value="image">Image</option>
+        </select>
+      </td>
+    </tr>
+    <tr :class="backgroundType === 'color' ? '' : 'hidden'">
+      <td>
+        <label for="background-color">Background color</label>
+      </td>
+      <td>
+        <input
+          type="color"
+          name="background-color"
+          id="background-color"
+          class="color-picker"
+          ref="backgroundColorInputRef"
+          @change="updateBackgroundColor"
+        >
+      </td>
+    </tr>
+    <tr :class="backgroundType === 'image' ? '' : 'hidden'">
+      <td>
+        <label for="background-image">Background image</label>
+      </td>
+      <td>
+        <input
+          type="text"
+          name="background-image"
+          id="background-image"
+          ref="backgroundImageInputRef"
+          @change="updateBackgroundImage"
+        >
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="gap">Gap</label>
+      </td>
+      <td class="cell-with-value">
+        <span>{{ gap }}</span>
+        <input
+          type="range"
+          min="0"
+          max="150"
+          value="0"
+          name="gap"
+          ref="gapRef"
+          id="gap"
+          @input="updateGap"
+        >
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="show-numbers">Show Numbers</label>
+      </td>
+      <td>
+        <input
+          type="checkbox"
+          name="show-numbers"
+          ref="showNumbersRef"
+          id="show-numbers"
+          @change="changeShowNumbers"
+        >
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="show-shadows">Show Shadows</label>
+      </td>
+      <td>
+        <input
+          type="checkbox"
+          name="show-shadows"
+          ref="showShadowsRef"
+          id="show-shadows"
+          @change="changeShowShadows"
+        >
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="font">Font</label>
+      </td>
+      <td class="cell-with-value">
+        <input
+          type="text"
+          name="font"
+          ref="fontRef"
+          id="font"
+          @input="updateFont"
+        >
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label for="text-color">Text color</label>
+      </td>
+      <td>
+        <input
+          type="color"
+          name="text-color"
+          id="text-color"
+          class="color-picker"
+          ref="textColorRef"
+          @change="updateTextColor"
+        >
+      </td>
+    </tr>
+  </table>
 </template>
 
 <style scoped>
-#chart-options {
-  display: flex;
-  background: var(--blue-bg);
-  border-radius: 0 0 5px 5px;
-}
-
-.content {
-  margin: 10px auto;
-}
-
 .color-picker {
   height: 30px;
   width: 30px;
   border: none;
   padding: 0;
-  border-radius: 5px;
   overflow: hidden;
-}
-
-#x-axis, #y-axis {
-  width: 100px;
 }
 
 .cell-with-value {
@@ -372,14 +347,27 @@ const updateBackgroundImage = (event: Event): void => {
 }
 
 input {
-  width: 140px;
+  width: 100%;
+}
+
+#background-type {
+  color: black;
+}
+
+table {
+  width: 100%;
+}
+
+tr {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  margin: 10px 0;
+  width: 100%;
 }
 
 td {
-  height: 40px;
-}
-
-tr td:nth-child(1) {
-  text-align: left;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
 }
 </style>

@@ -3,35 +3,50 @@ import { Ref, ref } from 'vue'
 import Sidebar from './components/Sidebar/index.vue'
 import ChartBuilder from './components/ChartBuilder/index.vue'
 import { BIconGearFill, BIconPlusLg, BIconHouse } from 'bootstrap-icons-vue'
-import MobileOptionsSidebar from './components/MobileOptionsSidebar.vue'
-import MobileSearchSidebar from './components/MobileSearchSidebar.vue'
+import MobileOptionsSidebar from './components/Sidebar/MobileSidebar.vue'
+import MobileSearchSidebar from './components/Sidebar/SearchBox/MobileSearch.vue'
 import Popup from './components/Popup.vue'
 import DownloadButton from './components/buttons/Download.vue'
 
 const showMobileOptions: Ref<boolean> = ref(false)
 const showMobileSearch: Ref<boolean> = ref(false)
 
+const mainDivRef: Ref<HTMLFormElement> = ref(null)
+
+const scrollToTop = () => {
+  if (mainDivRef.value &&
+  !showMobileSearch.value &&
+  !showMobileOptions.value
+  ) {
+    mainDivRef.value.scrollTo(0, -1)
+  }
+}
+
 const toggleMobileSearchDisplay = () => {
   showMobileOptions.value = false
   showMobileSearch.value = !showMobileSearch.value
+
+  scrollToTop()
 }
 
 const toggleMobileOptionsDisplay = () => {
   showMobileSearch.value = false
   showMobileOptions.value = !showMobileOptions.value
+
+  scrollToTop()
 }
 
 const returnToHomepage = () => {
   showMobileSearch.value = false
   showMobileOptions.value = false
+
+  scrollToTop()
 }
 </script>
 
 <template>
-  <div class="main">
-    <div class="sidebar-div">
-      <Sidebar />
-    </div>
+  <div class="main" ref="mainDivRef">
+    <Sidebar />
     <button type="button" class="toggle-button" id="mobile-search-toggle" @click="toggleMobileSearchDisplay">
       <BIconPlusLg />
     </button>
@@ -65,41 +80,58 @@ const returnToHomepage = () => {
 
 <style>
 #app {
-  font-family: "Ubuntu Mono", monospace;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: var(--dark-blue);
+  font-family: "Nunito", sans-serif;
+  color: var(--text-color);
   overflow-y: hidden;
-  text-rendering: optimizeLegibility;
   box-sizing: border-box;
+  scrollbar-color: var(--accent) black;
+  scrollbar-width: thin;
+  accent-color: var(--accent);
+}
+
+h1, h2, h3, h4 {
+  color: var(--accent);
 }
 
 body {
   background: #2a2a2a;
-  box-sizing: border-box;
   touch-action: manipulation;
 }
 
+button {
+  font-family: "Nunito", sans-serif;
+}
+
+input {
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+  background-color: var(--input-bg);
+  color: black;
+}
+
 select {
-  padding: 5px;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: 1px solid var(--dark-blue);
-  background: var(--off-white);
+  border: none;
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+  padding: 4px;
+  border-radius: 6px;
+  background-color: var(--input-bg);
+  color: black;
+  accent-color: initial;
 }
 
 .main {
-  height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
   width: 100vw;
   display: flex;
   position: absolute;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   margin: 0;
-}
-
-.hidden {
-  display: none;
 }
 
 .toggle-button {
@@ -109,6 +141,8 @@ select {
   height: 50px;
   width: 50px;
   z-index: 10001;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
 }
 
 #mobile-search-toggle {
@@ -142,23 +176,8 @@ select {
   cursor: pointer;
 }
 
-.sidebar-div {
-  margin: 0;
-  padding: 0;
-  width: 400px;
-  flex-shrink: 0;
-  overflow-y: scroll;
-  background: var(--green-bg);
-  box-shadow: 2px 0 3px -1px gray;
-  text-align: center;
-}
-
-input {
-  padding: 8px;
-  font-size: 1rem;
-  border: 1px solid var(--dark-blue);
-  background: var(--off-white);
-  border-radius: 5px;
+* {
+  box-sizing: border-box;
 }
 
 .mobile-options-visibility-manager {
@@ -175,35 +194,32 @@ input {
     overflow-x: hidden;
   }
 
-  .sidebar-div {
-    display: none;
-  }
-
   .toggle-button {
     display: initial;
+    color: white;
   }
 
   .mobile-options-visibility-manager {
     display: initial;
     width: 100%;
-    min-height: 100vh;
+    min-height: 100dvh;
     position: absolute;
     left: -100vw;
     padding: 0;
     margin: 0;
-    background: var(--green-bg);
+    background: var(--ui-bg);
     transition: 0.2s;
   }
 
   .mobile-search-visibility-manager {
     display: initial;
     width: 100%;
-    min-height: 100vh;
+    min-height: 100dvh;
     position: absolute;
     right: -100vw;
     padding: 0;
     margin: 0;
-    background: var(--green-bg);
+    background: var(--ui-bg);
     transition: 0.2s;
   }
 

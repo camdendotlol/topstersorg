@@ -49,8 +49,7 @@ export const getLastfmChart = async (username: string, type: LastfmDataType, per
     throw new Error(errorMessages.BadStatusCode)
   }
 
-  const jsonRes = await res.json()
-  return jsonRes
+  return await res.json()
 }
 
 export default queryLastFM

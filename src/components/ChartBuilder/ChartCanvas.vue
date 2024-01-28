@@ -2,11 +2,11 @@
 import { onMounted, computed, ref, Ref } from 'vue'
 import { useStore } from '../../store'
 import generateChart from 'topster'
-import { BackgroundTypes, Chart, ChartItem, StoredChart } from '../../types'
+import { BackgroundTypes, Chart, ChartItem } from '../../types'
 import { getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
 import { getScaledDimensions } from 'topster/dist/lib'
-import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
-import updateWithShim from '../../helpers/shim'
+import { appendChart, getActiveChart, getActiveChartUuid, localStorageMigrations, setActiveChart, updateStoredChart } from '../../helpers/localStorage'
+import updateWithMigrations from '../../helpers/migrations'
 
 // Topsters 3 supports drag and drop for both mouse and touch events.
 type InteractionEvent = MouseEvent | TouchEvent
@@ -58,11 +58,12 @@ onMounted(() => {
     throw new Error('Couldn\'t find canvas. Something must have gone wrong with page loading, please refresh.')
   }
 
-  const savedCharts: StoredChart[] = getStoredCharts()
-  const activeChart = savedCharts.find(chart => chart.currentlyActive === true)
+  localStorageMigrations()
+
+  const activeChart = getActiveChart()
 
   if (activeChart) {
-    const updatedChart = updateWithShim(activeChart.data)
+    const updatedChart = updateWithMigrations(activeChart.data)
     if (updatedChart.background.type === BackgroundTypes.Image) {
       const bgImg = new Image()
       bgImg.src = updatedChart.background.value
@@ -151,37 +152,24 @@ const renderChart = () => {
 }
 
 const saveToLocalStorage = (chart: Chart) => {
-  const savedCharts = getStoredCharts()
+  const activeChartUuid = getActiveChartUuid()
+  const activeChart = getActiveChart()
 
-  const activeChart = savedCharts.find(chart => chart.currentlyActive)
-
-  if (!activeChart) {
-    const newChartArray = [
-      {
-        timestamp: new Date().getTime(),
-        name: null,
-        data: chart,
-        currentlyActive: true
-      }
-    ]
-
-    return setStoredCharts(newChartArray)
-  }
-
-  const updatedChart = {
-    ...activeChart,
-    data: chart
-  }
-
-  const updatedArray = savedCharts.map(savedChart => {
-    if (savedChart.currentlyActive) {
-      return updatedChart
-    } else {
-      return savedChart
+  if (activeChart) {
+    const updatedChart = {
+      ...activeChart,
+      data: chart
     }
-  })
 
-  setStoredCharts(updatedArray)
+    updateStoredChart(updatedChart, activeChartUuid)
+  } else {
+    const newUuid = appendChart({
+      timestamp: new Date().getTime(),
+      data: chart
+    })
+
+    setActiveChart(newUuid)
+  }
 }
 
 const checkDroppability = (event: InteractionEvent | DragEvent) => {
@@ -460,14 +448,12 @@ const allowDragAndDrop = (event: DragEvent) => {
     @touchmove="updateCursor"
     @touchend="dropItem"
     @touchleave="resetCursor"
-  >
-    TODO: text mode charts for accessibility
-  </canvas>
+  ></canvas>
 </template>
 
 <style scoped>
 #chart-canvas {
-  border-radius: 5px;
+  border-radius: 6px;
   touch-action: none;
 }
 
@@ -477,9 +463,9 @@ const allowDragAndDrop = (event: DragEvent) => {
   margin-top: 20px;
   padding: 20px;
   border-radius: 50%;
-  border: 2px solid var(--off-white);
+  border: 2px solid var(--text-color);
   background: transparent;
-  color: var(--off-white);
+  color: var(--text-color);
   height: 5rem;
   width: 5rem;
   font-size: 0.8rem;
@@ -488,7 +474,7 @@ const allowDragAndDrop = (event: DragEvent) => {
 
 #save-button:hover {
   cursor: pointer;
-  background: var(--off-white);
+  background: var(--text-color);
   color: var(--dark-blue);
 }
 
@@ -499,7 +485,7 @@ const allowDragAndDrop = (event: DragEvent) => {
 
 canvas {
   max-width: 95%;
-  max-height: 85vh;
+  max-height: 85dvh;
   margin: auto;
   margin-top: 50px;
 }

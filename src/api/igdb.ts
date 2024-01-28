@@ -19,9 +19,7 @@ const queryIGDB = async (query: string): Promise<IgdbItem[]> => {
     throw new Error(errorMessages.BadStatusCode)
   }
 
-  const jsonRes = await res.json()
-
-  return jsonRes
+  return await res.json()
 }
 
 export default queryIGDB

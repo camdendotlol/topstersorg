@@ -1,8 +1,8 @@
 // Functions for filling in the chart.
 
-import { initialState } from '../store'
-import { type Chart, type ChartItem, type Result, BackgroundTypes, StoredChart } from '../types'
-import { getStoredCharts, setStoredCharts } from './localStorage'
+import { State, initialState } from '../store'
+import { type Chart, type ChartItem, type Result, BackgroundTypes } from '../types'
+import { appendChart, getActiveChart, setActiveChart } from './localStorage'
 import {
   isBookResult,
   isCustomResult,
@@ -13,6 +13,7 @@ import {
 } from './typeGuards'
 import fetchImageURL from '../api/fetchImage'
 import generateChart from 'topster'
+import { Store } from 'vuex'
 
 // Add the proper <img> elements into the chart state.
 // This is needed when loading a saved chart from localstorage.
@@ -38,16 +39,12 @@ export const addImgElements = (chart: Chart): Chart => {
 
 // To run the first time Topsters.org launches, or when we want to reset everything.
 export const initializeFirstRun = (): void => {
-  const newChartArray = [
-    {
-      timestamp: new Date().getTime(),
-      name: null,
-      data: initialState.chart,
-      currentlyActive: true
-    }
-  ]
+  const newUuid = appendChart({
+    timestamp: new Date().getTime(),
+    data: initialState.chart
+  })
 
-  setStoredCharts(newChartArray)
+  setActiveChart(newUuid)
 }
 
 export const createChartItem = (item: Result): ChartItem => {
@@ -169,19 +166,21 @@ const saveChartImage = (url: string): void => {
   document.body.removeChild(link)
 }
 
-export const createNewChart = (name = null) => {
-  const storedCharts = getStoredCharts()
-
-  const newStoredChartsArray = storedCharts.map(chart => chart.currentlyActive ? { ...chart, currentlyActive: false } : chart)
-
-  const newChart: StoredChart = {
+export const createNewChart = () => {
+  const newUuid = appendChart({
     timestamp: new Date().getTime(),
-    name,
-    data: initialState.chart,
-    currentlyActive: true
-  }
+    data: initialState.chart
+  })
 
-  setStoredCharts([...newStoredChartsArray, newChart])
+  setActiveChart(newUuid)
+}
+
+// Forces the chart to re-render from localStorage.
+// Useful in situations where we update the charts by
+// modifying localStorage directly such as imports.
+export const forceRefresh = (store: Store<State>) => {
+  const activeChart = getActiveChart()
+  store.commit('setEntireChart', activeChart.data)
 }
 
 export const periodHeaders = {

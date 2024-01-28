@@ -14,9 +14,6 @@ import { useStore } from '../../../store'
 import ResultItem from './ResultItem.vue'
 
 interface Props {
-  // Disable the "any" type warning because TS gets confused with
-  // the filter functions below.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   results: any[],
   resultsType: SearchTypes,
   isLoading?: boolean
@@ -139,7 +136,7 @@ const initDrag = (event: DragEvent, result: Result): void => {
         />
       </li>
     </ul>
-    <ul v-else-if="resultsType === SearchTypes.TV">
+    <ul v-else-if="resultsType === SearchTypes.Shows">
       <li
         v-for="(result, index) in filterTV(results)"
         :key="index"
@@ -152,15 +149,20 @@ const initDrag = (event: DragEvent, result: Result): void => {
         />
       </li>
     </ul>
-    <ul v-else-if="resultsType === SearchTypes.Custom">
+    <ul
+      class="single-result-list"
+      v-else-if="resultsType === SearchTypes.Custom"
+    >
       <li>
         <ResultItem
           :imageData="{ src: results[0].imageURL, alt: results[0].title }"
           @click="addToChart(results[0])"
           draggable="true"
           @dragstart="(event) => initDrag(event, results[0])"
+          class="centered-item"
         />
       </li>
+      <p>Click or drag to add this item to the chart.</p>
     </ul>
     <div v-else>
       <p>Search for {{ props.resultsType }} has not been implemented yet.</p>
@@ -170,17 +172,15 @@ const initDrag = (event: DragEvent, result: Result): void => {
 
 <style scoped>
 #results-div {
-  max-height: 600px;
-  overflow-y: scroll;
-  background: var(--dark-blue);
+  margin: 0 10px;
 }
 
 ul {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 70px);
   align-items: center;
-  justify-content: space-around;
-  gap: 6px;
-  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 4px;
   padding: 0px;
 }
 
@@ -189,7 +189,7 @@ li {
 }
 
 li img {
-  width: 80px;
+  width: 100%;
 }
 
 li img:hover {
@@ -202,4 +202,16 @@ li img:hover {
   align-items: center;
 }
 
+.single-result-list {
+  display: initial;
+}
+
+.single-result-list li {
+  margin: auto;
+  max-width: 90px;
+}
+
+.single-result-list p {
+  text-align: center;
+}
 </style>

@@ -2,13 +2,14 @@
 
 import type { Chart } from '../types'
 
-const updateWithShim = (chart: Chart): Chart => {
+const updateWithMigrations = (chart: Chart): Chart => {
   // Avoid mutating the original
   const clone = { ...chart }
 
-  if (!clone.font) {
-    console.log('no font found! setting to Ubuntu Mono')
-    clone.font = 'Ubuntu Mono'
+  // TODO: Remove the Ubuntu Mono check eventually
+  if (!clone.font || clone.font === 'Ubuntu Mono') {
+    console.log('no font found! setting to monospace')
+    clone.font = 'monospace'
   }
 
   if (!Object.prototype.hasOwnProperty.call(clone, 'showNumbers')) {
@@ -29,4 +30,4 @@ const updateWithShim = (chart: Chart): Chart => {
   return clone
 }
 
-export default updateWithShim
+export default updateWithMigrations

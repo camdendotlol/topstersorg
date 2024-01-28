@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import queryOpenLibrary from '../../../api/openlibrary'
-import TypeDropdown from './TypeDropdown.vue'
-import { BIconArrowRight, BIconArrowRepeat } from 'bootstrap-icons-vue'
-import queryLastFM from '../../../api/lastfm'
-import queryIGDB from '../../../api/igdb'
-import { tmdbMovieSearch, tmdbTVSearch } from '../../../api/tmdb'
-import type { CustomResult, SearchTypes } from '../../../types'
+import { SearchTypes } from '../../../types'
 import { ref } from 'vue'
+import LoadingEllipses from './LoadingEllipses.vue'
+import CustomItemForm from './CustomItemForm.vue'
+import { queryMethodMap } from '../../../helpers/search'
 
 interface Props {
   searchType: SearchTypes
@@ -14,238 +11,104 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const results = ref([])
 const loading = ref(false)
-const customImageData = ref({
-  title: '',
-  creator: ''
-})
 
 const emit = defineEmits([
-  'updateResults',
-  'setSearchType'
+  'updateResults'
 ])
 
 const searchbox = ref(null)
 
-const changeSearchType = (newType: string) => {
-  emit('setSearchType', newType)
+// Hacky workaround to an annoying Vue bug:
+// Emit arguments don't seem to be passed when the emit
+// goes through two layers of child components. So here
+// we must create a normal function that calls the parent
+// component's emit, and then pass this as an emit to the
+// child component. Ugh.
+const emitUpdateResults = (results: unknown[]) => {
+  emit('updateResults', results)
 }
 
-const focusSearchBox = () => {
-  searchbox.value.focus()
-  searchbox.value.select()
-}
-
-const changeCustomImageData = (attr: 'title' | 'creator', value: string): void => {
-  customImageData.value[attr] = value
-  const item = results.value[0] as CustomResult
-  item[attr] = value
-}
-
-const handleSearch = async (): Promise<unknown[] | null> => {
+const handleSearch = async () => {
   if (loading.value) {
     return null
   }
 
   const query = searchbox.value.value
 
-  switch (props.searchType) {
-    case 'books':
-    {
-      loading.value = true
-      const response = await queryOpenLibrary(query)
-      // TODO: needs error handling
-      if (response) {
-        results.value = response
-        emit('updateResults', response)
-      }
-      loading.value = false
-      break
-    }
-    case 'music':
-    {
-      loading.value = true
-      const response = await queryLastFM(query)
-      if (response) {
-        results.value = response
-        emit('updateResults', response)
-      }
-      loading.value = false
-      break
-    }
-    case 'games':
-    {
-      loading.value = true
-      const response = await queryIGDB(query)
-      if (response) {
-        results.value = response
-        emit('updateResults', response)
-      }
-      loading.value = false
-      break
-    }
-    case 'movies':
-    {
-      loading.value = true
-      const response = await tmdbMovieSearch(query)
-      if (response) {
-        results.value = response
-        emit('updateResults', response)
-      }
-      loading.value = false
-      break
-    }
-    case 'tv':
-    {
-      loading.value = true
-      const response = await tmdbTVSearch(query)
-      if (response) {
-        results.value = response
-        emit('updateResults', response)
-      }
-      loading.value = false
-      break
-    }
-    case 'custom':
-    {
-      console.log(query)
-      loading.value = true
-      results.value = [
-        {
-          title: customImageData.value.title,
-          creator: customImageData.value.creator,
-          imageURL: query,
-          type: 'custom'
-        }
-      ]
-      emit('updateResults', results.value)
-      loading.value = false
-      break
-    }
-    default:
-      return []
+  loading.value = true
+  const results = await queryMethodMap[props.searchType](query)
+  if (results) {
+    emit('updateResults', results)
   }
-  return []
+  loading.value = false
+}
+
+const getInputPlaceholder = () => {
+  if (props.searchType === SearchTypes.Custom) {
+    return 'Enter URL'
+  }
+
+  return `Search for ${props.searchType}`
 }
 </script>
 
 <template>
+  <CustomItemForm
+    v-if="searchType === 'custom'"
+    @updateResults="emitUpdateResults"
+  />
   <form
     class="add-form"
     @submit.prevent="handleSearch"
+    v-else
   >
-    <div class="form-flex">
-      <TypeDropdown
-        :searchType="searchType"
-        @setSearchType="changeSearchType"
-      />
-      <div class="searchbox-div">
-        <input
-          id="searchbox"
-          ref="searchbox"
-          @click="searchType === 'custom' ? focusSearchBox() : null"
-          :placeholder="searchType === 'custom' ? 'Enter URL' : null"
-        />
-        <button type="submit" class="submit-button">
-          <BIconArrowRepeat class="loading-icon" v-if="loading" />
-          <BIconArrowRight v-else />
-        </button>
-      </div>
-    </div>
     <div
-      v-if="searchType === 'custom' && results.length > 0"
-      id-="custom-metadata-form"
+      class="form-flex"
     >
-      <div class="custom-form-item">
-        <label for="custom-creator">Creator (optional)</label>
-        <input
-          type="text"
-          id="custom-creator"
-          @change="changeCustomImageData('creator', ($event.target as HTMLInputElement).value)"
-        />
-      </div>
-      <div class="custom-form-item">
-        <label for="custom-title">Title</label>
-        <input
-          type="text"
-          id="custom-title"
-          @change="changeCustomImageData('title', ($event.target as HTMLInputElement).value)"
-        />
-      </div>
+      <input
+        id="searchbox"
+        ref="searchbox"
+        :placeholder="getInputPlaceholder()"
+      />
+      <button type="submit" class="submit-button">
+        <LoadingEllipses v-if="loading" />
+        <span v-else>🔎</span>
+      </button>
     </div>
   </form>
 </template>
 
 <style scoped>
-.add-form {
-  margin-bottom: 10px;
-}
-
-.searchbox-div {
-  flex-grow: 1;
-}
-
-input {
-  width: 90%;
-}
-
 .form-flex {
   display: flex;
-  justify-content: space-between;
-  gap: 5px;
-  align-items: center;
+  gap: 6px;
+  margin: 0 10px;
+}
+
+#searchbox {
+  height: 36px;
+  flex-grow: 1;
+  font-size: 1rem;
+}
+
+#searchbox::placeholder {
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .submit-button {
-  border-radius: 50%;
+  border-radius: 6px;
   border: none;
-  height: 20px;
-  width: 20px;
-  position: relative;
-  background: var(--off-white);
-  margin-left: -36px;
-  top: 8px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: filter 0.2s;
-}
-
-.submit-button:hover {
-  cursor: pointer;
-  filter: brightness(0.8);
-}
-
-svg {
-  height: 25px;
-  width: 25px;
-  color: black;
-}
-
-.loading-icon {
-  animation: rotation 1.5s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
+  height: 36px;
+  width: 36px;
+  background-color: var(--input-bg);
 }
 
 .custom-form-item {
   margin-top: 10px;
-  color: var(--dark-blue);
 }
 
 .custom-metadata-form > label {
   margin-bottom: 4px;
 }
-
-@keyframes rotation {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(359deg);
-  }
-}
-
 </style>

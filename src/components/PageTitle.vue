@@ -1,19 +1,16 @@
-<script setup lang="ts">
-const subtitles = [
-  'over 9000 charts served',
-  'yet another chart site'
-]
-</script>
-
 <template>
-  <h1>topsters.org</h1>
-  <h3>{{ subtitles[Math.floor(Math.random() * subtitles.length)] }}</h3>
+  <h1>Topsters 3</h1>
+  <h2>2nd anniversary edition</h2>
 </template>
 
 <style scoped>
 h1 {
-  margin: 0 auto;
-  margin-top: 20px;
-  font-size: 3rem;
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+h2 {
+  font-size: 1rem;
+  margin: 0;
 }
 </style>

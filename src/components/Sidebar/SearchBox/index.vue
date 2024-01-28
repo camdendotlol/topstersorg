@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { Ref, ref } from 'vue'
+import { Ref, onMounted, ref } from 'vue'
 import SearchForm from './SearchForm.vue'
 import SearchDropdown from './SearchDropdown.vue'
 import { Result, SearchTypes } from '../../../types'
+import SearchTypePicker from './SearchTypePicker.vue'
+import { isValidSearchType } from '../../../helpers/typeGuards'
 
 const searchType: Ref<SearchTypes> = ref(SearchTypes.Music)
 const results: Ref<Result[]> = ref([])
@@ -13,6 +15,17 @@ const setSearchType = (value: SearchTypes) => {
   localStorage.setItem('activeTab', value)
 }
 
+const getInitialSearchType = () => {
+  const storedValue = localStorage.getItem('activeTab')
+  if (storedValue && isValidSearchType(storedValue)) {
+    setSearchType(storedValue)
+  }
+}
+
+onMounted(() => {
+  getInitialSearchType()
+})
+
 const updateResults = (newResults: []) => {
   results.value = newResults
 }
@@ -21,10 +34,13 @@ const updateResults = (newResults: []) => {
 <template>
   <div id="searchbox">
     <div class="container">
+      <SearchTypePicker
+        :current-type="searchType"
+        @setSearchType="setSearchType"
+      />
       <SearchForm
         :searchType="searchType"
         @updateResults="updateResults"
-        @setSearchType="setSearchType"
       />
       <SearchDropdown
         v-if="results.length > 0"
@@ -36,13 +52,4 @@ const updateResults = (newResults: []) => {
 </template>
 
 <style scoped>
-#searchbox {
-  border-radius: 0 0 5px 5px;
-  color: var(--off-white);
-  background: var(--blue-bg);
-}
-
-.container {
-  padding: 10px;
-}
 </style>

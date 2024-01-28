@@ -1,6 +1,10 @@
 :root {
-    --green-bg: #aae5ca;
-    --blue-bg: #72bcd4;
-    --off-white: #e9e9e9;
-    --dark-blue: #00003f;
+    --ui-bg: #000000;
+    --blue-bg: #0F9B8E;
+    --text-color: #ffffff;
+    --dark-blue: #03719C;
+    --accent: #aae5ca;
+    --input-bg: #cccccc;
+
+    color-scheme: dark;
 }

@@ -3,7 +3,7 @@ import { Ref, ref } from 'vue'
 import { initialState, useStore } from '../../store'
 import { BIconFileEarmarkArrowDown, BIconArrowRepeat } from 'bootstrap-icons-vue'
 import Switcher from './Switcher.vue'
-import { getStoredCharts, setStoredCharts } from '../../helpers/localStorage'
+import { appendChart, destroyChart, getActiveChartUuid, getNewestChartUuid, getStoredCharts, setActiveChart } from '../../helpers/localStorage'
 import { StoredChart } from '../../types'
 import { addImgElements, downloadChart, initializeFirstRun } from '../../helpers/chart'
 
@@ -20,47 +20,36 @@ const saveChart = async () => {
 }
 
 const startNewChart = () => {
-  const storedCharts = getStoredCharts()
-
-  const newStoredChartsArray = storedCharts.map(chart => chart.currentlyActive ? { ...chart, currentlyActive: false } : chart)
-
   const newChart: StoredChart = {
     timestamp: new Date().getTime(),
-    name: null,
-    data: initialState.chart,
-    currentlyActive: true
+    data: initialState.chart
   }
 
-  setStoredCharts([...newStoredChartsArray, newChart])
+  const newUuid = appendChart(newChart)
+  setActiveChart(newUuid)
 
   store.commit('reset')
 }
 
 const deleteChart = () => {
-  const storedCharts = getStoredCharts()
+  const activeChartUuid = getActiveChartUuid()
 
-  const warningPopup = confirm('Are you sure you want to delete this chart? There\'s no way to recover it!')
+  if (window.confirm('Are you sure you want to delete this chart? There\'s no way to recover it!')) {
+    destroyChart(activeChartUuid)
 
-  if (warningPopup === false) {
-    return null
-  }
+    const newStoredCharts = getStoredCharts()
 
-  setStoredCharts(storedCharts.filter(chart => chart.currentlyActive === false))
+    if (Object.keys(newStoredCharts).length < 1) {
+      // We've just deleted the only saved chart, so let's re-initialize.
+      initializeFirstRun()
+      store.commit('reset')
+    } else {
+      // If there are other charts, pick the most recently created one
+      const chart = setActiveChart(getNewestChartUuid())
 
-  const newStoredCharts = getStoredCharts()
-
-  if (newStoredCharts.length < 1) {
-    // We've just deleted the only saved chart, so let's re-initialize.
-    initializeFirstRun()
-    store.commit('reset')
-  } else {
-    const newActiveChartIndex = newStoredCharts.length - 1
-    // Fall back to the most recent chart in the array.
-    newStoredCharts[newActiveChartIndex].currentlyActive = true
-    setStoredCharts(newStoredCharts)
-
-    addImgElements(newStoredCharts[newActiveChartIndex].data)
-    store.commit('setEntireChart', newStoredCharts[newActiveChartIndex].data)
+      addImgElements(chart.data)
+      store.commit('setEntireChart', chart.data)
+    }
   }
 }
 
@@ -103,17 +92,16 @@ const deleteChart = () => {
 #top-bar {
   width: calc(100% - 500px);
   height: 40px;
-  background: var(--green-bg);
+  background: var(--ui-bg);
   position: absolute;
   display: block;
   top: 0;
   left: 450px;
-  border-radius: 0 0 8px 8px;
+  border-radius: 0 0 6px 6px;
   margin: 0 auto;
   padding: 0;
   gap: 50px;
   color: white;
-  box-shadow: 0 1px 2px var(--dark-blue);
 }
 
 .download-button {
@@ -123,7 +111,6 @@ const deleteChart = () => {
   bottom: 35px;
   float: right;
   position: relative;
-  font-family: "Ubuntu Mono", monospace;
 }
 
 #save-icon {
@@ -142,7 +129,7 @@ const deleteChart = () => {
 .switcher-menu {
   width: auto;
   height: 40px;
-  color: var(--dark-blue);
+  color: black;
   text-align: center;
   display: flex;
   justify-content: center;
