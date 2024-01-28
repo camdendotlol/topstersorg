@@ -40,26 +40,26 @@ const callImportCharts = async (event) => {
 <template>
   <div class="container">
     <div id="import-export">
-    <button
-      @click="exportCurrentChart"
-    >
-      <BIconArrowDownSquare />
-      <span>Export chart data</span>
-    </button>
-    <button
-      @click="uploadPicked"
-    >
-      <BIconArrowUpSquare />
-      <span>Import chart data</span>
-    </button>
-    <button
-      class="import-button"
-      @click="importTopsters2ChartsPicked"
-    >
-      <BIcon2CircleFill />
-      <span>Import from Topsters 2</span>
-    </button>
-  </div>
+      <button
+        @click="exportCurrentChart"
+      >
+        <BIconArrowDownSquare />
+        <span>Export chart data</span>
+      </button>
+      <button
+        @click="uploadPicked"
+      >
+        <BIconArrowUpSquare />
+        <span>Import chart data</span>
+      </button>
+      <button
+        class="import-button"
+        @click="importTopsters2ChartsPicked"
+      >
+        <BIcon2CircleFill />
+        <span>Import from Topsters 2</span>
+      </button>
+    </div>
   <LastFmImport />
   <input
     type="file"
@@ -110,6 +110,7 @@ p {
   align-items: center;
   flex-flow: column;
   gap: 6px;
+  color: white;
 }
 
 #import-export button:hover {
