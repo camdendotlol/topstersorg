@@ -1,6 +1,5 @@
 import type { InjectionKey } from 'vue'
 import { createStore, useStore as baseUseStore, Store } from 'vuex'
-import { getActiveChartUuid, getStoredCharts, setStoredCharts } from './helpers/localStorage'
 import { BackgroundTypes, type Chart, type ChartItem } from './types'
 
 export interface State {
@@ -62,13 +61,6 @@ export const store = createStore<State>({
     },
     changeTitle (state: State, newTitle: string) {
       state.chart = { ...state.chart, title: newTitle }
-
-      // Update the chart name for the dropdown
-      const charts = getStoredCharts()
-      const activeUuid = getActiveChartUuid()
-      charts[activeUuid] = { ...charts[activeUuid], name: newTitle }
-
-      setStoredCharts(charts)
     },
     changeBackgroundColor (state: State, newColor: string) {
       state.chart = {

@@ -165,7 +165,6 @@ const saveToLocalStorage = (chart: Chart) => {
   } else {
     const newUuid = appendChart({
       timestamp: new Date().getTime(),
-      name: null,
       data: chart
     })
 

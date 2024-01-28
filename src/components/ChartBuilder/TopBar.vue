@@ -22,7 +22,6 @@ const saveChart = async () => {
 const startNewChart = () => {
   const newChart: StoredChart = {
     timestamp: new Date().getTime(),
-    name: null,
     data: initialState.chart
   }
 

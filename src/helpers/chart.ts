@@ -41,7 +41,6 @@ export const addImgElements = (chart: Chart): Chart => {
 export const initializeFirstRun = (): void => {
   const newUuid = appendChart({
     timestamp: new Date().getTime(),
-    name: null,
     data: initialState.chart
   })
 
@@ -167,10 +166,9 @@ const saveChartImage = (url: string): void => {
   document.body.removeChild(link)
 }
 
-export const createNewChart = (name = null) => {
+export const createNewChart = () => {
   const newUuid = appendChart({
     timestamp: new Date().getTime(),
-    name,
     data: initialState.chart
   })
 

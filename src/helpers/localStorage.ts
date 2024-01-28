@@ -93,7 +93,6 @@ export const localStorageMigrations = () => {
       const uuid = uuidv4()
       newObj[uuid] = {
         timestamp: chart.timestamp,
-        name: chart.name,
         data: chart.data
       }
 

@@ -52,7 +52,7 @@ const importLastFmChart = async () => {
     }
   })
 
-  createNewChart(`${username}'s ${periodHeaders[period]} Chart`)
+  createNewChart()
 
   const getSize = (length: number) => {
     for (let i = 1; i <= 10; i++) {

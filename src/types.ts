@@ -57,7 +57,6 @@ export interface OldStoredChart {
 
 export interface StoredChart {
   timestamp: number,
-  name: string | null,
   data: Chart
 }
 

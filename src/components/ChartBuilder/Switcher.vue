@@ -51,7 +51,7 @@ const changeChart = (event: Event) => {
         :key="index"
         :selected="uuid === activeChartUuid"
       >
-        {{ charts[uuid]?.name ? charts[uuid]?.name : `Untitled (${new Date(charts[uuid]?.timestamp).toUTCString()})` }}
+        {{ charts[uuid]?.data.title ? charts[uuid]?.data.title : `Untitled (${new Date(charts[uuid]?.timestamp).toUTCString()})` }}
       </option>
     </select>
   </div>
