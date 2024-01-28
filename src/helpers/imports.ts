@@ -7,7 +7,7 @@ import { Store } from 'vuex'
 import { State } from '../store'
 import { forceRefresh } from './chart'
 
-const downloadChartData = (data: string, title: string) => {
+const downloadChartData = (data: string, title: string, timestamp: number) => {
   const blob = new Blob([data])
 
   const blobUrl = URL.createObjectURL(blob)
@@ -15,7 +15,7 @@ const downloadChartData = (data: string, title: string) => {
   const link = document.createElement('a')
 
   link.href = blobUrl
-  link.download = `${title}.topster`
+  link.download = `${title || `Untitled ${timestamp}`}.topster`
   document.body.appendChild(link)
 
   link.click()
@@ -31,7 +31,7 @@ export const exportCurrentChart = () => {
 
   const compressed = btoa(pako.deflate(JSON.stringify(exportObj)).toString())
 
-  downloadChartData(compressed, exportObj[uuid].data.title)
+  downloadChartData(compressed, exportObj[uuid].data.title, exportObj[uuid].timestamp)
 }
 
 export const parseUploadedText = (text: string) => {
