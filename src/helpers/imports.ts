@@ -8,9 +8,7 @@ import { State } from '../store'
 import { forceRefresh } from './chart'
 
 const downloadChartData = (data: string, title: string) => {
-  const blob = new Blob([data], {
-    type: 'application/json'
-  })
+  const blob = new Blob([data])
 
   const blobUrl = URL.createObjectURL(blob)
 
