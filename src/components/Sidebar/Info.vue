@@ -3,7 +3,7 @@ import { ChangelogItem } from '../../types'
 
 const changes: ChangelogItem[] = [
   {
-    date: new Date('January 13, 2024').toLocaleDateString(),
+    date: new Date('January 27, 2024').toLocaleDateString(),
     text: 'Redesigned with a sleek new dark theme for a belated celebration of Topsters 3\'s second birthday. In addition to a total UI overhaul, this redesign adds a chart export feature and enables some UI elements on mobile that were previously hidden on small screens.'
   },
   {
