@@ -103,6 +103,7 @@ select {
   border-radius: 6px;
   background-color: var(--input-bg);
   color: black;
+  accent-color: initial;
 }
 
 .main {
