@@ -60,5 +60,6 @@ const changeChart = (event: Event) => {
 <style>
 #chart-switcher {
   width: 140px;
+  color: #000000;
 }
 </style>

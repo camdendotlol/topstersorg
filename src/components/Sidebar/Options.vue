@@ -350,7 +350,7 @@ input {
   width: 100%;
 }
 
-select {
+#background-type {
   color: black;
 }
 
