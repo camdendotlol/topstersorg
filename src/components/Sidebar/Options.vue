@@ -350,6 +350,10 @@ input {
   width: 100%;
 }
 
+select {
+  color: black;
+}
+
 table {
   width: 100%;
 }

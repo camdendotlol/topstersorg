@@ -6,7 +6,8 @@ export const redirectUsers = (): void => {
 
   if (
     Object.keys(currentCharts).length === 1 &&
-    currentCharts[Object.keys(currentCharts)[0]].data.items.filter(i => i).length === 0) {
+    currentCharts[Object.keys(currentCharts)[0]].data.items.filter(i => i).length === 0
+  ) {
     window.location.replace('https://topsters.org')
   }
 }

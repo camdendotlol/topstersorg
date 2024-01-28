@@ -129,7 +129,7 @@ const deleteChart = () => {
 .switcher-menu {
   width: auto;
   height: 40px;
-  color: var(--dark-blue);
+  color: black;
   text-align: center;
   display: flex;
   justify-content: center;

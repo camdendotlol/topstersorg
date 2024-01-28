@@ -178,6 +178,7 @@ select {
 
   .toggle-button {
     display: initial;
+    color: white;
   }
 
   .mobile-options-visibility-manager {
