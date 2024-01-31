@@ -5,8 +5,12 @@ import AnnouncementModal from './components/AnnouncementModal.vue'
 import { ping } from './api/metadata'
 import { redirectUsers } from './helpers/redirect'
 import './global.css'
+import { setUpStorageListener } from './helpers/localStorage'
+import { useStore } from './store'
 
 let displayAnnouncement = false
+
+const store = useStore()
 
 const toggleAnnouncement = () => {
   displayAnnouncement = !displayAnnouncement
@@ -27,6 +31,8 @@ onMounted(async () => {
   ) {
     displayAnnouncement = true
   }
+
+  setUpStorageListener(store)
 
   await ping()
 })

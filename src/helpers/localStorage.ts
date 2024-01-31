@@ -1,7 +1,9 @@
 // Functions for dealing with localStorage
 
+import { Store } from 'vuex'
 import type { OldStoredChart, StoredChart, StoredCharts } from '../types'
 import { v4 as uuidv4 } from 'uuid'
+import { State } from '../store'
 
 export const setActiveChart = (uuid: string) => {
   localStorage.setItem('activeChart', uuid)
@@ -104,4 +106,21 @@ export const localStorageMigrations = () => {
     setStoredCharts(newObj)
     setActiveChart(activeUuid || Object.keys(newObj)[0])
   }
+}
+
+// This event listener watches for changes to the localStorage
+// state when Topsters 3 is open in multiple tabs.
+export const setUpStorageListener = (store: Store<State>) => {
+  addEventListener('storage', (event) => {
+    if (event.key === 'charts') {
+      try {
+        const activeChartUuid = getActiveChartUuid()
+        const parsed = JSON.parse(event.newValue)
+        const newChart = parsed[activeChartUuid]
+        store.commit('setEntireChart', newChart.data)
+      } catch (e) {
+        console.log(`Failed to keep charts in sync across multiple tabs: ${e.message}`)
+      }
+    }
+  })
 }
