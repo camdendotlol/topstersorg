@@ -3,7 +3,7 @@ import { onMounted, computed, ref, Ref } from 'vue'
 import { useStore } from '../../store'
 import generateChart from 'topster'
 import { BackgroundTypes, Chart, ChartItem } from '../../types'
-import { getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
+import { CELL_SIZE, getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
 import { getScaledDimensions } from 'topster/dist/lib'
 import { appendChart, getActiveChart, getActiveChartUuid, localStorageMigrations, setActiveChart, updateStoredChart } from '../../helpers/localStorage'
 import updateWithMigrations from '../../helpers/migrations'
@@ -138,7 +138,8 @@ const renderChart = () => {
 
   generateChart(
     canvas.value,
-    store.state.chart
+    store.state.chart,
+    CELL_SIZE
   )
 
   // Insert placeholders for empty squares
@@ -194,7 +195,7 @@ const drawImageAtMouse = (image: HTMLImageElement, coords: { x: number, y: numbe
   }
 
   const canvasInfo = getCanvasInfo(canvas.value, store.state.chart)
-  const scaledDimensions = getScaledDimensions(image, 260)
+  const scaledDimensions = getScaledDimensions(image, CELL_SIZE)
 
   // Dividing by the scale ratio to get the canvas's original pixel size back.
   drawingCtx.value.drawImage(
