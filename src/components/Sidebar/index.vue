@@ -27,6 +27,7 @@ const setCurrentTab = (tab: TabsEnum) => {
   <div class="sidebar">
     <div class="sidebar-block">
       <PageTitle />
+      <p>The site was down for around an hour, sorry! Was trying to migrate to a new host but they were struggling with the HTTPS certificate. I've moved back to the old host for now.</p>
     </div>
     <div class="tabbed-sidebar-block">
       <Tabs
