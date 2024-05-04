@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import Home from './Home.vue'
-import AnnouncementModal from './components/AnnouncementModal.vue'
 import { redirectUsers } from './helpers/redirect'
 import { useHead } from '@unhead/vue'
 import './global.css'
@@ -22,34 +21,14 @@ gtag('config', '${import.meta.env.VITE_GOOGLE_ANALYTICS_TAG}');`
   ]
 })
 
-let displayAnnouncement = false
-
-const toggleAnnouncement = () => {
-  displayAnnouncement = !displayAnnouncement
-  localStorage.setItem('seenAnnouncement', 'true')
-}
-
 onMounted(async () => {
   // Redirect new users to topsters.org
   if (window.location.href.includes('ostrakon.xyz')) {
     redirectUsers()
-  }
-
-  // Display redirect notice
-  if (
-    document.referrer.includes('ostrakon.xyz') &&
-    window.location.href.includes('topsters.org') &&
-    !localStorage.getItem('seenAnnouncement')
-  ) {
-    displayAnnouncement = true
   }
 })
 </script>
 
 <template>
   <Home />
-  <AnnouncementModal
-    v-if="displayAnnouncement"
-    @toggleAnnouncement="toggleAnnouncement"
-  />
 </template>
