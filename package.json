@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@unhead/vue": "^1.9.9",
     "bootstrap-icons-vue": "^1.11.1",
     "pako": "^2.1.0",
     "topster": "^5.3.0",
