@@ -15,7 +15,7 @@ jobs:
         env:
           VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
           VITE_GOOGLE_ANALYTICS_TAG: ${{ secrets.VITE_GOOGLE_ANALYTICS_TAG }}
-        run:
+        run: |
           npm i
           npm run build
       - name: Deploy
