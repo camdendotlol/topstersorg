@@ -27,7 +27,6 @@ const setCurrentTab = (tab: TabsEnum) => {
   <div class="sidebar">
     <div class="sidebar-block">
       <PageTitle />
-      <p>Migrating to a new server host tonight - there might be some brief downtime.</p>
     </div>
     <div class="tabbed-sidebar-block">
       <Tabs
