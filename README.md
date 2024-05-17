@@ -34,7 +34,7 @@ npm run build
 Please make sure your changes pass the linter before opening a PR.
 
 ```
-yarn lint
+npm run lint
 ```
 
 ### Customize configuration
