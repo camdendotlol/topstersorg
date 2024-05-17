@@ -16,10 +16,11 @@ jobs:
           VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
           VITE_GOOGLE_ANALYTICS_TAG: ${{ secrets.VITE_GOOGLE_ANALYTICS_TAG }}
         run:
-          npm i
-          npm run build
+          yarn
+          yarn build
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           clean: true
+          folder: .
