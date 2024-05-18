@@ -44,7 +44,7 @@ const deleteChart = () => {
       initializeFirstRun()
       store.commit('reset')
     } else {
-      // If there are other charts, pick the most recently created one
+      // If there are other charts, pick the most recently created one.
       const chart = setActiveChart(getNewestChartUuid())
 
       addImgElements(chart.data)

@@ -1,27 +1,49 @@
 <script setup lang="ts">
-import { appendChart, getActiveChart, getActiveChartUuid, setActiveChart, updateStoredChart } from '../helpers/localStorage'
+import { onMounted } from 'vue'
+import {
+  appendChart,
+  getActiveChart,
+  getActiveChartUuid,
+  localStorageMigrations,
+  setActiveChart,
+  updateStoredChart
+} from '../helpers/localStorage'
 import { useStore } from '../store'
 
 const store = useStore()
 
-store.subscribe((_mutation, state) => {
-  const activeChartUuid = getActiveChartUuid()
+onMounted(() => {
+  localStorageMigrations()
+
   const activeChart = getActiveChart()
 
   if (activeChart) {
-    const updatedChart = {
-      ...activeChart,
-      data: state.chart
-    }
+    store.commit('setEntireChart', activeChart.data)
+  }
+})
 
-    updateStoredChart(updatedChart, activeChartUuid)
+store.subscribe((mutation, state) => {
+  if (mutation.type === 'setEntireChart') {
+    store.commit('hydrateImages')
   } else {
-    const newUuid = appendChart({
-      timestamp: new Date().getTime(),
-      data: state.chart
-    })
+    const activeChartUuid = getActiveChartUuid()
+    const activeChart = getActiveChart()
 
-    setActiveChart(newUuid)
+    if (activeChart) {
+      const updatedChart = {
+        ...activeChart,
+        data: state.chart
+      }
+
+      updateStoredChart(updatedChart, activeChartUuid)
+    } else {
+      const newUuid = appendChart({
+        timestamp: new Date().getTime(),
+        data: state.chart
+      })
+
+      setActiveChart(newUuid)
+    }
   }
 })
 </script>

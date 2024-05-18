@@ -117,6 +117,32 @@ export const store = createStore<State>({
     setEntireChart (state: State, payload: Chart) {
       state.chart = payload
     },
+    // Image elements are stored in localStorage as empty objects ({})
+    // so we need to fill in the img elements when a chart first loads.
+    hydrateImages (state: State) {
+      state.chart = {
+        ...state.chart,
+        background: state.chart.background.type === 'image'
+          ? {
+              ...state.chart.background,
+              img: (() => {
+                const img = new Image()
+                img.src = state.chart.background.value
+                return img
+              })()
+            }
+          : state.chart.background,
+        items: state.chart.items.map(i => {
+          if (i && i.coverURL) {
+            const img = new Image()
+            img.src = i.coverURL
+            return { ...i, coverImg: img }
+          }
+
+          return i
+        })
+      }
+    },
     reset (state: State) {
       state.chart = { ...initialState.chart }
     }

@@ -5,12 +5,9 @@ import generateChart from 'topster'
 import { BackgroundTypes, Chart, ChartItem } from '../../types'
 import { getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
 import { getScaledDimensions } from 'topster/dist/lib'
-import { getActiveChart } from '../../helpers/localStorage'
 
 // Topsters 3 supports drag and drop for both mouse and touch events.
 type InteractionEvent = MouseEvent | TouchEvent
-
-const imagesStillLoading: Ref<boolean> = ref(true)
 
 const grabbedItem: Ref<{
   originalIndex: number,
@@ -41,14 +38,13 @@ const drawingCtx = computed(() => {
   return ctx
 })
 
-store.subscribe((mutation, state) => {
-  if (mutation.type === 'setBackgroundImage') {
-    state.chart.background.img.onload = () => {
+store.watch(state => state.chart, () => {
+  if (store.state.chart.background.type === 'image' && !store.state.chart.background.img.complete) {
+    store.state.chart.background.img.onload = () => {
       renderChart()
     }
   }
 
-  imagesStillLoading.value = true
   renderChart()
 })
 
@@ -57,74 +53,33 @@ onMounted(() => {
     throw new Error('Couldn\'t find canvas. Something must have gone wrong with page loading, please refresh.')
   }
 
-  const activeChart = getActiveChart()
-
-  if (activeChart) {
-    const { data } = activeChart
-    if (data.background.type === BackgroundTypes.Image) {
+  if (store.state.chart) {
+    if (store.state.chart.background.type === BackgroundTypes.Image) {
       const bgImg = new Image()
-      bgImg.src = data.background.value
+      bgImg.src = store.state.chart.background.value
       bgImg.onload = () => {
         renderChart()
       }
-      data.background.img = bgImg
+      store.state.chart.background.img = bgImg
     }
 
-    hydrateImages(data)
-    store.commit('setEntireChart', data)
+    hydrateImages(store.state.chart)
   }
 })
 
 // Put the image elements into each item and set the onload callback.
-// This is needed when loading a chart from storage, where the
-// HTML image elements are not saved.
+// This lets the chart know to re-render when an image finishes loading.
 const hydrateImages = (chart: Chart) => {
-  // Keep track of whether all images have loaded.
-  // We can ignore requests to hydrate when they're all loaded in.
-  // Then at the bottom of this function, we call a final chart render
-  // to make sure the finished images are rendered on the canvas.
-  if (!imagesStillLoading.value) {
-    return null
-  }
-
-  // We only need to load visible items.
-  const itemsToLoad = chart.items.slice(0, chart.size.x * chart.size.y).filter(item => item !== null) as ChartItem[]
-
-  for (const item of itemsToLoad) {
-    // Images from storage will be empty objects
-    if (!item.coverImg.addEventListener) {
-      const img = new Image()
-      img.src = item.coverURL
-      item.coverImg = img
-
-      // handle 404 errors, etc.
-      item.coverImg.onerror = () => {
-        img.src = '/not_found.jpg'
-      }
-
-      // make sure they all load in
+  for (const item of chart.items) {
+    if (item && !item.coverImg.complete) {
       item.coverImg.onload = () => {
         renderChart()
       }
     }
   }
-
-  const allImagesLoaded = itemsToLoad.filter(item => item?.coverImg.complete).length === itemsToLoad.length
-  if (allImagesLoaded) {
-    imagesStillLoading.value = false
-    renderChart()
-  }
 }
 
 const renderChart = () => {
-  // The image will be stored in localStorage as an empty object :(
-  // This fills it back in as an img element if that happens.
-  if (store.state.chart.background.type === BackgroundTypes.Image && store.state.chart.background.img?.src) {
-    const bgImg = new Image()
-    bgImg.src = store.state.chart.background.value
-    store.state.chart.background.img = bgImg
-  }
-
   hydrateImages(store.state.chart)
 
   if (!canvas.value) {
