@@ -5,8 +5,7 @@ import generateChart from 'topster'
 import { BackgroundTypes, Chart, ChartItem } from '../../types'
 import { getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
 import { getScaledDimensions } from 'topster/dist/lib'
-import { appendChart, getActiveChart, getActiveChartUuid, localStorageMigrations, setActiveChart, updateStoredChart } from '../../helpers/localStorage'
-import updateWithMigrations from '../../helpers/migrations'
+import { getActiveChart } from '../../helpers/localStorage'
 
 // Topsters 3 supports drag and drop for both mouse and touch events.
 type InteractionEvent = MouseEvent | TouchEvent
@@ -58,32 +57,28 @@ onMounted(() => {
     throw new Error('Couldn\'t find canvas. Something must have gone wrong with page loading, please refresh.')
   }
 
-  localStorageMigrations()
-
   const activeChart = getActiveChart()
 
   if (activeChart) {
-    const updatedChart = updateWithMigrations(activeChart.data)
-    if (updatedChart.background.type === BackgroundTypes.Image) {
+    const { data } = activeChart
+    if (data.background.type === BackgroundTypes.Image) {
       const bgImg = new Image()
-      bgImg.src = updatedChart.background.value
+      bgImg.src = data.background.value
       bgImg.onload = () => {
         renderChart()
       }
-      updatedChart.background.img = bgImg
+      data.background.img = bgImg
     }
 
-    hydrateImages(updatedChart)
-    store.commit('setEntireChart', updatedChart)
+    hydrateImages(data)
+    store.commit('setEntireChart', data)
   }
-
-  renderChart()
 })
 
 // Put the image elements into each item and set the onload callback.
 // This is needed when loading a chart from storage, where the
 // HTML image elements are not saved.
-const hydrateImages = async (chart: Chart) => {
+const hydrateImages = (chart: Chart) => {
   // Keep track of whether all images have loaded.
   // We can ignore requests to hydrate when they're all loaded in.
   // Then at the bottom of this function, we call a final chart render
@@ -147,29 +142,6 @@ const renderChart = () => {
       insertPlaceholder(drawingCtx.value, store.state.chart, index)
     }
   })
-
-  saveToLocalStorage(store.state.chart)
-}
-
-const saveToLocalStorage = (chart: Chart) => {
-  const activeChartUuid = getActiveChartUuid()
-  const activeChart = getActiveChart()
-
-  if (activeChart) {
-    const updatedChart = {
-      ...activeChart,
-      data: chart
-    }
-
-    updateStoredChart(updatedChart, activeChartUuid)
-  } else {
-    const newUuid = appendChart({
-      timestamp: new Date().getTime(),
-      data: chart
-    })
-
-    setActiveChart(newUuid)
-  }
 }
 
 const checkDroppability = (event: InteractionEvent | DragEvent) => {
@@ -270,9 +242,6 @@ const resetCursor = (event: InteractionEvent) => {
   dropItem(event)
 
   grabbedItem.value = null
-
-  // Clear the placeholder for the dragged item
-  renderChart()
 }
 
 const getInteractionCoords = (
@@ -424,8 +393,6 @@ const dropItem = (event: InteractionEvent | DragEvent) => {
 
   // Gets rid of the 'grab' cursor now that we're not holding the item anymore.
   updateCursor(event)
-
-  renderChart()
 }
 
 const allowDragAndDrop = (event: DragEvent) => {

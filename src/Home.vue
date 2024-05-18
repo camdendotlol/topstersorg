@@ -7,6 +7,7 @@ import MobileOptionsSidebar from './components/Sidebar/MobileSidebar.vue'
 import MobileSearchSidebar from './components/Sidebar/SearchBox/MobileSearch.vue'
 import Popup from './components/Popup.vue'
 import DownloadButton from './components/buttons/Download.vue'
+import LocalStorageWatcher from './components/LocalStorageWatcher.vue'
 
 const showMobileOptions: Ref<boolean> = ref(false)
 const showMobileSearch: Ref<boolean> = ref(false)
@@ -45,37 +46,39 @@ const returnToHomepage = () => {
 </script>
 
 <template>
-  <div class="main" ref="mainDivRef">
-    <Sidebar />
-    <button type="button" class="toggle-button" id="mobile-search-toggle" @click="toggleMobileSearchDisplay">
-      <BIconPlusLg />
-    </button>
-    <button
-      type="button"
-      class="toggle-button"
-      id="home-button"
-      @click="returnToHomepage"
-      v-if="showMobileOptions || showMobileSearch"
-    >
-      <BIconHouse />
-    </button>
-    <div
-      v-if="!showMobileOptions && !showMobileSearch"
-    >
-      <DownloadButton />
+  <LocalStorageWatcher>
+    <div class="main" ref="mainDivRef">
+      <Sidebar />
+      <button type="button" class="toggle-button" id="mobile-search-toggle" @click="toggleMobileSearchDisplay">
+        <BIconPlusLg />
+      </button>
+      <button
+        type="button"
+        class="toggle-button"
+        id="home-button"
+        @click="returnToHomepage"
+        v-if="showMobileOptions || showMobileSearch"
+      >
+        <BIconHouse />
+      </button>
+      <div
+        v-if="!showMobileOptions && !showMobileSearch"
+      >
+        <DownloadButton />
+      </div>
+      <button type="button" class="toggle-button" id="mobile-options-toggle" @click="toggleMobileOptionsDisplay">
+        <BIconGearFill />
+      </button>
+      <div class="mobile-options-visibility-manager" :class="showMobileOptions ? 'visible-mobile-options' : 'invisible-mobile-options'">
+        <MobileOptionsSidebar />
+      </div>
+      <div class="mobile-search-visibility-manager" :class="showMobileSearch ? 'visible-mobile-search' : 'invisible-mobile-search'">
+        <MobileSearchSidebar />
+      </div>
+      <Popup />
+      <ChartBuilder />
     </div>
-    <button type="button" class="toggle-button" id="mobile-options-toggle" @click="toggleMobileOptionsDisplay">
-      <BIconGearFill />
-    </button>
-    <div class="mobile-options-visibility-manager" :class="showMobileOptions ? 'visible-mobile-options' : 'invisible-mobile-options'">
-      <MobileOptionsSidebar />
-    </div>
-    <div class="mobile-search-visibility-manager" :class="showMobileSearch ? 'visible-mobile-search' : 'invisible-mobile-search'">
-      <MobileSearchSidebar />
-    </div>
-    <Popup />
-    <ChartBuilder />
-  </div>
+  </LocalStorageWatcher>
 </template>
 
 <style>

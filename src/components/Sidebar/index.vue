@@ -5,9 +5,10 @@ import Options from './Options.vue'
 import Imports from './Imports/index.vue'
 import Info from './Info.vue'
 import Tabs from './Tabs.vue'
-import { Ref, ref } from 'vue'
+import { onMounted, Ref, ref } from 'vue'
 import { Tabs as TabsEnum } from '../../types'
 import Credits from './Credits.vue'
+import { localStorageMigrations } from '../../helpers/localStorage'
 
 const tabs: TabsEnum[] = [
   TabsEnum.AddItems,
@@ -21,6 +22,11 @@ const currentTab: Ref<TabsEnum> = ref(TabsEnum.AddItems)
 const setCurrentTab = (tab: TabsEnum) => {
   currentTab.value = tab
 }
+
+onMounted(() => {
+  localStorageMigrations()
+})
+
 </script>
 
 <template>
