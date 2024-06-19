@@ -47,13 +47,13 @@ export const initializeFirstRun = (): void => {
   setActiveChart(newUuid)
 }
 
-export const createChartItem = (item: Result): ChartItem => {
-  const setImage = (url: string): HTMLImageElement => {
-    const cover = new Image()
-    cover.src = url
-    return cover
-  }
+export const setImage = (url: string): HTMLImageElement => {
+  const cover = new Image()
+  cover.src = url
+  return cover
+}
 
+export const createChartItem = (item: Result): ChartItem => {
   if (isBookResult(item)) {
     return {
       title: item.title,
