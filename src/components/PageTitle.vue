@@ -1,6 +1,5 @@
 <template>
   <h1>Topsters 3</h1>
-  <h2>2nd anniversary edition</h2>
 </template>
 
 <style scoped>
@@ -10,7 +9,7 @@ h1 {
 }
 
 h2 {
-  font-size: 1rem;
   margin: 0;
+  font-size: 1rem;
 }
 </style>
