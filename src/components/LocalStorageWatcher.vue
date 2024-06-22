@@ -9,6 +9,7 @@ import {
   updateStoredChart
 } from '../helpers/localStorage'
 import { useStore } from '../store'
+import { initializeFirstRun } from '../helpers/chart'
 
 const store = useStore()
 
@@ -19,6 +20,9 @@ onMounted(() => {
 
   if (activeChart) {
     store.commit('setEntireChart', activeChart.data)
+  } else {
+    initializeFirstRun()
+    store.commit('setEntireChart', getActiveChart())
   }
 })
 
