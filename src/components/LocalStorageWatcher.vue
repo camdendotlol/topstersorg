@@ -22,7 +22,7 @@ onMounted(() => {
     store.commit('setEntireChart', activeChart.data)
   } else {
     initializeFirstRun()
-    store.commit('setEntireChart', getActiveChart())
+    store.commit('setEntireChart', getActiveChart().data)
   }
 })
 
