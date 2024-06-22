@@ -3,6 +3,10 @@ import { ChangelogItem } from '../../types'
 
 const changes: ChangelogItem[] = [
   {
+    date: new Date('June 22, 2024').toLocaleDateString(),
+    text: 'Optimized the way the chart is rendered. The most significant change is that we\'re now using a separate Canvas layer for drag-and-drop, which should improve the framerate when moving items around on larger charts.'
+  },
+  {
     date: new Date('January 27, 2024').toLocaleDateString(),
     text: 'Redesigned with a sleek new dark theme for a belated celebration of Topsters 3\'s second birthday. In addition to a total UI overhaul, this redesign adds a chart export feature and enables some UI elements on mobile that were previously hidden on small screens.'
   },

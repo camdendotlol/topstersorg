@@ -21,6 +21,7 @@ const currentTab: Ref<TabsEnum> = ref(TabsEnum.AddItems)
 const setCurrentTab = (tab: TabsEnum) => {
   currentTab.value = tab
 }
+
 </script>
 
 <template>

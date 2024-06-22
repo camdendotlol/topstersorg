@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { getActiveChart } from '../../helpers/localStorage'
 import { useStore } from '../../store'
 import { BackgroundTypes, Chart } from '../../types'
 import { onMounted, ref, Ref } from 'vue'
@@ -33,7 +32,7 @@ store.watch(state => state.chart, () => {
 
 onMounted(() => {
   backgroundType.value = chart.value.background.type
-  setupFromLocalstorage()
+  initalSetup()
 })
 
 const updateTitle = (event: Event): void => {
@@ -87,11 +86,9 @@ const changeShowTitles = (event: Event): void => {
   return store.commit('toggleTitles', value)
 }
 
-const setupFromLocalstorage = (): void => {
-  const activeChart = getActiveChart()
-
-  if (activeChart) {
-    populateForm(activeChart.data)
+const initalSetup = (): void => {
+  if (store.state.chart) {
+    populateForm(store.state.chart)
   }
 }
 
