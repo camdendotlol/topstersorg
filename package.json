@@ -12,14 +12,13 @@
   "dependencies": {
     "@unhead/vue": "^1.9.16",
     "bootstrap-icons-vue": "^1.11.3",
-    "pako": "^2.1.0",
+    "fflate": "^0.8.2",
     "topster": "^5.3.0",
     "uuid": "^10.0.0",
     "vue": "^3.4.33 ",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
-    "@types/pako": "^2.0.3",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",

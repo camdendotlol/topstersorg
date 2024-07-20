@@ -1,6 +1,6 @@
 // Functions related to importing and exporting charts
 
-import pako from 'pako'
+import { zlibSync, unzlibSync } from 'fflate'
 import { appendChart, findByUuid, getActiveChart, getActiveChartUuid, getNewestChartUuid, setActiveChart, updateStoredChart } from './localStorage'
 import { BackgroundTypes, ChartItem, StoredChart, StoredCharts } from '../types'
 import { Store } from 'vuex'
@@ -29,7 +29,7 @@ export const exportCurrentChart = () => {
     [uuid]: getActiveChart()
   }
 
-  const compressed = btoa(pako.deflate(JSON.stringify(exportObj)).toString())
+  const compressed = btoa(zlibSync(new TextEncoder().encode(JSON.stringify(exportObj))).toString())
 
   downloadChartData(compressed, exportObj[uuid].data.title, exportObj[uuid].timestamp)
 }
@@ -39,7 +39,7 @@ export const parseUploadedText = (text: string) => {
 
   const textDecoder = new TextDecoder()
 
-  return textDecoder.decode(pako.inflate(uintArray))
+  return textDecoder.decode(unzlibSync(uintArray))
 }
 
 export const importChart = async (event: Event, store: Store<State>) => {
@@ -155,7 +155,7 @@ export const importTopsters2 = (event: Event, store: Store<State>) => {
           // Chart cards are compressed with zlib + encoded with base64
           const chartCards = charts[prefix + 'cards'] // Get base64 string
           const cardsCompressed = Uint8Array.from(atob(chartCards.substring(1, chartCards.length - 1)), c => c.charCodeAt(0)) // Convert base64 to bytes
-          const cardsDecompressed = textDecoder.decode(pako.inflate(cardsCompressed)) // Decompress and convert to text
+          const cardsDecompressed = textDecoder.decode(unzlibSync(cardsCompressed)) // Decompress and convert to text
           const cards = JSON.parse(cardsDecompressed) // Parse cards
 
           // Create chart items
