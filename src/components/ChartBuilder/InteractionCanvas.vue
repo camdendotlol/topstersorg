@@ -2,7 +2,7 @@
 import { computed, ref, Ref } from 'vue'
 import { useStore } from '../../store'
 import { ChartItem } from '../../types'
-import { getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
+import { getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent, ITEM_SIZE } from './lib'
 import { getScaledDimensions } from 'topster/dist/lib'
 import { setImage } from '../../helpers/chart'
 
@@ -76,7 +76,7 @@ const drawImageAtMouse = (image: HTMLImageElement, coords: { x: number, y: numbe
   }
 
   const canvasInfo = getCanvasInfo(canvas.value, store.state.chart)
-  const scaledDimensions = getScaledDimensions(image, 260)
+  const scaledDimensions = getScaledDimensions(image, ITEM_SIZE)
 
   // Dividing by the scale ratio to get the canvas's original pixel size back.
   drawingCtx.value.drawImage(

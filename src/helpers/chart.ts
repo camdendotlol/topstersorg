@@ -12,7 +12,7 @@ import {
   isTVResult
 } from './typeGuards'
 import fetchImageURL from '../api/fetchImage'
-import generateChart from 'topster'
+import generateChart from '../components/ChartBuilder/topster-lib/topster'
 import { Store } from 'vuex'
 
 // Add the proper <img> elements into the chart state.
@@ -143,6 +143,8 @@ const fillInItems = async (chart: Chart) => {
   return chart
 }
 
+const DOWNLOAD_ITEM_SIZE = 500
+
 // Create a new canvas to render the final downloadable version.
 // This is needed to avoid CORS issues with third-party images.
 const createDownloadableChart = async (data: Chart): Promise<HTMLCanvasElement> => {
@@ -150,7 +152,7 @@ const createDownloadableChart = async (data: Chart): Promise<HTMLCanvasElement> 
   const chart = await fillInItems(data)
 
   // Populate the chart with the items etc.
-  generateChart(chartCanvas, chart)
+  generateChart(chartCanvas, chart, DOWNLOAD_ITEM_SIZE)
 
   return chartCanvas
 }

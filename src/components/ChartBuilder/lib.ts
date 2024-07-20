@@ -9,7 +9,7 @@ export interface CanvasInfo {
 }
 
 // This is a constant (for now)
-const ITEM_SIZE = 260
+export const ITEM_SIZE = 260
 
 // Gets useful client-size information about the Canvas, especially related to scaling.
 // The Canvas is scaled down to fit the screen if it's too large, so we need these for mouse events.
