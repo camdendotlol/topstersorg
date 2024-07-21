@@ -325,6 +325,10 @@ const updateBackgroundImage = (event: Event): void => {
 </template>
 
 <style scoped>
+.hidden {
+  display: none;
+}
+
 .color-picker {
   height: 30px;
   width: 30px;
