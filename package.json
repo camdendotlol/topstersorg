@@ -14,12 +14,10 @@
     "bootstrap-icons-vue": "^1.11.3",
     "fflate": "^0.8.2",
     "topster": "^5.3.0",
-    "uuid": "^10.0.0",
     "vue": "^3.4.33 ",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
-    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
     "@vitejs/plugin-vue": "^5.0.5",

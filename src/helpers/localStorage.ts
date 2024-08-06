@@ -1,7 +1,6 @@
 // Functions for dealing with localStorage
 
 import type { OldStoredChart, StoredChart, StoredCharts } from '../types'
-import { v4 as uuidv4 } from 'uuid'
 
 export const setActiveChart = (uuid: string) => {
   localStorage.setItem('activeChart', uuid)
@@ -66,7 +65,7 @@ export const findByUuid = (uuid: string) => {
 export const appendChart = (newChart: StoredChart, uuid?: string): string => {
   const charts = getStoredCharts()
 
-  const newUuid = uuid || uuidv4()
+  const newUuid = uuid || crypto.randomUUID()
 
   charts[newUuid] = newChart
 
@@ -90,7 +89,7 @@ export const localStorageMigrations = () => {
     let activeUuid = null
 
     charts.forEach(chart => {
-      const uuid = uuidv4()
+      const uuid = crypto.randomUUID()
       newObj[uuid] = {
         timestamp: chart.timestamp,
         data: chart.data
