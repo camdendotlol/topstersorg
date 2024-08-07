@@ -17,6 +17,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', "%VITE_GOOGLE_ANALYTICS_TAG%");
+  </script>
+  <script src="https://www.googletagmanager.com/gtag/js?id=%VITE_GOOGLE_ANALYTICS_TAG%"></script>
 </head>
 
 <body>
@@ -24,6 +31,7 @@
     <strong>We're sorry but Topsters 3 doesn't work properly without JavaScript enabled. Please enable it to
       continue.</strong>
   </noscript>
+
   <div id="app"></div>
   <script type="module" src="/src/main.ts"></script>
 </body>
