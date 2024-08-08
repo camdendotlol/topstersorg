@@ -1,11 +1,24 @@
 // Functions related to importing and exporting charts
 
-import { zlibSync, unzlibSync } from 'fflate'
 import { appendChart, findByUuid, getActiveChart, getActiveChartUuid, getNewestChartUuid, setActiveChart, updateStoredChart } from './localStorage'
 import { BackgroundTypes, ChartItem, StoredChart, StoredCharts } from '../types'
 import { Store } from 'vuex'
 import { State } from '../store'
 import { forceRefresh } from './chart'
+
+const unzlib = async (data: Uint8Array) => {
+  const stream = new Response(data).body
+    .pipeThrough(new DecompressionStream('deflate'))
+
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+const zlib = async (data: Uint8Array) => {
+  const stream = new Response(data).body
+    .pipeThrough(new CompressionStream('deflate'))
+
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
 
 const downloadChartData = (data: string, title: string, timestamp: number) => {
   const blob = new Blob([data])
@@ -22,24 +35,32 @@ const downloadChartData = (data: string, title: string, timestamp: number) => {
   link.remove()
 }
 
-export const exportCurrentChart = () => {
+export const exportCurrentChart = async () => {
   const uuid = getActiveChartUuid()
 
   const exportObj: StoredCharts = {
     [uuid]: getActiveChart()
   }
 
-  const compressed = btoa(zlibSync(new TextEncoder().encode(JSON.stringify(exportObj))).toString())
+  const str = JSON.stringify(exportObj)
+  const arr = new TextEncoder().encode(str)
+  const zlibbed = await zlib(arr)
+
+  const compressed = btoa(zlibbed.toString())
 
   downloadChartData(compressed, exportObj[uuid].data.title, exportObj[uuid].timestamp)
 }
 
-export const parseUploadedText = (text: string) => {
+export const parseUploadedText = async (text: string) => {
   const uintArray = Uint8Array.from(atob(text).split(',').map(num => parseInt(num)))
 
   const textDecoder = new TextDecoder()
 
-  return textDecoder.decode(unzlibSync(uintArray))
+  const unzlibbed = await unzlib(uintArray)
+
+  const decoded = textDecoder.decode(unzlibbed)
+
+  return decoded
 }
 
 export const importChart = async (event: Event, store: Store<State>) => {
@@ -47,7 +68,7 @@ export const importChart = async (event: Event, store: Store<State>) => {
 
   try {
     const text = await files[0].text()
-    const results = parseUploadedText(text)
+    const results = await parseUploadedText(text)
     const json = JSON.parse(results) as StoredCharts
 
     const newChartUuid = Object.keys(json)[0]
@@ -79,12 +100,12 @@ export const importChart = async (event: Event, store: Store<State>) => {
   }
 }
 
-export const importTopsters2 = (event: Event, store: Store<State>) => {
+export const importTopsters2 = async (event: Event, store: Store<State>) => {
   if (event.target === null) return
   const files = (event.target as HTMLInputElement).files
   if (files === null) return
   const fileReader = new FileReader()
-  fileReader.addEventListener('load', () => {
+  fileReader.addEventListener('load', async () => {
     try {
       // Topsters 2 exports have their charcodes shifted up
       // 17 points, and then are encoded in base64. This
@@ -155,7 +176,8 @@ export const importTopsters2 = (event: Event, store: Store<State>) => {
           // Chart cards are compressed with zlib + encoded with base64
           const chartCards = charts[prefix + 'cards'] // Get base64 string
           const cardsCompressed = Uint8Array.from(atob(chartCards.substring(1, chartCards.length - 1)), c => c.charCodeAt(0)) // Convert base64 to bytes
-          const cardsDecompressed = textDecoder.decode(unzlibSync(cardsCompressed)) // Decompress and convert to text
+          const unzlibbed = await unzlib(cardsCompressed)
+          const cardsDecompressed = textDecoder.decode(unzlibbed) // Decompress and convert to text
           const cards = JSON.parse(cardsDecompressed) // Parse cards
 
           // Create chart items
