@@ -1,21 +1,23 @@
 <script setup lang="ts">
-import { Ref, onMounted, ref } from 'vue'
-import SearchForm from './SearchForm.vue'
-import SearchDropdown from './SearchDropdown.vue'
-import { Result, SearchTypes } from '../../../types'
-import SearchTypePicker from './SearchTypePicker.vue'
+import { onMounted, ref } from 'vue'
+import type { Ref } from 'vue'
 import { isValidSearchType } from '../../../helpers/typeGuards'
+import { SearchTypes } from '../../../types'
+import SearchDropdown from './SearchDropdown.vue'
+import SearchForm from './SearchForm.vue'
+import SearchTypePicker from './SearchTypePicker.vue'
+import type { Result } from '../../../types'
 
 const searchType: Ref<SearchTypes> = ref(SearchTypes.Music)
 const results: Ref<Result[]> = ref([])
 
-const setSearchType = (value: SearchTypes) => {
+function setSearchType(value: SearchTypes) {
   results.value = []
   searchType.value = value
   localStorage.setItem('activeTab', value)
 }
 
-const getInitialSearchType = () => {
+function getInitialSearchType() {
   const storedValue = localStorage.getItem('activeTab')
   if (storedValue && isValidSearchType(storedValue)) {
     setSearchType(storedValue)
@@ -26,7 +28,7 @@ onMounted(() => {
   getInitialSearchType()
 })
 
-const updateResults = (newResults: []) => {
+function updateResults(newResults: []) {
   results.value = newResults
 }
 </script>
@@ -36,16 +38,16 @@ const updateResults = (newResults: []) => {
     <div class="container">
       <SearchTypePicker
         :current-type="searchType"
-        @setSearchType="setSearchType"
+        @set-search-type="setSearchType"
       />
       <SearchForm
-        :searchType="searchType"
-        @updateResults="updateResults"
+        :search-type="searchType"
+        @update-results="updateResults"
       />
       <SearchDropdown
         v-if="results.length > 0"
         :results="results"
-        :resultsType="searchType"
+        :results-type="searchType"
       />
     </div>
   </div>

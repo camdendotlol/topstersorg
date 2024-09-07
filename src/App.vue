@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import Home from './Home.vue'
 import { redirectUsers } from './helpers/redirect'
+import Home from './Home.vue'
 import './global.css'
 
 onMounted(async () => {

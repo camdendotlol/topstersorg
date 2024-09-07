@@ -1,11 +1,11 @@
-import { Chart } from '../../types'
+import type { Chart } from '../../types'
 
 export interface CanvasInfo {
-  scaleRatio: number,
-  scaledGap: number,
-  scaledTitleHeight: number,
+  scaleRatio: number
+  scaledGap: number
+  scaledTitleHeight: number
   scaledItemSize: number
-  scaledPixelDimensions: { x: number, y: number },
+  scaledPixelDimensions: { x: number, y: number }
 }
 
 // This is a constant (for now)
@@ -13,7 +13,7 @@ const ITEM_SIZE = 260
 
 // Gets useful client-size information about the Canvas, especially related to scaling.
 // The Canvas is scaled down to fit the screen if it's too large, so we need these for mouse events.
-export const getCanvasInfo = (canvas: HTMLCanvasElement, chart: Chart): CanvasInfo => {
+export function getCanvasInfo(canvas: HTMLCanvasElement, chart: Chart): CanvasInfo {
   const chartTitleMargin = chart.title === '' ? 0 : 60
 
   // The ratio by which the Canvas is scaled down in the browser
@@ -26,16 +26,12 @@ export const getCanvasInfo = (canvas: HTMLCanvasElement, chart: Chart): CanvasIn
     scaledItemSize: ITEM_SIZE * scaleRatio,
     scaledPixelDimensions: {
       x: canvas.width * scaleRatio,
-      y: canvas.height * scaleRatio
-    }
+      y: canvas.height * scaleRatio,
+    },
   }
 }
 
-export const isDroppable = (
-  canvasInfo: CanvasInfo,
-  chart: Chart,
-  mouseCoords: { x: number, y: number }
-): boolean => {
+export function isDroppable(canvasInfo: CanvasInfo, chart: Chart, mouseCoords: { x: number, y: number }): boolean {
   // The part after the && makes sure to exclude the area on the side where titles are shown.
   const isXValid = (coord: number): boolean => {
     return (coord % (canvasInfo.scaledItemSize + canvasInfo.scaledGap)) > canvasInfo.scaledGap && (coord < (canvasInfo.scaledItemSize + canvasInfo.scaledGap) * chart.size.x + canvasInfo.scaledGap)
@@ -50,20 +46,21 @@ export const isDroppable = (
 
   if (isXValid(mouseCoords.x) && isYValid(mouseCoords.y)) {
     return true
-  } else {
+  }
+  else {
     return false
   }
 }
 
 // Draws a light-gray placeholder box to show that there's a slot when there's no item
-export const insertPlaceholder = (drawingContext: CanvasRenderingContext2D | null, chart: Chart, index: number): void => {
+export function insertPlaceholder(drawingContext: CanvasRenderingContext2D | null, chart: Chart, index: number): void {
   if (!drawingContext) {
     throw new Error('Rendering context not found!')
   }
 
   const coords = {
     x: (index % chart.size.x),
-    y: Math.floor(index / chart.size.x)
+    y: Math.floor(index / chart.size.x),
   }
 
   const chartTitleMargin = chart.title === '' ? 0 : 60
@@ -74,23 +71,25 @@ export const insertPlaceholder = (drawingContext: CanvasRenderingContext2D | nul
     (coords.x * (ITEM_SIZE + chart.gap)) + chart.gap,
     (coords.y * (ITEM_SIZE + chart.gap)) + chart.gap + chartTitleMargin,
     ITEM_SIZE,
-    ITEM_SIZE
+    ITEM_SIZE,
   )
 }
 
 // Type guard to see whether the user interaction is from a mouse or a touch screen
-export const isTouchEvent = (event: MouseEvent | TouchEvent): event is TouchEvent => {
+export function isTouchEvent(event: MouseEvent | TouchEvent): event is TouchEvent {
   if ((event as TouchEvent).touches) {
     return true
-  } else {
+  }
+  else {
     return false
   }
 }
 
-export const isDragAndDropEvent = (event: unknown): event is DragEvent => {
+export function isDragAndDropEvent(event: unknown): event is DragEvent {
   if ((event as DragEvent).dataTransfer) {
     return true
-  } else {
+  }
+  else {
     return false
   }
 }

@@ -1,43 +1,44 @@
 <script setup lang="ts">
-import { Ref, ref } from 'vue'
-import Sidebar from './components/Sidebar/index.vue'
+import { BIconGearFill, BIconHouse, BIconPlusLg } from 'bootstrap-icons-vue'
+import { ref } from 'vue'
+import type { Ref } from 'vue'
+import DownloadButton from './components/buttons/Download.vue'
 import ChartBuilder from './components/ChartBuilder/index.vue'
-import { BIconGearFill, BIconPlusLg, BIconHouse } from 'bootstrap-icons-vue'
+import LocalStorageWatcher from './components/LocalStorageWatcher.vue'
+import Popup from './components/Popup.vue'
+import Sidebar from './components/Sidebar/index.vue'
 import MobileOptionsSidebar from './components/Sidebar/MobileSidebar.vue'
 import MobileSearchSidebar from './components/Sidebar/SearchBox/MobileSearch.vue'
-import Popup from './components/Popup.vue'
-import DownloadButton from './components/buttons/Download.vue'
-import LocalStorageWatcher from './components/LocalStorageWatcher.vue'
 
 const showMobileOptions: Ref<boolean> = ref(false)
 const showMobileSearch: Ref<boolean> = ref(false)
 
 const mainDivRef: Ref<HTMLFormElement> = ref(null)
 
-const scrollToTop = () => {
-  if (mainDivRef.value &&
-  !showMobileSearch.value &&
-  !showMobileOptions.value
+function scrollToTop() {
+  if (mainDivRef.value
+    && !showMobileSearch.value
+    && !showMobileOptions.value
   ) {
     mainDivRef.value.scrollTo(0, -1)
   }
 }
 
-const toggleMobileSearchDisplay = () => {
+function toggleMobileSearchDisplay() {
   showMobileOptions.value = false
   showMobileSearch.value = !showMobileSearch.value
 
   scrollToTop()
 }
 
-const toggleMobileOptionsDisplay = () => {
+function toggleMobileOptionsDisplay() {
   showMobileSearch.value = false
   showMobileOptions.value = !showMobileOptions.value
 
   scrollToTop()
 }
 
-const returnToHomepage = () => {
+function returnToHomepage() {
   showMobileSearch.value = false
   showMobileOptions.value = false
 
@@ -47,17 +48,17 @@ const returnToHomepage = () => {
 
 <template>
   <LocalStorageWatcher>
-    <div class="main" ref="mainDivRef">
+    <div ref="mainDivRef" class="main">
       <Sidebar />
-      <button type="button" class="toggle-button" id="mobile-search-toggle" @click="toggleMobileSearchDisplay">
+      <button id="mobile-search-toggle" type="button" class="toggle-button" @click="toggleMobileSearchDisplay">
         <BIconPlusLg />
       </button>
       <button
+        v-if="showMobileOptions || showMobileSearch"
+        id="home-button"
         type="button"
         class="toggle-button"
-        id="home-button"
         @click="returnToHomepage"
-        v-if="showMobileOptions || showMobileSearch"
       >
         <BIconHouse />
       </button>
@@ -66,7 +67,7 @@ const returnToHomepage = () => {
       >
         <DownloadButton />
       </div>
-      <button type="button" class="toggle-button" id="mobile-options-toggle" @click="toggleMobileOptionsDisplay">
+      <button id="mobile-options-toggle" type="button" class="toggle-button" @click="toggleMobileOptionsDisplay">
         <BIconGearFill />
       </button>
       <div class="mobile-options-visibility-manager" :class="showMobileOptions ? 'visible-mobile-options' : 'invisible-mobile-options'">
@@ -248,5 +249,4 @@ select {
     overflow: hidden;
   }
 }
-
 </style>

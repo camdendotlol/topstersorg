@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import type { Ref } from 'vue'
 import { useStore } from '../../store'
-import { BackgroundTypes, Chart } from '../../types'
-import { onMounted, ref, Ref } from 'vue'
+import { BackgroundTypes } from '../../types'
+import type { Chart } from '../../types'
 
 const store = useStore()
 
@@ -35,64 +37,64 @@ onMounted(() => {
   initalSetup()
 })
 
-const updateTitle = (event: Event): void => {
+function updateTitle(event: Event): void {
   const title = (event.target as HTMLFormElement).value
   return store.commit('changeTitle', title)
 }
 
-const updateBackgroundColor = (event: Event): void => {
+function updateBackgroundColor(event: Event): void {
   const color = (event.target as HTMLFormElement).value
   return store.commit('changeBackgroundColor', color)
 }
 
-const updateSizeX = (event: Event): void => {
-  const value = parseInt((event.target as HTMLFormElement).value)
+function updateSizeX(event: Event): void {
+  const value = Number.parseInt((event.target as HTMLFormElement).value)
   return store.commit('changeSize', { axis: 'x', value })
 }
 
-const updateSizeY = (event: Event): void => {
-  const value = parseInt((event.target as HTMLFormElement).value)
+function updateSizeY(event: Event): void {
+  const value = Number.parseInt((event.target as HTMLFormElement).value)
   return store.commit('changeSize', { axis: 'y', value })
 }
 
-const updateGap = (event: Event): void => {
-  const value = parseInt((event.target as HTMLFormElement).value)
+function updateGap(event: Event): void {
+  const value = Number.parseInt((event.target as HTMLFormElement).value)
   gap.value = value
   return store.commit('changeGap', value)
 }
 
-const changeShowNumbers = (event: Event): void => {
+function changeShowNumbers(event: Event): void {
   const value = (event.target as HTMLFormElement).checked
   return store.commit('toggleNumbers', value)
 }
 
-const changeShowShadows = (event: Event): void => {
+function changeShowShadows(event: Event): void {
   const value = (event.target as HTMLFormElement).checked
   return store.commit('toggleShadows', value)
 }
 
-const updateFont = (event: Event): void => {
+function updateFont(event: Event): void {
   const value = (event.target as HTMLFormElement).value
   return store.commit('changeFont', value)
 }
 
-const updateTextColor = (event: Event): void => {
+function updateTextColor(event: Event): void {
   const value = (event.target as HTMLFormElement).value
   return store.commit('changeTextColor', value)
 }
 
-const changeShowTitles = (event: Event): void => {
+function changeShowTitles(event: Event): void {
   const value: boolean = (event.target as HTMLFormElement).checked
   return store.commit('toggleTitles', value)
 }
 
-const initalSetup = (): void => {
+function initalSetup(): void {
   if (store.state.chart) {
     populateForm(store.state.chart)
   }
 }
 
-const populateForm = (chart: Chart): void => {
+function populateForm(chart: Chart): void {
   displayTitlesRef.value.checked = chart.showTitles
 
   xAxisRef.value.value = chart.size.x
@@ -104,7 +106,8 @@ const populateForm = (chart: Chart): void => {
 
   if (chart.background.type === BackgroundTypes.Color) {
     backgroundColorInputRef.value.value = chart.background.value
-  } else if (chart.background.type === BackgroundTypes.Image) {
+  }
+  else if (chart.background.type === BackgroundTypes.Image) {
     backgroundImageInputRef.value.value = chart.background.value
   }
 
@@ -120,14 +123,14 @@ const populateForm = (chart: Chart): void => {
   gap.value = chart.gap
 }
 
-const changeBackgroundType = (event: Event): void => {
+function changeBackgroundType(event: Event): void {
   const newType = ((event.target as HTMLFormElement).value)
   if (newType === BackgroundTypes.Color || newType === BackgroundTypes.Image) {
     backgroundType.value = newType
   }
 }
 
-const updateBackgroundImage = (event: Event): void => {
+function updateBackgroundImage(event: Event): void {
   const url = ((event.target as HTMLFormElement).value)
   store.commit('setBackgroundImage', url)
 }
@@ -141,10 +144,10 @@ const updateBackgroundImage = (event: Event): void => {
       </td>
       <td>
         <input
-          type="text"
-          name="title"
           id="title"
           ref="titleRef"
+          type="text"
+          name="title"
           @input="updateTitle"
         >
       </td>
@@ -155,10 +158,10 @@ const updateBackgroundImage = (event: Event): void => {
       </td>
       <td>
         <input
+          id="display-titles"
+          ref="displayTitlesRef"
           type="checkbox"
           name="display-titles"
-          ref="displayTitlesRef"
-          id="display-titles"
           @change="changeShowTitles"
         >
       </td>
@@ -170,13 +173,13 @@ const updateBackgroundImage = (event: Event): void => {
       <td class="cell-with-value">
         <span>{{ chart.size.x }}</span>
         <input
-          min=1
-          max=12
-          value=5
-          type="range"
-          name="x-axis"
           id="x-axis"
           ref="xAxisRef"
+          min="1"
+          max="12"
+          value="5"
+          type="range"
+          name="x-axis"
           class="dimension-input"
           @input="updateSizeX"
         >
@@ -189,13 +192,13 @@ const updateBackgroundImage = (event: Event): void => {
       <td class="cell-with-value">
         <span>{{ chart.size.y }}</span>
         <input
-          min=1
-          max=12
-          value=5
-          type="range"
-          name="y-axis"
           id="y-axis"
           ref="yAxisRef"
+          min="1"
+          max="12"
+          value="5"
+          type="range"
+          name="y-axis"
           class="dimension-input"
           @input="updateSizeY"
         >
@@ -207,13 +210,17 @@ const updateBackgroundImage = (event: Event): void => {
       </td>
       <td>
         <select
-          name="background-type"
           id="background-type"
           ref="backgroundTypeInputRef"
+          name="background-type"
           @change="changeBackgroundType"
         >
-          <option value="color">Color</option>
-          <option value="image">Image</option>
+          <option value="color">
+            Color
+          </option>
+          <option value="image">
+            Image
+          </option>
         </select>
       </td>
     </tr>
@@ -223,11 +230,11 @@ const updateBackgroundImage = (event: Event): void => {
       </td>
       <td>
         <input
+          id="background-color"
+          ref="backgroundColorInputRef"
           type="color"
           name="background-color"
-          id="background-color"
           class="color-picker"
-          ref="backgroundColorInputRef"
           @change="updateBackgroundColor"
         >
       </td>
@@ -238,10 +245,10 @@ const updateBackgroundImage = (event: Event): void => {
       </td>
       <td>
         <input
-          type="text"
-          name="background-image"
           id="background-image"
           ref="backgroundImageInputRef"
+          type="text"
+          name="background-image"
           @change="updateBackgroundImage"
         >
       </td>
@@ -253,13 +260,13 @@ const updateBackgroundImage = (event: Event): void => {
       <td class="cell-with-value">
         <span>{{ gap }}</span>
         <input
+          id="gap"
+          ref="gapRef"
           type="range"
           min="0"
           max="150"
           value="0"
           name="gap"
-          ref="gapRef"
-          id="gap"
           @input="updateGap"
         >
       </td>
@@ -270,10 +277,10 @@ const updateBackgroundImage = (event: Event): void => {
       </td>
       <td>
         <input
+          id="show-numbers"
+          ref="showNumbersRef"
           type="checkbox"
           name="show-numbers"
-          ref="showNumbersRef"
-          id="show-numbers"
           @change="changeShowNumbers"
         >
       </td>
@@ -284,10 +291,10 @@ const updateBackgroundImage = (event: Event): void => {
       </td>
       <td>
         <input
+          id="show-shadows"
+          ref="showShadowsRef"
           type="checkbox"
           name="show-shadows"
-          ref="showShadowsRef"
-          id="show-shadows"
           @change="changeShowShadows"
         >
       </td>
@@ -298,10 +305,10 @@ const updateBackgroundImage = (event: Event): void => {
       </td>
       <td class="cell-with-value">
         <input
+          id="font"
+          ref="fontRef"
           type="text"
           name="font"
-          ref="fontRef"
-          id="font"
           @input="updateFont"
         >
       </td>
@@ -312,11 +319,11 @@ const updateBackgroundImage = (event: Event): void => {
       </td>
       <td>
         <input
+          id="text-color"
+          ref="textColorRef"
           type="color"
           name="text-color"
-          id="text-color"
           class="color-picker"
-          ref="textColorRef"
           @change="updateTextColor"
         >
       </td>

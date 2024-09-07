@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { SearchTypes } from '../../../types'
 import { ref } from 'vue'
-import LoadingEllipses from './LoadingEllipses.vue'
-import CustomItemForm from './CustomItemForm.vue'
 import { queryMethodMap } from '../../../helpers/search'
+import { SearchTypes } from '../../../types'
+import CustomItemForm from './CustomItemForm.vue'
+import LoadingEllipses from './LoadingEllipses.vue'
 
 interface Props {
   searchType: SearchTypes
@@ -11,11 +11,11 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const loading = ref(false)
-
 const emit = defineEmits([
-  'updateResults'
+  'updateResults',
 ])
+
+const loading = ref(false)
 
 const searchbox = ref(null)
 
@@ -25,11 +25,11 @@ const searchbox = ref(null)
 // we must create a normal function that calls the parent
 // component's emit, and then pass this as an emit to the
 // child component. Ugh.
-const emitUpdateResults = (results: unknown[]) => {
+function emitUpdateResults(results: unknown[]) {
   emit('updateResults', results)
 }
 
-const handleSearch = async () => {
+async function handleSearch() {
   if (loading.value) {
     return null
   }
@@ -44,7 +44,7 @@ const handleSearch = async () => {
   loading.value = false
 }
 
-const getInputPlaceholder = () => {
+function getInputPlaceholder() {
   if (props.searchType === SearchTypes.Custom) {
     return 'Enter URL'
   }
@@ -56,12 +56,12 @@ const getInputPlaceholder = () => {
 <template>
   <CustomItemForm
     v-if="searchType === 'custom'"
-    @updateResults="emitUpdateResults"
+    @update-results="emitUpdateResults"
   />
   <form
+    v-else
     class="add-form"
     @submit.prevent="handleSearch"
-    v-else
   >
     <div
       class="form-flex"
@@ -70,7 +70,7 @@ const getInputPlaceholder = () => {
         id="searchbox"
         ref="searchbox"
         :placeholder="getInputPlaceholder()"
-      />
+      >
       <button type="submit" class="submit-button">
         <LoadingEllipses v-if="loading" />
         <span v-else>🔎</span>

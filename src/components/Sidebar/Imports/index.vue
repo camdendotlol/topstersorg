@@ -1,38 +1,39 @@
 <script setup lang="ts">
-import LastFmImport from './LastFmImport.vue'
+import {
+  BIcon2CircleFill,
+  BIconArrowDownSquare,
+  BIconArrowUpSquare,
+} from 'bootstrap-icons-vue'
+import { ref } from 'vue'
+import type { Ref } from 'vue'
 import {
   exportCurrentChart,
   importChart,
-  importTopsters2
+  importTopsters2,
 } from '../../../helpers/imports'
-import {
-  BIconArrowDownSquare,
-  BIconArrowUpSquare,
-  BIcon2CircleFill
-} from 'bootstrap-icons-vue'
 import { useStore } from '../../../store'
-import { Ref, ref } from 'vue'
+import LastFmImport from './LastFmImport.vue'
 
 const store = useStore()
 
 const topsters2ImportRef: Ref<HTMLInputElement> = ref(null)
 const uploadRef: Ref<HTMLInputElement> = ref(null)
 
-const uploadPicked = (e) => {
+function uploadPicked(e) {
   e.preventDefault()
   uploadRef.value.click()
 }
 
-const importTopsters2ChartsPicked = (e) => {
+function importTopsters2ChartsPicked(e) {
   e.preventDefault()
   topsters2ImportRef.value.click()
 }
 
-const importTopsters2Charts = (event) => {
+function importTopsters2Charts(event) {
   importTopsters2(event, store)
 }
 
-const callImportCharts = async (event) => {
+async function callImportCharts(event) {
   await importChart(event, store)
 }
 </script>
@@ -60,21 +61,21 @@ const callImportCharts = async (event) => {
         <span>Import from Topsters 2</span>
       </button>
     </div>
-  <LastFmImport />
-  <input
-    type="file"
-    style="display: none"
-    ref="topsters2ImportRef"
-    accept="application/json"
-    @change="importTopsters2Charts"
-  />
-  <input
-    type="file"
-    style="display: none"
-    ref="uploadRef"
-    accept=".topster"
-    @change="callImportCharts"
-  />
+    <LastFmImport />
+    <input
+      ref="topsters2ImportRef"
+      type="file"
+      style="display: none"
+      accept="application/json"
+      @change="importTopsters2Charts"
+    >
+    <input
+      ref="uploadRef"
+      type="file"
+      style="display: none"
+      accept=".topster"
+      @change="callImportCharts"
+    >
   </div>
 </template>
 

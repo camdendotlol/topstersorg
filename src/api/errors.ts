@@ -4,5 +4,5 @@
 export const errorMessages = {
   NoConnection: 'Unable to reach search servers.',
   BadStatusCode: 'The search servers returned an error.',
-  NoResults: 'No results found.'
+  NoResults: 'No results found.',
 }

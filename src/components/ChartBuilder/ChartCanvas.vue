@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { onMounted, computed, ref, Ref } from 'vue'
-import { useStore } from '../../store'
+import { computed, onMounted, ref } from 'vue'
+import type { Ref } from 'vue'
 import generateChart from '../../chartgen'
-import { BackgroundTypes, Chart } from '../../types'
+import { useStore } from '../../store'
+import { BackgroundTypes } from '../../types'
 import { insertPlaceholder } from './lib'
+import type { Chart } from '../../types'
 
 const canvas: Ref<HTMLCanvasElement> = ref(null)
 
@@ -49,7 +51,7 @@ onMounted(() => {
 
 // Put the image elements into each item and set the onload callback.
 // This lets the chart know to re-render when an image finishes loading.
-const hydrateImages = (chart: Chart) => {
+function hydrateImages(chart: Chart) {
   for (const item of chart.items) {
     if (item && !item.coverImg.complete) {
       item.coverImg.onload = () => {
@@ -59,8 +61,9 @@ const hydrateImages = (chart: Chart) => {
   }
 }
 
-const renderChart = () => {
+function renderChart() {
   if (!canvas.value) {
+    // eslint-disable-next-line no-console
     return console.log('The canvas doesn\'nt exist! Maybe it tried to re-render after being unmounted.')
   }
 
@@ -68,7 +71,7 @@ const renderChart = () => {
 
   generateChart(
     canvas.value,
-    store.state.chart
+    store.state.chart,
   )
 
   // Insert placeholders for empty squares
@@ -78,14 +81,13 @@ const renderChart = () => {
     }
   })
 }
-
 </script>
 
 <template>
   <canvas
     id="chart-canvas"
     ref="canvas"
-  ></canvas>
+  />
 </template>
 
 <style scoped>

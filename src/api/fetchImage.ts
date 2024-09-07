@@ -1,4 +1,4 @@
-const fetchImageURL = async (url: string): Promise<string> => {
+async function fetchImageURL(url: string): Promise<string> {
   let blob: Blob
 
   // If the origin site has CORS * headers, we're all set!
@@ -6,18 +6,20 @@ const fetchImageURL = async (url: string): Promise<string> => {
   try {
     const directData = await fetch(url)
     blob = await directData.blob()
-  } catch (e) {
+  }
+  catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e)
     const proxyURL = `${import.meta.env.VITE_BACKEND_URL}/api/proxy`
-    const proxyData = await fetch(proxyURL,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          url
-        })
-      })
+    const proxyData = await fetch(proxyURL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        url,
+      }),
+    })
 
     blob = await proxyData.blob()
   }

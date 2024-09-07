@@ -1,5 +1,5 @@
-import { Store } from 'vuex'
-import { Chart } from './types'
+import type { Store } from 'vuex'
+import type { Chart } from './types'
 
 declare module '@vue/runtime-core' {
   // declare your own store states

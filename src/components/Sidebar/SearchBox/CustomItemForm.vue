@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import { Ref, ref } from 'vue'
+import { ref } from 'vue'
+import type { Ref } from 'vue'
 
 const emit = defineEmits([
-  'updateResults'
+  'updateResults',
 ])
 
 const urlInput: Ref<HTMLInputElement> = ref(null)
 const titleInput: Ref<HTMLInputElement> = ref(null)
 const creatorInput: Ref<HTMLInputElement> = ref(null)
 
-const buildResultItem = () => {
+function buildResultItem() {
   if (urlInput.value.value) {
     const item = {
       title: titleInput.value.value,
       creator: creatorInput.value.value,
       imageURL: urlInput.value.value,
-      type: 'custom'
+      type: 'custom',
     }
 
     emit('updateResults', [item])

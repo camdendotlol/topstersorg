@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import { ChangelogItem } from '../../types'
+import type { ChangelogItem } from '../../types'
 
 const changes: ChangelogItem[] = [
   {
     date: new Date('June 22, 2024').toLocaleDateString(),
-    text: 'Optimized the way the chart is rendered. The most significant change is that we\'re now using a separate Canvas layer for drag-and-drop, which should improve the framerate when moving items around on larger charts.'
+    text: 'Optimized the way the chart is rendered. The most significant change is that we\'re now using a separate Canvas layer for drag-and-drop, which should improve the framerate when moving items around on larger charts.',
   },
   {
     date: new Date('January 27, 2024').toLocaleDateString(),
-    text: 'Redesigned with a sleek new dark theme for a belated celebration of Topsters 3\'s second birthday. In addition to a total UI overhaul, this redesign adds a chart export feature and enables some UI elements on mobile that were previously hidden on small screens.'
+    text: 'Redesigned with a sleek new dark theme for a belated celebration of Topsters 3\'s second birthday. In addition to a total UI overhaul, this redesign adds a chart export feature and enables some UI elements on mobile that were previously hidden on small screens.',
   },
   {
     date: new Date('August 2, 2023').toLocaleDateString(),
-    text: 'Updated the search backend for games to support double the previous number of searches per second. This should fix the intermittently failing game searches.'
+    text: 'Updated the search backend for games to support double the previous number of searches per second. This should fix the intermittently failing game searches.',
   },
   {
     date: new Date('July 29, 2023').toLocaleDateString(),
-    text: 'Fixed the Topsters 2 import feature, which had been broken since the previous update.'
+    text: 'Fixed the Topsters 2 import feature, which had been broken since the previous update.',
   },
   {
     date: new Date('May 30, 2023').toLocaleDateString(),
-    text: 'Added the ability to build a chart with your Last.fm listening stats in the Imports panel.'
+    text: 'Added the ability to build a chart with your Last.fm listening stats in the Imports panel.',
   },
   {
     date: new Date('January 14, 2023').toLocaleDateString(),
-    text: 'Overhauled the frontend build process to use Vite and a newer version of Vue. No visible changes, but it should improve performance and make updates easier.'
-  }
+    text: 'Overhauled the frontend build process to use Vite and a newer version of Vue. No visible changes, but it should improve performance and make updates easier.',
+  },
 ]
 </script>
 
@@ -35,7 +35,7 @@ const changes: ChangelogItem[] = [
     <ul>
       <li
         v-for="change in changes"
-        v-bind:key="change.date"
+        :key="change.date"
       >
         <strong>{{ change.date }}</strong>
         {{ change.text }}

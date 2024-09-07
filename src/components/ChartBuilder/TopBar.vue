@@ -1,11 +1,13 @@
+<!-- eslint-disable no-alert -->
 <script setup lang="ts">
-import { Ref, ref } from 'vue'
-import { initialState, useStore } from '../../store'
-import { BIconFileEarmarkArrowDown, BIconArrowRepeat } from 'bootstrap-icons-vue'
-import Switcher from './Switcher.vue'
-import { appendChart, destroyChart, getActiveChartUuid, getNewestChartUuid, getStoredCharts, setActiveChart } from '../../helpers/localStorage'
-import { StoredChart } from '../../types'
+import { BIconArrowRepeat, BIconFileEarmarkArrowDown } from 'bootstrap-icons-vue'
+import { ref } from 'vue'
+import type { Ref } from 'vue'
 import { addImgElements, downloadChart, initializeFirstRun } from '../../helpers/chart'
+import { appendChart, destroyChart, getActiveChartUuid, getNewestChartUuid, getStoredCharts, setActiveChart } from '../../helpers/localStorage'
+import { initialState, useStore } from '../../store'
+import Switcher from './Switcher.vue'
+import type { StoredChart } from '../../types'
 
 const store = useStore()
 
@@ -13,16 +15,16 @@ const store = useStore()
 // Also, we can prevent the user from spamming the button to generate multiple requests.
 const loading: Ref<boolean> = ref(false)
 
-const saveChart = async () => {
+async function saveChart() {
   loading.value = true
   await downloadChart(store.state.chart)
   loading.value = false
 }
 
-const startNewChart = () => {
+function startNewChart() {
   const newChart: StoredChart = {
     timestamp: new Date().getTime(),
-    data: initialState.chart
+    data: initialState.chart,
   }
 
   const newUuid = appendChart(newChart)
@@ -31,7 +33,7 @@ const startNewChart = () => {
   store.commit('reset')
 }
 
-const deleteChart = () => {
+function deleteChart() {
   const activeChartUuid = getActiveChartUuid()
 
   if (window.confirm('Are you sure you want to delete this chart? There\'s no way to recover it!')) {
@@ -43,7 +45,8 @@ const deleteChart = () => {
       // We've just deleted the only saved chart, so let's re-initialize.
       initializeFirstRun()
       store.commit('reset')
-    } else {
+    }
+    else {
       // If there are other charts, pick the most recently created one.
       const chart = setActiveChart(getNewestChartUuid())
 
@@ -52,7 +55,6 @@ const deleteChart = () => {
     }
   }
 }
-
 </script>
 
 <template>

@@ -3,23 +3,23 @@ import {
   BIconBook,
   BIconController,
   BIconFilm,
-  BIconTools,
   BIconMusicNoteBeamed,
-  BIconTv
+  BIconTools,
+  BIconTv,
 } from 'bootstrap-icons-vue'
 import { SearchTypes } from '../../../types'
 
 interface Props {
-  currentType: SearchTypes,
+  currentType: SearchTypes
 }
 
 const props = defineProps<Props>()
 
 const emit = defineEmits([
-  'setSearchType'
+  'setSearchType',
 ])
 
-const isActive = (type: SearchTypes) => {
+function isActive(type: SearchTypes) {
   if (type === props.currentType) {
     return 'active-search-type'
   }
@@ -31,43 +31,43 @@ const isActive = (type: SearchTypes) => {
 <template>
   <ul>
     <li
-      @click="emit('setSearchType', SearchTypes.Music)"
       :class="isActive(SearchTypes.Music)"
+      @click="emit('setSearchType', SearchTypes.Music)"
     >
       <BIconMusicNoteBeamed />
       <label>Music</label>
     </li>
     <li
-      @click="emit('setSearchType', SearchTypes.Games)"
       :class="isActive(SearchTypes.Games)"
+      @click="emit('setSearchType', SearchTypes.Games)"
     >
       <BIconController />
       <label>Games</label>
     </li>
     <li
-      @click="emit('setSearchType', SearchTypes.Books)"
       :class="isActive(SearchTypes.Books)"
+      @click="emit('setSearchType', SearchTypes.Books)"
     >
       <BIconBook />
       <label>Books</label>
     </li>
     <li
-      @click="emit('setSearchType', SearchTypes.Movies)"
       :class="isActive(SearchTypes.Movies)"
+      @click="emit('setSearchType', SearchTypes.Movies)"
     >
       <BIconFilm />
       <label>Movies</label>
     </li>
     <li
-      @click="emit('setSearchType', SearchTypes.Shows)"
       :class="isActive(SearchTypes.Shows)"
+      @click="emit('setSearchType', SearchTypes.Shows)"
     >
       <BIconTv />
       <label>Shows</label>
     </li>
     <li
-      @click="emit('setSearchType', SearchTypes.Custom)"
       :class="isActive(SearchTypes.Custom)"
+      @click="emit('setSearchType', SearchTypes.Custom)"
     >
       <BIconTools />
       <label>Custom</label>

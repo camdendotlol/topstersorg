@@ -1,9 +1,10 @@
 <script setup lang='ts'>
-import { getActiveChartUuid, getStoredCharts, getUuids, setActiveChart } from '../../helpers/localStorage'
-import { StoredCharts } from '../../types'
-import { Ref, ref } from 'vue'
-import { useStore } from '../../store'
+import { ref } from 'vue'
+import type { Ref } from 'vue'
 import { addImgElements } from '../../helpers/chart'
+import { getActiveChartUuid, getStoredCharts, getUuids, setActiveChart } from '../../helpers/localStorage'
+import { useStore } from '../../store'
+import type { StoredCharts } from '../../types'
 
 const store = useStore()
 
@@ -15,17 +16,17 @@ store.watch(state => state.chart, () => {
   updateChartList()
 })
 
-const sortUuids = (uuidArr: string[]) => (
-  uuidArr.toSorted((a, b) => charts.value[b].timestamp - charts.value[a].timestamp)
-)
+function sortUuids(uuidArr: string[]) {
+  return uuidArr.toSorted((a, b) => charts.value[b].timestamp - charts.value[a].timestamp)
+}
 
-const updateChartList = () => {
+function updateChartList() {
   activeChartUuid.value = getActiveChartUuid()
   charts.value = getStoredCharts()
   chartUuids.value = sortUuids(getUuids())
 }
 
-const changeChart = (event: Event) => {
+function changeChart(event: Event) {
   const uuid = (event.target as HTMLFormElement).value
 
   const newActiveChart = setActiveChart(uuid)
@@ -41,14 +42,14 @@ const changeChart = (event: Event) => {
 <template>
   <div>
     <select
-      name="chart-switcher"
       id="chart-switcher"
+      name="chart-switcher"
       @change="changeChart"
     >
       <option
         v-for="(uuid, index) in chartUuids"
-        :value="uuid"
         :key="index"
+        :value="uuid"
         :selected="uuid === activeChartUuid"
       >
         {{ charts[uuid]?.data?.title ? charts[uuid]?.data.title : `Untitled (${new Date(charts[uuid]?.timestamp).toUTCString()})` }}

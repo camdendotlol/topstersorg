@@ -1,7 +1,7 @@
 <script setup lang="ts">
 interface Props {
   imageData: {
-    src: string,
+    src: string
     alt: string
   }
 }

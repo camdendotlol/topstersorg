@@ -1,13 +1,12 @@
-import { encodeQuery } from '../helpers/search'
 import { errorMessages } from './errors'
 
-const queryOpenLibrary = async (query: string): Promise<unknown[]> => {
+async function queryOpenLibrary(query: string): Promise<unknown[]> {
   // Don't spam OL servers with an empty query
   if (query === '') {
     return []
   }
 
-  const encodedQuery = encodeQuery(query)
+  const encodedQuery = encodeURIComponent(query)
 
   const res = await fetch(`https://openlibrary.org/search.json?q=${encodedQuery}`)
 

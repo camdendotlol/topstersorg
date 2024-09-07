@@ -15,7 +15,7 @@ store.watch(state => state.popupText, () => {
 </script>
 
 <template>
-  <div id="popup" v-if="store.state.popupText">
+  <div v-if="store.state.popupText" id="popup">
     <p>{{ store.state.popupText }}</p>
   </div>
 </template>

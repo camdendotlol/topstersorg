@@ -1,28 +1,27 @@
 <script setup lang="ts">
-import { downloadChart } from '../../helpers/chart'
+import { BIconArrowRepeat, BIconFileEarmarkArrowDown } from 'bootstrap-icons-vue'
 import { ref } from 'vue'
-import { BIconFileEarmarkArrowDown, BIconArrowRepeat } from 'bootstrap-icons-vue'
+import { downloadChart } from '../../helpers/chart'
 import { useStore } from '../../store'
 
 const loading = ref(false)
 
 const store = useStore()
 
-const saveChart = async () => {
+async function saveChart() {
   loading.value = true
 
   await downloadChart(store.state.chart)
 
   loading.value = false
 }
-
 </script>
 
 <template>
   <button
+    id="home-button"
     type="button"
     class="toggle-button"
-    id="home-button"
   >
     <BIconFileEarmarkArrowDown
       v-if="!loading"

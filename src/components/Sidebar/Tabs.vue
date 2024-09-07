@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import { Tabs as TabsEnum } from '../../types'
+import type { Tabs as TabsEnum } from '../../types'
 
 interface Props {
-  tabs: TabsEnum[],
+  tabs: TabsEnum[]
   currentTab: TabsEnum
 }
 
 const props = defineProps<Props>()
 
 const emit = defineEmits([
-  'setCurrentTab'
+  'setCurrentTab',
 ])
 </script>
 
 <template>
   <ul class="nav-list">
     <li
-      class="nav-list-item"
       v-for="tab in props.tabs"
-      v-bind:key="tab"
+      :key="tab"
+      class="nav-list-item"
     >
       <button
         class="tab-item"
-        :class="{active: props.currentTab === tab}"
+        :class="{ active: props.currentTab === tab }"
 
         @click="emit('setCurrentTab', tab)"
       >

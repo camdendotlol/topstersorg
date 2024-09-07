@@ -1,13 +1,12 @@
 import { errorMessages } from './errors'
 import type { IgdbItem } from '../types'
-import { encodeQuery } from '../helpers/search'
 
-const queryIGDB = async (query: string): Promise<IgdbItem[]> => {
+async function queryIGDB(query: string): Promise<IgdbItem[]> {
   if (query === '') {
     return []
   }
 
-  const encodedQuery = encodeQuery(query)
+  const encodedQuery = encodeURIComponent(query)
 
   const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/igdb/search/${encodedQuery}`)
 

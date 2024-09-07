@@ -5,18 +5,20 @@ const ellipses = ref('')
 const direction = ref('up')
 const interval = ref(null)
 
-const getNewEllipses = (el: string) => {
+function getNewEllipses(el: string) {
   let result
 
   if (direction.value === 'up') {
     result = `${el}.`
-  } else {
+  }
+  else {
     result = el.slice(0, el.length - 1)
   }
 
   if (result.length === 0) {
     direction.value = 'up'
-  } else if (result.length === 3) {
+  }
+  else if (result.length === 3) {
     direction.value = 'down'
   }
 
@@ -34,7 +36,6 @@ onBeforeUnmount(() => {
     clearInterval(interval.value)
   }
 })
-
 </script>
 
 <template>

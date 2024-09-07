@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Searchbox from './index.vue'
 import Credits from '../Credits.vue'
+import Searchbox from './index.vue'
 </script>
 
 <template>
@@ -22,5 +22,4 @@ import Credits from '../Credits.vue'
 h1 {
   text-align: center;
 }
-
 </style>

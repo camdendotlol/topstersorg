@@ -1,18 +1,16 @@
 import {
-  setup,
-  Chart,
-  drawTitle,
+  buildTitles,
   drawBackground,
-  insertTitles,
+  drawTitle,
   insertCoverImages,
-  buildTitles
+  insertTitles,
+  setup,
+} from './lib'
+import type {
+  Chart,
 } from './lib'
 
-const generateChart = (
-  canvas: HTMLCanvasElement,
-  chart: Chart,
-  cellSize = 260
-): HTMLCanvasElement => {
+function generateChart(canvas: HTMLCanvasElement, chart: Chart, cellSize = 260): HTMLCanvasElement {
   const canvasInfo = setup(canvas, chart, cellSize)
 
   drawBackground(canvasInfo, chart)
@@ -28,7 +26,8 @@ const generateChart = (
   // Set up the request text color--default is white.
   if (chart.textColor && /^#[0-9A-F]{6}$/i.test(chart.textColor)) {
     canvasInfo.ctx.fillStyle = chart.textColor
-  } else {
+  }
+  else {
     canvasInfo.ctx.fillStyle = 'white'
   }
 
@@ -39,7 +38,7 @@ const generateChart = (
 
   insertCoverImages(
     chart,
-    canvasInfo
+    canvasInfo,
   )
 
   if (chart.showTitles) {
@@ -48,7 +47,7 @@ const generateChart = (
     insertTitles(
       canvasInfo,
       chart,
-      canvasInfo.titles
+      canvasInfo.titles,
     )
   }
 

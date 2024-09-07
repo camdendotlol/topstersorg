@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { computed, ref, Ref } from 'vue'
-import { useStore } from '../../store'
-import { ChartItem } from '../../types'
-import { getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
-import { setImage } from '../../helpers/chart'
+import { computed, ref } from 'vue'
+import type { Ref } from 'vue'
 import { getScaledDimensions } from '../../chartgen/lib'
+import { setImage } from '../../helpers/chart'
+import { useStore } from '../../store'
+import { getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
+import type { ChartItem } from '../../types'
 
 // Topsters 3 supports drag and drop for both mouse and touch events.
 type InteractionEvent = MouseEvent | TouchEvent
 
 const grabbedItem: Ref<{
-  originalIndex: number,
+  originalIndex: number
   itemObject: ChartItem
 } | null> = ref(null)
 
@@ -19,12 +20,12 @@ const canvas: Ref<HTMLCanvasElement> = ref(null)
 // We need to store the most recent touch position because the touchend event doesn't provide coordinates.
 const lastTouch: Ref<{ x: number, y: number }> = ref({
   x: 0,
-  y: 0
+  y: 0,
 })
 
 const lastMousePosition: Ref<{ x: number, y: number }> = ref({
   x: 0,
-  y: 0
+  y: 0,
 })
 
 const store = useStore()
@@ -42,11 +43,12 @@ const drawingCtx = computed(() => {
   return ctx
 })
 
-const renderChart = () => {
+function renderChart() {
   // Is there a better way to get this canvas when it's in a sibling component?
   const chartCanvas = document.getElementById('chart-canvas') as HTMLCanvasElement | null
 
   if (!chartCanvas) {
+    // eslint-disable-next-line no-console
     return console.log('The canvas doesn\'nt exist! Maybe it tried to re-render after being unmounted.')
   }
 
@@ -54,23 +56,24 @@ const renderChart = () => {
   canvas.value.height = chartCanvas.height
 }
 
-const checkDroppability = (event: InteractionEvent | DragEvent) => {
+function checkDroppability(event: InteractionEvent | DragEvent) {
   const canvasInfo = getCanvasInfo(canvas.value, store.state.chart)
 
   const droppable = isDroppable(
     canvasInfo,
     store.state.chart,
-    getInteractionCoords(event, { x: canvas.value.offsetLeft, y: canvas.value.offsetTop })
+    getInteractionCoords(event, { x: canvas.value.offsetLeft, y: canvas.value.offsetTop }),
   )
 
   if (droppable) {
     return true
-  } else {
+  }
+  else {
     return false
   }
 }
 
-const drawImageAtMouse = (image: HTMLImageElement, coords: { x: number, y: number }) => {
+function drawImageAtMouse(image: HTMLImageElement, coords: { x: number, y: number }) {
   if (!drawingCtx.value) {
     throw new Error('Canvas context not found, the canvas must have loaded incorrectly.')
   }
@@ -85,11 +88,11 @@ const drawImageAtMouse = (image: HTMLImageElement, coords: { x: number, y: numbe
     Math.floor((coords.x / canvasInfo.scaleRatio) - (scaledDimensions.width / 2)),
     Math.floor((coords.y / canvasInfo.scaleRatio) - (scaledDimensions.height / 2)),
     scaledDimensions.width,
-    scaledDimensions.height
+    scaledDimensions.height,
   )
 }
 
-const updateCursor = (event: InteractionEvent) => {
+function updateCursor(event: InteractionEvent) {
   const isSelectable = checkDroppability(event)
   const touchEvent = isTouchEvent(event)
 
@@ -97,11 +100,12 @@ const updateCursor = (event: InteractionEvent) => {
     const canvasOffset = { x: canvas.value.offsetLeft, y: canvas.value.offsetTop }
     lastMousePosition.value = {
       x: (event as MouseEvent).clientX - canvasOffset.x + window.scrollX,
-      y: (event as MouseEvent).clientY - canvasOffset.y + window.scrollY
+      y: (event as MouseEvent).clientY - canvasOffset.y + window.scrollY,
     }
     if (isSelectable) {
       document.body.style.cursor = 'pointer'
-    } else if (!isSelectable && !grabbedItem.value) {
+    }
+    else if (!isSelectable && !grabbedItem.value) {
       document.body.style.cursor = 'default'
     }
   }
@@ -109,17 +113,17 @@ const updateCursor = (event: InteractionEvent) => {
   if (isTouchEvent(event) && event.type !== 'touchend') {
     lastTouch.value = {
       x: event.touches[0].clientX,
-      y: event.touches[0].clientY
+      y: event.touches[0].clientY,
     }
 
     const coords = getInteractionCoords(event, { x: canvas.value.offsetLeft, y: canvas.value.offsetTop })
     const canvasDimensions = canvas.value.getBoundingClientRect()
 
     if (
-      coords.x < 0 ||
-      coords.x > canvasDimensions.width ||
-      coords.y < 0 ||
-      coords.y > canvasDimensions.height
+      coords.x < 0
+      || coords.x > canvasDimensions.width
+      || coords.y < 0
+      || coords.y > canvasDimensions.height
     ) {
       resetCursor(event)
     }
@@ -137,7 +141,7 @@ const updateCursor = (event: InteractionEvent) => {
   }
 }
 
-const resetCursor = (event: InteractionEvent) => {
+function resetCursor(event: InteractionEvent) {
   document.body.style.cursor = 'default'
 
   if (grabbedItem.value) {
@@ -145,7 +149,7 @@ const resetCursor = (event: InteractionEvent) => {
     // This is so users can remove an item by dragging it off the chart.
     store.commit('addItem', {
       item: null,
-      index: grabbedItem.value.originalIndex
+      index: grabbedItem.value.originalIndex,
     })
   }
 
@@ -154,33 +158,32 @@ const resetCursor = (event: InteractionEvent) => {
   grabbedItem.value = null
 }
 
-const getInteractionCoords = (
-  event: InteractionEvent,
-  canvasOffset: { x: number, y: number }
-) => {
+function getInteractionCoords(event: InteractionEvent, canvasOffset: { x: number, y: number }) {
   if (isTouchEvent(event)) {
     if (event.type === 'touchend') {
       return {
         x: lastTouch.value.x - canvasOffset.x + window.scrollX,
-        y: lastTouch.value.y - canvasOffset.y + window.scrollY
-      }
-    } else {
-      return {
-        x: event.touches[0].clientX - canvasOffset.x + window.scrollX,
-        y: event.touches[0].clientY - canvasOffset.y + window.scrollY
+        y: lastTouch.value.y - canvasOffset.y + window.scrollY,
       }
     }
-  } else {
+    else {
+      return {
+        x: event.touches[0].clientX - canvasOffset.x + window.scrollX,
+        y: event.touches[0].clientY - canvasOffset.y + window.scrollY,
+      }
+    }
+  }
+  else {
     // handle mouse event
     return {
       x: event.clientX - canvasOffset.x + window.scrollX,
-      y: event.clientY - canvasOffset.y + window.scrollY
+      y: event.clientY - canvasOffset.y + window.scrollY,
     }
   }
 }
 
 // Calculate the index of the chart item in the chart array from its position on the chart
-const getItemIndexFromCoords = (event: InteractionEvent) => {
+function getItemIndexFromCoords(event: InteractionEvent) {
   const canvasInfo = getCanvasInfo(canvas.value, store.state.chart)
 
   const interactionCoords = getInteractionCoords(event, { x: canvas.value.offsetLeft, y: canvas.value.offsetTop })
@@ -196,7 +199,7 @@ const getItemIndexFromCoords = (event: InteractionEvent) => {
   return itemsAbove + xCoord
 }
 
-const pickUpItem = (event: InteractionEvent) => {
+function pickUpItem(event: InteractionEvent) {
   // Ignore if the spot doesn't contain a movable item
   if (!checkDroppability(event)) {
     return null
@@ -213,13 +216,13 @@ const pickUpItem = (event: InteractionEvent) => {
   if (isTouchEvent(event)) {
     lastTouch.value = {
       x: event.touches[0].clientX,
-      y: event.touches[0].clientY
+      y: event.touches[0].clientY,
     }
   }
 
   grabbedItem.value = {
     originalIndex: itemIndex,
-    itemObject: item
+    itemObject: item,
   }
 
   updateCursor(event)
@@ -234,7 +237,7 @@ const pickUpItem = (event: InteractionEvent) => {
   drawImageAtMouse(grabbedItem.value.itemObject.coverImg, coords)
 }
 
-const dropHTMLItem = (event: DragEvent) => {
+function dropHTMLItem(event: DragEvent) {
   const item = event.dataTransfer?.getData('application/json')
 
   if (!item) {
@@ -244,7 +247,7 @@ const dropHTMLItem = (event: DragEvent) => {
   dropItem(event)
 }
 
-const dropCanvasItem = (event: InteractionEvent) => {
+function dropCanvasItem(event: InteractionEvent) {
   if (!grabbedItem.value) {
     return null
   }
@@ -252,7 +255,7 @@ const dropCanvasItem = (event: InteractionEvent) => {
   dropItem(event)
 }
 
-const dropItem = (event: InteractionEvent | DragEvent) => {
+function dropItem(event: InteractionEvent | DragEvent) {
   // If the spot doesn't contain a movable item, just put the item back where it came from.
   if (!checkDroppability(event)) {
     grabbedItem.value = null
@@ -274,9 +277,10 @@ const dropItem = (event: InteractionEvent | DragEvent) => {
 
     store.commit('addItem', {
       item,
-      index: newIndex
+      index: newIndex,
     })
-  } else {
+  }
+  else {
     if (!grabbedItem.value) {
       return null
     }
@@ -286,20 +290,21 @@ const dropItem = (event: InteractionEvent | DragEvent) => {
       // 1) move the item there
       store.commit('addItem', {
         item: grabbedItem.value.itemObject,
-        index: newIndex
+        index: newIndex,
       })
       // 2) and remove it from its old spot
       store.commit('addItem', {
         item: null,
-        index: grabbedItem.value.originalIndex
+        index: grabbedItem.value.originalIndex,
       })
-    } else {
+    }
+    else {
       // If there's an item in the new slot, adjust the array
       // without deleting anything.
       store.commit('moveItem', {
         item: grabbedItem.value.itemObject,
         oldIndex: grabbedItem.value.originalIndex,
-        newIndex
+        newIndex,
       })
     }
   }
@@ -310,10 +315,9 @@ const dropItem = (event: InteractionEvent | DragEvent) => {
   updateCursor(event)
 }
 
-const allowDragAndDrop = (event: DragEvent) => {
+function allowDragAndDrop(event: DragEvent) {
   event.preventDefault()
 }
-
 </script>
 
 <template>
@@ -330,7 +334,7 @@ const allowDragAndDrop = (event: DragEvent) => {
     @touchmove="updateCursor"
     @touchend="dropItem"
     @touchleave="resetCursor"
-  ></canvas>
+  />
 </template>
 
 <style scoped>

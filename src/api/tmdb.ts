@@ -1,8 +1,7 @@
-import { encodeQuery } from '../helpers/search'
-import type { MovieResult, TVResult } from '../types'
 import { errorMessages } from './errors'
+import type { MovieResult, TVResult } from '../types'
 
-const queryTmdb = async (url: string): Promise<Array<MovieResult | TVResult>> => {
+async function queryTmdb(url: string): Promise<Array<MovieResult | TVResult>> {
   const res = await fetch(url)
 
   if (!res) {
@@ -22,24 +21,24 @@ const queryTmdb = async (url: string): Promise<Array<MovieResult | TVResult>> =>
   return jsonRes.results
 }
 
-export const tmdbMovieSearch = async (query: string): Promise<MovieResult[]> => {
+export async function tmdbMovieSearch(query: string): Promise<MovieResult[]> {
   if (query === '') {
     return []
   }
 
-  const encodedQuery = encodeQuery(query)
+  const encodedQuery = encodeURIComponent(query)
 
   const url = `${import.meta.env.VITE_BACKEND_URL}/api/tmdb/search/movie/${encodedQuery}`
 
   return await queryTmdb(url) as MovieResult[]
 }
 
-export const tmdbTVSearch = async (query: string): Promise<TVResult[]> => {
+export async function tmdbTVSearch(query: string): Promise<TVResult[]> {
   if (query === '') {
     return []
   }
 
-  const encodedQuery = encodeQuery(query)
+  const encodedQuery = encodeURIComponent(query)
 
   const url = `${import.meta.env.VITE_BACKEND_URL}/api/tmdb/search/tv/${encodedQuery}`
 

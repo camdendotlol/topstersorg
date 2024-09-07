@@ -1,21 +1,22 @@
 <script setup lang="ts">
-
 import { createChartItem } from '../../../helpers/chart'
+import { useStore } from '../../../store'
 import {
+  SearchTypes,
+} from '../../../types'
+import ResultItem from './ResultItem.vue'
+import type {
   BookResult,
   GameResult,
+  MovieResult,
   MusicResult,
   Result,
-  MovieResult,
   TVResult,
-  SearchTypes
 } from '../../../types'
-import { useStore } from '../../../store'
-import ResultItem from './ResultItem.vue'
 
 interface Props {
-  results: any[],
-  resultsType: SearchTypes,
+  results: any[]
+  resultsType: SearchTypes
   isLoading?: boolean
 }
 
@@ -24,18 +25,18 @@ const props = defineProps<Props>()
 const store = useStore()
 
 // remove any without a cover and/or an author
-const filterBooks = (results: BookResult[]): BookResult[] => {
+function filterBooks(results: BookResult[]): BookResult[] {
   return results
     .filter(result => result.cover_edition_key)
     .filter(result => result.author_name)
 }
 
 // remove music without a cover image
-const filterMusic = (results: MusicResult[]): MusicResult[] => {
+function filterMusic(results: MusicResult[]): MusicResult[] {
   return results
-    .filter(result => {
+    .filter((result) => {
       let coverFound = false
-      result.image.forEach(image => {
+      result.image.forEach((image) => {
         if (image['#text'] !== '') {
           coverFound = true
         }
@@ -45,19 +46,19 @@ const filterMusic = (results: MusicResult[]): MusicResult[] => {
 }
 
 // remove games without a cover image
-const filterGames = (results: GameResult[]): GameResult[] => (
-  results.filter(result => result.cover)
-)
+function filterGames(results: GameResult[]): GameResult[] {
+  return results.filter(result => result.cover)
+}
 
-const filterMovies = (results: MovieResult[]): MovieResult[] => (
-  results.filter(result => result.poster_path)
-)
+function filterMovies(results: MovieResult[]): MovieResult[] {
+  return results.filter(result => result.poster_path)
+}
 
-const filterTV = (results: TVResult[]): TVResult[] => (
-  results.filter(result => result.poster_path)
-)
+function filterTV(results: TVResult[]): TVResult[] {
+  return results.filter(result => result.poster_path)
+}
 
-const addToChart = (item: Result): void => {
+function addToChart(item: Result): void {
   // Get the index of the first null chart slot
   const firstEmptyIndex = store.state.chart.items.indexOf(null)
 
@@ -71,7 +72,7 @@ const addToChart = (item: Result): void => {
   }
 }
 
-const initDrag = (event: DragEvent, result: Result): void => {
+function initDrag(event: DragEvent, result: Result): void {
   const itemString = JSON.stringify(createChartItem(result))
   // Some null-checking is needed here to satisfy TS
   if (event.dataTransfer) {
@@ -79,7 +80,6 @@ const initDrag = (event: DragEvent, result: Result): void => {
     event.dataTransfer.setData('application/json', itemString)
   }
 }
-
 </script>
 
 <template>
@@ -90,9 +90,9 @@ const initDrag = (event: DragEvent, result: Result): void => {
         :key="index"
       >
         <ResultItem
-          :imageData="{ src: `https://covers.openlibrary.org/b/olid/${result.cover_edition_key}-L.jpg`, alt: result.title }"
-          @click="addToChart(result)"
+          :image-data="{ src: `https://covers.openlibrary.org/b/olid/${result.cover_edition_key}-L.jpg`, alt: result.title }"
           draggable="true"
+          @click="addToChart(result)"
           @dragstart="(event) => initDrag(event, result)"
         />
       </li>
@@ -103,9 +103,9 @@ const initDrag = (event: DragEvent, result: Result): void => {
         :key="index"
       >
         <ResultItem
-          :imageData="{ src: result.image[result.image.length - 1]['#text'], alt: result.name }"
-          @click="addToChart(result)"
+          :image-data="{ src: result.image[result.image.length - 1]['#text'], alt: result.name }"
           draggable="true"
+          @click="addToChart(result)"
           @dragstart="(event) => initDrag(event, result)"
         />
       </li>
@@ -116,9 +116,9 @@ const initDrag = (event: DragEvent, result: Result): void => {
         :key="index"
       >
         <ResultItem
-          :imageData="{ src: result.cover, alt: result.name }"
-          @click="addToChart(result)"
+          :image-data="{ src: result.cover, alt: result.name }"
           draggable="true"
+          @click="addToChart(result)"
           @dragstart="(event) => initDrag(event, result)"
         />
       </li>
@@ -129,9 +129,9 @@ const initDrag = (event: DragEvent, result: Result): void => {
         :key="index"
       >
         <ResultItem
-          :imageData="{ src: `https://image.tmdb.org/t/p/w185/${result.poster_path}`, alt: result.title }"
-          @click="addToChart(result)"
+          :image-data="{ src: `https://image.tmdb.org/t/p/w185/${result.poster_path}`, alt: result.title }"
           draggable="true"
+          @click="addToChart(result)"
           @dragstart="(event) => initDrag(event, result)"
         />
       </li>
@@ -142,24 +142,24 @@ const initDrag = (event: DragEvent, result: Result): void => {
         :key="index"
       >
         <ResultItem
-          :imageData="{ src: `https://image.tmdb.org/t/p/w185/${result.poster_path}`, alt: result.name }"
-          @click="addToChart(result)"
+          :image-data="{ src: `https://image.tmdb.org/t/p/w185/${result.poster_path}`, alt: result.name }"
           draggable="true"
+          @click="addToChart(result)"
           @dragstart="(event) => initDrag(event, result)"
         />
       </li>
     </ul>
     <ul
-      class="single-result-list"
       v-else-if="resultsType === SearchTypes.Custom"
+      class="single-result-list"
     >
       <li>
         <ResultItem
-          :imageData="{ src: results[0].imageURL, alt: results[0].title }"
-          @click="addToChart(results[0])"
+          :image-data="{ src: results[0].imageURL, alt: results[0].title }"
           draggable="true"
-          @dragstart="(event) => initDrag(event, results[0])"
           class="centered-item"
+          @click="addToChart(results[0])"
+          @dragstart="(event) => initDrag(event, results[0])"
         />
       </li>
       <p>Click or drag to add this item to the chart.</p>

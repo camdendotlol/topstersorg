@@ -1,13 +1,12 @@
-import { encodeQuery } from '../helpers/search'
-import { LastfmChartResponseItem, LastfmDataType, Period } from '../types'
 import { errorMessages } from './errors'
+import type { LastfmChartResponseItem, LastfmDataType, Period } from '../types'
 
-const queryLastFM = async (query: string): Promise<unknown[]> => {
+async function queryLastFM(query: string): Promise<unknown[]> {
   if (query === '') {
     return []
   }
 
-  const encodedQuery = encodeQuery(query)
+  const encodedQuery = encodeURIComponent(query)
 
   const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/lastfm/search/${encodedQuery}`)
 
@@ -28,17 +27,17 @@ const queryLastFM = async (query: string): Promise<unknown[]> => {
   return jsonRes.results.albummatches.album
 }
 
-export const getLastfmChart = async (username: string, type: LastfmDataType, period?: Period): Promise<LastfmChartResponseItem[]> => {
+export async function getLastfmChart(username: string, type: LastfmDataType, period?: Period): Promise<LastfmChartResponseItem[]> {
   if (username === '') {
     return []
   }
 
   const res = await fetch(
-    `${import.meta.env.VITE_BACKEND_URL}/api/lastfm/user/top?` + new URLSearchParams({
-      user: encodeQuery(username),
+    `${import.meta.env.VITE_BACKEND_URL}/api/lastfm/user/top?${new URLSearchParams({
+      user: encodeURIComponent(username),
       type,
-      period: period ? encodeQuery(period) : ''
-    })
+      period: period ? encodeURIComponent(period) : '',
+    })}`,
   )
 
   if (!res) {

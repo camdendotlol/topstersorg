@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import { initializeFirstRun } from '../helpers/chart'
 import {
   appendChart,
   getActiveChart,
   getActiveChartUuid,
   localStorageMigrations,
   setActiveChart,
-  updateStoredChart
+  updateStoredChart,
 } from '../helpers/localStorage'
 import { useStore } from '../store'
-import { initializeFirstRun } from '../helpers/chart'
 
 const store = useStore()
 
@@ -20,7 +20,8 @@ onMounted(() => {
 
   if (activeChart) {
     store.commit('setEntireChart', activeChart.data)
-  } else {
+  }
+  else {
     initializeFirstRun()
     store.commit('setEntireChart', getActiveChart().data)
   }
@@ -29,21 +30,23 @@ onMounted(() => {
 store.subscribe((mutation, state) => {
   if (mutation.type === 'setEntireChart') {
     store.commit('hydrateImages')
-  } else {
+  }
+  else {
     const activeChartUuid = getActiveChartUuid()
     const activeChart = getActiveChart()
 
     if (activeChart) {
       const updatedChart = {
         ...activeChart,
-        data: state.chart
+        data: state.chart,
       }
 
       updateStoredChart(updatedChart, activeChartUuid)
-    } else {
+    }
+    else {
       const newUuid = appendChart({
         timestamp: new Date().getTime(),
-        data: state.chart
+        data: state.chart,
       })
 
       setActiveChart(newUuid)
@@ -53,5 +56,5 @@ store.subscribe((mutation, state) => {
 </script>
 
 <template>
-  <slot></slot>
+  <slot />
 </template>

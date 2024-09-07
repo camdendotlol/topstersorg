@@ -1,26 +1,27 @@
+/* eslint-disable no-alert */
+
 // Functions related to importing and exporting charts
 
-import { appendChart, findByUuid, getActiveChart, getActiveChartUuid, getNewestChartUuid, setActiveChart, updateStoredChart } from './localStorage'
-import { BackgroundTypes, ChartItem, StoredChart, StoredCharts } from '../types'
-import { Store } from 'vuex'
-import { State } from '../store'
+import type { Store } from 'vuex'
+import { BackgroundTypes } from '../types'
 import { forceRefresh } from './chart'
+import { appendChart, findByUuid, getActiveChart, getActiveChartUuid, getNewestChartUuid, setActiveChart, updateStoredChart } from './localStorage'
+import type { State } from '../store'
+import type { ChartItem, StoredChart, StoredCharts } from '../types'
 
-const unzlib = async (data: Uint8Array) => {
-  const stream = new Response(data).body
-    .pipeThrough(new DecompressionStream('deflate'))
+async function unzlib(data: Uint8Array) {
+  const stream = new Response(data).body.pipeThrough(new DecompressionStream('deflate'))
 
-  return new Uint8Array(await new Response(stream).arrayBuffer());
+  return new Uint8Array(await new Response(stream).arrayBuffer())
 }
 
-const zlib = async (data: Uint8Array) => {
-  const stream = new Response(data).body
-    .pipeThrough(new CompressionStream('deflate'))
+async function zlib(data: Uint8Array) {
+  const stream = new Response(data).body.pipeThrough(new CompressionStream('deflate'))
 
-  return new Uint8Array(await new Response(stream).arrayBuffer());
+  return new Uint8Array(await new Response(stream).arrayBuffer())
 }
 
-const downloadChartData = (data: string, title: string, timestamp: number) => {
+function downloadChartData(data: string, title: string, timestamp: number) {
   const blob = new Blob([data])
 
   const blobUrl = URL.createObjectURL(blob)
@@ -35,11 +36,11 @@ const downloadChartData = (data: string, title: string, timestamp: number) => {
   link.remove()
 }
 
-export const exportCurrentChart = async () => {
+export async function exportCurrentChart() {
   const uuid = getActiveChartUuid()
 
   const exportObj: StoredCharts = {
-    [uuid]: getActiveChart()
+    [uuid]: getActiveChart(),
   }
 
   const str = JSON.stringify(exportObj)
@@ -51,8 +52,8 @@ export const exportCurrentChart = async () => {
   downloadChartData(compressed, exportObj[uuid].data.title, exportObj[uuid].timestamp)
 }
 
-export const parseUploadedText = async (text: string) => {
-  const uintArray = Uint8Array.from(atob(text).split(',').map(num => parseInt(num)))
+export async function parseUploadedText(text: string) {
+  const uintArray = Uint8Array.from(atob(text).split(',').map(num => Number.parseInt(num)))
 
   const textDecoder = new TextDecoder()
 
@@ -63,7 +64,7 @@ export const parseUploadedText = async (text: string) => {
   return decoded
 }
 
-export const importChart = async (event: Event, store: Store<State>) => {
+export async function importChart(event: Event, store: Store<State>) {
   const files = (event.target as HTMLInputElement).files
 
   try {
@@ -84,7 +85,8 @@ export const importChart = async (event: Event, store: Store<State>) => {
         setActiveChart(newChartUuid)
         forceRefresh(store)
       }
-    } else {
+    }
+    else {
       overwriteConsent = true
       appendChart(newChart, newChartUuid)
       setActiveChart(newChartUuid)
@@ -94,16 +96,19 @@ export const importChart = async (event: Event, store: Store<State>) => {
     if (overwriteConsent) {
       alert(`"${newChart.data.title}" imported successfully!`)
     }
-  } catch (e) {
+  }
+  catch (e) {
     console.error(e)
     alert(`Failed to import charts: ${e}`)
   }
 }
 
-export const importTopsters2 = async (event: Event, store: Store<State>) => {
-  if (event.target === null) return
+export async function importTopsters2(event: Event, store: Store<State>) {
+  if (event.target === null)
+    return
   const files = (event.target as HTMLInputElement).files
-  if (files === null) return
+  if (files === null)
+    return
   const fileReader = new FileReader()
   fileReader.addEventListener('load', async () => {
     try {
@@ -123,13 +128,14 @@ export const importTopsters2 = async (event: Event, store: Store<State>) => {
       const newCharts: StoredChart[] = []
       const failed = []
       for (const chart of Object.entries(options.charts)) {
-        let prefix = chart[0] + '-'
-        if (prefix === 'cards-') prefix = ''
+        let prefix = `${chart[0]}-`
+        if (prefix === 'cards-')
+          prefix = ''
         const name = chart[1] as string
 
         try {
-          const custom = JSON.parse(charts[prefix + 'custom'])
-          const size = charts[prefix + 'size']
+          const custom = JSON.parse(charts[`${prefix}custom`])
+          const size = charts[`${prefix}size`]
           const chartSize = { x: 3, y: 3 }
           switch (size) {
             case '25': // Collage
@@ -155,17 +161,21 @@ export const importTopsters2 = async (event: Event, store: Store<State>) => {
           }
 
           // Get background and parse if it's an image
-          let background = charts[prefix + 'background']
+          let background = charts[`${prefix}background`]
           let backgroundImg = null
           if (!background.startsWith('#')) {
             try {
               // Parse URL
               const imgURL = background.match(/url\("(.+?)"\)/)
-              if (imgURL === null) throw new Error()
+              if (imgURL === null)
+                throw new Error('image URL is empty')
               background = imgURL[1]
               backgroundImg = new Image()
               backgroundImg.src = background
-            } catch (e) {
+            }
+            catch (e) {
+              // eslint-disable-next-line no-console
+              console.log(e)
               // Invalid URL format, set background color to black as fallback
               background = '#000000'
             }
@@ -174,7 +184,7 @@ export const importTopsters2 = async (event: Event, store: Store<State>) => {
           const textDecoder = new TextDecoder()
 
           // Chart cards are compressed with zlib + encoded with base64
-          const chartCards = charts[prefix + 'cards'] // Get base64 string
+          const chartCards = charts[`${prefix}cards`] // Get base64 string
           const cardsCompressed = Uint8Array.from(atob(chartCards.substring(1, chartCards.length - 1)), c => c.charCodeAt(0)) // Convert base64 to bytes
           const unzlibbed = await unzlib(cardsCompressed)
           const cardsDecompressed = textDecoder.decode(unzlibbed) // Decompress and convert to text
@@ -197,7 +207,7 @@ export const importTopsters2 = async (event: Event, store: Store<State>) => {
             const item: ChartItem = {
               title: card.title,
               coverURL: card.src,
-              coverImg: img
+              coverImg: img,
             }
             items.push(item)
           }
@@ -212,26 +222,28 @@ export const importTopsters2 = async (event: Event, store: Store<State>) => {
               background: {
                 type: background.startsWith('#') ? BackgroundTypes.Color : BackgroundTypes.Image,
                 value: background,
-                img: backgroundImg
+                img: backgroundImg,
               },
               shadows: custom.shadowed,
-              showNumbers: charts[prefix + 'numbered'] === 'true',
-              showTitles: charts[prefix + 'titled'] === 'true',
+              showNumbers: charts[`${prefix}numbered`] === 'true',
+              showTitles: charts[`${prefix}titled`] === 'true',
               gap: custom.padding * 5,
-              font: custom.fontFamily
-            }
+              font: custom.fontFamily,
+            },
           }
 
           newCharts.push(newChart)
-        } catch (e) {
+        }
+        catch (e) {
           console.error(e)
           failed.push(name)
         }
       }
 
       if (failed.length > 0) {
-        alert('Failed to import the following charts: ' + failed.join(', '))
-      } else {
+        alert(`Failed to import the following charts: ${failed.join(', ')}`)
+      }
+      else {
         alert('Charts imported successfully!')
       }
 
@@ -240,9 +252,10 @@ export const importTopsters2 = async (event: Event, store: Store<State>) => {
       // Set the newly imported chart to currently active
       setActiveChart(getNewestChartUuid())
       forceRefresh(store)
-    } catch (e) {
+    }
+    catch (e) {
       console.error(e)
-      alert('The file selected is not a valid Topsters 2 backup: ' + e)
+      alert(`The file selected is not a valid Topsters 2 backup: ${e}`)
     }
   })
 

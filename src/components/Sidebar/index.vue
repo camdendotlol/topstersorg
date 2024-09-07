@@ -1,27 +1,27 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import type { Ref } from 'vue'
+import { Tabs as TabsEnum } from '../../types'
 import PageTitle from '../PageTitle.vue'
-import SearchBox from './SearchBox/index.vue'
-import Options from './Options.vue'
+import Credits from './Credits.vue'
 import Imports from './Imports/index.vue'
 import Info from './Info.vue'
+import Options from './Options.vue'
+import SearchBox from './SearchBox/index.vue'
 import Tabs from './Tabs.vue'
-import { Ref, ref } from 'vue'
-import { Tabs as TabsEnum } from '../../types'
-import Credits from './Credits.vue'
 
 const tabs: TabsEnum[] = [
   TabsEnum.AddItems,
   TabsEnum.Options,
   TabsEnum.ImportsExports,
-  TabsEnum.Info
+  TabsEnum.Info,
 ]
 
 const currentTab: Ref<TabsEnum> = ref(TabsEnum.AddItems)
 
-const setCurrentTab = (tab: TabsEnum) => {
+function setCurrentTab(tab: TabsEnum) {
   currentTab.value = tab
 }
-
 </script>
 
 <template>
@@ -32,8 +32,8 @@ const setCurrentTab = (tab: TabsEnum) => {
     <div class="tabbed-sidebar-block">
       <Tabs
         :tabs="tabs"
-        :currentTab="currentTab"
-        @setCurrentTab="setCurrentTab"
+        :current-tab="currentTab"
+        @set-current-tab="setCurrentTab"
       />
       <div class="sidebar-content">
         <SearchBox v-if="currentTab === TabsEnum.AddItems" />
@@ -78,5 +78,4 @@ const setCurrentTab = (tab: TabsEnum) => {
     display: none;
   }
 }
-
 </style>

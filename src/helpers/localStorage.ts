@@ -2,47 +2,47 @@
 
 import type { OldStoredChart, StoredChart, StoredCharts } from '../types'
 
-export const setActiveChart = (uuid: string) => {
+export function setActiveChart(uuid: string) {
   localStorage.setItem('activeChart', uuid)
 
   return getActiveChart()
 }
 
-export const getActiveChartUuid = (): string => (
-  localStorage.getItem('activeChart')
-)
+export function getActiveChartUuid(): string {
+  return localStorage.getItem('activeChart')
+}
 
-export const getActiveChart = (): StoredChart => (
-  getStoredCharts()[getActiveChartUuid()]
-)
+export function getActiveChart(): StoredChart {
+  return getStoredCharts()[getActiveChartUuid()]
+}
 
-export const getNewestChartUuid = () => {
+export function getNewestChartUuid() {
   const chartEntries = Object.entries(getStoredCharts())
 
   return chartEntries.sort((a, b) => b[1].timestamp - a[1].timestamp)[0][0]
 }
 
-export const destroyChart = (uuid: string) => {
+export function destroyChart(uuid: string) {
   const charts = getStoredCharts()
 
   delete charts[uuid]
   setStoredCharts(charts)
 }
 
-export const getUuids = () => {
+export function getUuids() {
   const charts = getStoredCharts()
   return Object.keys(charts)
 }
 
-export const setStoredCharts = (charts: StoredCharts): void => (
-  localStorage.setItem('charts', JSON.stringify(charts))
-)
+export function setStoredCharts(charts: StoredCharts): void {
+  return localStorage.setItem('charts', JSON.stringify(charts))
+}
 
-export const getStoredCharts = (): StoredCharts => (
-  JSON.parse(localStorage.getItem('charts') || '{}') as StoredCharts
-)
+export function getStoredCharts(): StoredCharts {
+  return JSON.parse(localStorage.getItem('charts') || '{}') as StoredCharts
+}
 
-export const updateStoredChart = (updatedChart: StoredChart, uuid: string) => {
+export function updateStoredChart(updatedChart: StoredChart, uuid: string) {
   const charts = getStoredCharts()
 
   charts[uuid] = { ...updatedChart }
@@ -50,7 +50,7 @@ export const updateStoredChart = (updatedChart: StoredChart, uuid: string) => {
   setStoredCharts(charts)
 }
 
-export const findByUuid = (uuid: string) => {
+export function findByUuid(uuid: string) {
   const charts = getStoredCharts()
 
   const matching = Object.entries(charts).find(en => en[0] === uuid)
@@ -62,7 +62,7 @@ export const findByUuid = (uuid: string) => {
   return null
 }
 
-export const appendChart = (newChart: StoredChart, uuid?: string): string => {
+export function appendChart(newChart: StoredChart, uuid?: string): string {
   const charts = getStoredCharts()
 
   const newUuid = uuid || crypto.randomUUID()
@@ -76,7 +76,7 @@ export const appendChart = (newChart: StoredChart, uuid?: string): string => {
 
 // Migration to change to the new data format for charts.
 // See https://github.com/camdendotlol/topstersorg/issues/33
-export const localStorageMigrations = () => {
+export function localStorageMigrations() {
   const charts = getStoredCharts() as unknown as OldStoredChart[]
 
   // If the `charts` value is an array instead of an object,
@@ -88,11 +88,11 @@ export const localStorageMigrations = () => {
     const newObj: { [uuid: string]: StoredChart } = {}
     let activeUuid = null
 
-    charts.forEach(chart => {
+    charts.forEach((chart) => {
       const uuid = crypto.randomUUID()
       newObj[uuid] = {
         timestamp: chart.timestamp,
-        data: chart.data
+        data: chart.data,
       }
 
       if (chart.currentlyActive) {
