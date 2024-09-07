@@ -30,7 +30,7 @@ export const initialState = {
     gap: 20,
     font: 'monospace',
     textColor: '#ffffff',
-    shadows: false,
+    shadows: true,
   },
 }
 
