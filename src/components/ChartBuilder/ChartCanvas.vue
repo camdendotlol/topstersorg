@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, computed, ref, Ref } from 'vue'
 import { useStore } from '../../store'
-import generateChart from 'topster'
+import generateChart from '../../chartgen'
 import { BackgroundTypes, Chart } from '../../types'
 import { insertPlaceholder } from './lib'
 

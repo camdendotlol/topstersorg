@@ -3,8 +3,8 @@ import { computed, ref, Ref } from 'vue'
 import { useStore } from '../../store'
 import { ChartItem } from '../../types'
 import { getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
-import { getScaledDimensions } from 'topster/dist/lib'
 import { setImage } from '../../helpers/chart'
+import { getScaledDimensions } from '../../chartgen/lib'
 
 // Topsters 3 supports drag and drop for both mouse and touch events.
 type InteractionEvent = MouseEvent | TouchEvent
