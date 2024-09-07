@@ -19,38 +19,33 @@ onMounted(() => {
   const activeChart = getActiveChart()
 
   if (activeChart) {
-    store.commit('setEntireChart', activeChart.data)
+    store.setEntireChart(activeChart.data)
   }
   else {
     initializeFirstRun()
-    store.commit('setEntireChart', getActiveChart().data)
+    store.setEntireChart(getActiveChart().data)
   }
 })
 
-store.subscribe((mutation, state) => {
-  if (mutation.type === 'setEntireChart') {
-    store.commit('hydrateImages')
+store.$subscribe((mutation, state) => {
+  const activeChartUuid = getActiveChartUuid()
+  const activeChart = getActiveChart()
+
+  if (activeChart) {
+    const updatedChart = {
+      ...activeChart,
+      data: state.chart,
+    }
+
+    updateStoredChart(updatedChart, activeChartUuid)
   }
   else {
-    const activeChartUuid = getActiveChartUuid()
-    const activeChart = getActiveChart()
+    const newUuid = appendChart({
+      timestamp: new Date().getTime(),
+      data: state.chart,
+    })
 
-    if (activeChart) {
-      const updatedChart = {
-        ...activeChart,
-        data: state.chart,
-      }
-
-      updateStoredChart(updatedChart, activeChartUuid)
-    }
-    else {
-      const newUuid = appendChart({
-        timestamp: new Date().getTime(),
-        data: state.chart,
-      })
-
-      setActiveChart(newUuid)
-    }
+    setActiveChart(newUuid)
   }
 })
 </script>

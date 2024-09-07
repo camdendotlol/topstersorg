@@ -11,10 +11,7 @@ import {
   importChart,
   importTopsters2,
 } from '../../../helpers/imports'
-import { useStore } from '../../../store'
 import LastFmImport from './LastFmImport.vue'
-
-const store = useStore()
 
 const topsters2ImportRef: Ref<HTMLInputElement> = ref(null)
 const uploadRef: Ref<HTMLInputElement> = ref(null)
@@ -30,11 +27,11 @@ function importTopsters2ChartsPicked(e) {
 }
 
 function importTopsters2Charts(event) {
-  importTopsters2(event, store)
+  importTopsters2(event)
 }
 
 async function callImportCharts(event) {
-  await importChart(event, store)
+  await importChart(event)
 }
 </script>
 

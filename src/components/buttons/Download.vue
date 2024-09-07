@@ -11,7 +11,7 @@ const store = useStore()
 async function saveChart() {
   loading.value = true
 
-  await downloadChart(store.state.chart)
+  await downloadChart(store.chart)
 
   loading.value = false
 }

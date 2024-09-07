@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import generateChart from '../../chartgen'
 import { useStore } from '../../store'
@@ -20,9 +20,9 @@ const drawingCtx = computed(() => {
   return ctx
 })
 
-store.watch(state => state.chart, () => {
-  if (store.state.chart.background.type === 'image' && !store.state.chart.background.img.complete) {
-    store.state.chart.background.img.onload = () => {
+watch(() => store.chart, () => {
+  if (store.chart.background.type === 'image' && !store.chart.background.img.complete) {
+    store.chart.background.img.onload = () => {
       renderChart()
     }
   }
@@ -35,17 +35,17 @@ onMounted(() => {
     throw new Error('Couldn\'t find canvas. Something must have gone wrong with page loading, please refresh.')
   }
 
-  if (store.state.chart) {
-    if (store.state.chart.background.type === BackgroundTypes.Image) {
+  if (store.chart) {
+    if (store.chart.background.type === BackgroundTypes.Image) {
       const bgImg = new Image()
-      bgImg.src = store.state.chart.background.value
+      bgImg.src = store.chart.background.value
       bgImg.onload = () => {
         renderChart()
       }
-      store.state.chart.background.img = bgImg
+      store.chart.background.img = bgImg
     }
 
-    hydrateImages(store.state.chart)
+    hydrateImages(store.chart)
   }
 })
 
@@ -67,17 +67,17 @@ function renderChart() {
     return console.log('The canvas doesn\'nt exist! Maybe it tried to re-render after being unmounted.')
   }
 
-  hydrateImages(store.state.chart)
+  hydrateImages(store.chart)
 
   generateChart(
     canvas.value,
-    store.state.chart,
+    store.chart,
   )
 
   // Insert placeholders for empty squares
-  store.state.chart.items.slice(0, store.state.chart.size.x * store.state.chart.size.y).forEach((item, index) => {
+  store.chart.items.slice(0, store.chart.size.x * store.chart.size.y).forEach((item, index) => {
     if (!item) {
-      insertPlaceholder(drawingCtx.value, store.state.chart, index)
+      insertPlaceholder(drawingCtx.value, store.chart, index)
     }
   })
 }

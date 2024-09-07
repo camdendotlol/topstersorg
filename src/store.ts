@@ -1,15 +1,10 @@
-import { useStore as baseUseStore, createStore } from 'vuex'
-import type { InjectionKey } from 'vue'
-import type { Store } from 'vuex'
+import { defineStore } from 'pinia'
 import { BackgroundTypes, type Chart, type ChartItem } from './types'
 
 export interface State {
   chart: Chart
   popupText: string | null
 }
-
-// define injection key
-export const key: InjectionKey<Store<State>> = Symbol('store')
 
 export const initialState = {
   popupText: null,
@@ -34,23 +29,50 @@ export const initialState = {
   },
 }
 
-export const store = createStore<State>({
+// Image elements are stored in localStorage as empty objects ({})
+// so we need to fill in the img elements when a chart first loads.
+function hydrateImages(chart: Chart) {
+  return {
+    ...chart,
+    background: chart.background.type === 'image'
+      ? {
+          ...chart.background,
+          img: (() => {
+            const img = new Image()
+            img.src = chart.background.value
+            return img
+          })(),
+        }
+      : chart.background,
+    items: chart.items.map((i) => {
+      if (i && i.coverURL) {
+        const img = new Image()
+        img.src = i.coverURL
+        return { ...i, coverImg: img }
+      }
+
+      return i
+    }),
+  }
+}
+
+export const useStore = defineStore('store', {
   state() {
     return { ...initialState }
   },
-  mutations: {
-    setPopup(state: State, text: string | null) {
-      state.popupText = text
+  actions: {
+    setPopup(text: string | null) {
+      this.popupText = text
     },
     // For overriding the existing item (e.g. adding to a null slot, or removing an item)
-    addItem(state: State, payload: { item: ChartItem | null, index: number }) {
-      const itemsArray = state.chart.items
+    addItem(payload: { item: ChartItem | null, index: number }) {
+      const itemsArray = this.chart.items
       itemsArray[payload.index] = payload.item
-      state.chart = { ...state.chart, items: [...itemsArray] }
+      this.chart = { ...this.chart, items: [...itemsArray] }
     },
     // For changing the place of a current item
-    moveItem(state: State, payload: { item: ChartItem, oldIndex: number, newIndex: number }) {
-      const itemsArray = [...state.chart.items]
+    moveItem(payload: { item: ChartItem, oldIndex: number, newIndex: number }) {
+      const itemsArray = [...this.chart.items]
 
       // Remove the item from its old index
       itemsArray.splice(payload.oldIndex, 1)
@@ -58,14 +80,14 @@ export const store = createStore<State>({
       // Add the item at its new index
       itemsArray.splice(payload.newIndex, 0, payload.item)
 
-      state.chart = { ...state.chart, items: [...itemsArray] }
+      this.chart = { ...this.chart, items: [...itemsArray] }
     },
-    changeTitle(state: State, newTitle: string) {
-      state.chart = { ...state.chart, title: newTitle }
+    changeTitle(newTitle: string) {
+      this.chart = { ...this.chart, title: newTitle }
     },
-    changeBackgroundColor(state: State, newColor: string) {
-      state.chart = {
-        ...state.chart,
+    changeBackgroundColor(newColor: string) {
+      this.chart = {
+        ...this.chart,
         background: {
           type: BackgroundTypes.Color,
           value: newColor,
@@ -73,11 +95,11 @@ export const store = createStore<State>({
         },
       }
     },
-    setBackgroundImage(state: State, url: string) {
+    setBackgroundImage(url: string) {
       const image = new Image()
       image.src = url
-      state.chart = {
-        ...state.chart,
+      this.chart = {
+        ...this.chart,
         background: {
           type: BackgroundTypes.Image,
           value: url,
@@ -85,71 +107,41 @@ export const store = createStore<State>({
         },
       }
     },
-    changeSize(state: State, payload: { axis: string, value: number }) {
+    changeSize(payload: { axis: string, value: number }) {
       switch (payload.axis) {
         case 'x':
-          state.chart = { ...state.chart, size: { y: state.chart.size.y, x: payload.value } }
+          this.chart = { ...this.chart, size: { y: this.chart.size.y, x: payload.value } }
           break
         case 'y':
-          state.chart = { ...state.chart, size: { x: state.chart.size.x, y: payload.value } }
+          this.chart = { ...this.chart, size: { x: this.chart.size.x, y: payload.value } }
           break
         default:
-          state.chart = { ...state.chart }
+          this.chart = { ...this.chart }
       }
     },
-    changeGap(state: State, newGap: number) {
-      state.chart = { ...state.chart, gap: newGap }
+    changeGap(newGap: number) {
+      this.chart = { ...this.chart, gap: newGap }
     },
-    changeFont(state: State, newFont: string) {
-      state.chart = { ...state.chart, font: newFont }
+    changeFont(newFont: string) {
+      this.chart = { ...this.chart, font: newFont }
     },
-    changeTextColor(state: State, newColor: string) {
-      state.chart = { ...state.chart, textColor: newColor }
+    changeTextColor(newColor: string) {
+      this.chart = { ...this.chart, textColor: newColor }
     },
-    toggleTitles(state: State, newValue: boolean) {
-      state.chart = { ...state.chart, showTitles: newValue }
+    toggleTitles(newValue: boolean) {
+      this.chart = { ...this.chart, showTitles: newValue }
     },
-    toggleNumbers(state: State, newValue: boolean) {
-      state.chart = { ...state.chart, showNumbers: newValue }
+    toggleNumbers(newValue: boolean) {
+      this.chart = { ...this.chart, showNumbers: newValue }
     },
-    toggleShadows(state: State, newValue: boolean) {
-      state.chart = { ...state.chart, shadows: newValue }
+    toggleShadows(newValue: boolean) {
+      this.chart = { ...this.chart, shadows: newValue }
     },
-    setEntireChart(state: State, payload: Chart) {
-      state.chart = payload
+    setEntireChart(payload: Chart) {
+      this.chart = hydrateImages(payload)
     },
-    // Image elements are stored in localStorage as empty objects ({})
-    // so we need to fill in the img elements when a chart first loads.
-    hydrateImages(state: State) {
-      state.chart = {
-        ...state.chart,
-        background: state.chart.background.type === 'image'
-          ? {
-              ...state.chart.background,
-              img: (() => {
-                const img = new Image()
-                img.src = state.chart.background.value
-                return img
-              })(),
-            }
-          : state.chart.background,
-        items: state.chart.items.map((i) => {
-          if (i && i.coverURL) {
-            const img = new Image()
-            img.src = i.coverURL
-            return { ...i, coverImg: img }
-          }
-
-          return i
-        }),
-      }
-    },
-    reset(state: State) {
-      state.chart = { ...initialState.chart }
+    reset() {
+      this.chart = { ...initialState.chart }
     },
   },
 })
-
-export function useStore(): Store<State> {
-  return baseUseStore(key)
-}

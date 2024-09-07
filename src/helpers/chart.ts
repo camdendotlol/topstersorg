@@ -1,9 +1,9 @@
 // Functions for filling in the chart.
 
-import type { Store } from 'vuex'
+import { Store } from 'pinia'
 import fetchImageURL from '../api/fetchImage'
 import generateChart from '../chartgen'
-import { initialState } from '../store'
+import { initialState, useStore } from '../store'
 import {
   BackgroundTypes,
   type Chart,
@@ -204,9 +204,11 @@ export function createNewChart() {
 // Forces the chart to re-render from localStorage.
 // Useful in situations where we update the charts by
 // modifying localStorage directly such as imports.
-export function forceRefresh(store: Store<State>) {
+export function forceRefresh() {
+  const store = useStore()
+
   const activeChart = getActiveChart()
-  store.commit('setEntireChart', activeChart.data)
+  store.setEntireChart(activeChart.data)
 }
 
 export const periodHeaders = {

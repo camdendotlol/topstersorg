@@ -74,7 +74,7 @@ async function importLastFmChart() {
     }
   }
 
-  store.commit('setEntireChart', {
+  store.setEntireChart({
     ...initialState.chart,
     title: `${username}'s ${periodHeaders[period]} Chart`,
     items: newItems,

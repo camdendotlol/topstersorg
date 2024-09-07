@@ -2,11 +2,9 @@
 
 // Functions related to importing and exporting charts
 
-import type { Store } from 'vuex'
 import { BackgroundTypes } from '../types'
 import { forceRefresh } from './chart'
 import { appendChart, findByUuid, getActiveChart, getActiveChartUuid, getNewestChartUuid, setActiveChart, updateStoredChart } from './localStorage'
-import type { State } from '../store'
 import type { ChartItem, StoredChart, StoredCharts } from '../types'
 
 async function unzlib(data: Uint8Array) {
@@ -64,7 +62,7 @@ export async function parseUploadedText(text: string) {
   return decoded
 }
 
-export async function importChart(event: Event, store: Store<State>) {
+export async function importChart(event: Event) {
   const files = (event.target as HTMLInputElement).files
 
   try {
@@ -83,14 +81,14 @@ export async function importChart(event: Event, store: Store<State>) {
         overwriteConsent = true
         updateStoredChart(newChart, newChartUuid)
         setActiveChart(newChartUuid)
-        forceRefresh(store)
+        forceRefresh()
       }
     }
     else {
       overwriteConsent = true
       appendChart(newChart, newChartUuid)
       setActiveChart(newChartUuid)
-      forceRefresh(store)
+      forceRefresh()
     }
 
     if (overwriteConsent) {
@@ -103,7 +101,7 @@ export async function importChart(event: Event, store: Store<State>) {
   }
 }
 
-export async function importTopsters2(event: Event, store: Store<State>) {
+export async function importTopsters2(event: Event) {
   if (event.target === null)
     return
   const files = (event.target as HTMLInputElement).files
@@ -251,7 +249,7 @@ export async function importTopsters2(event: Event, store: Store<State>) {
 
       // Set the newly imported chart to currently active
       setActiveChart(getNewestChartUuid())
-      forceRefresh(store)
+      forceRefresh()
     }
     catch (e) {
       console.error(e)

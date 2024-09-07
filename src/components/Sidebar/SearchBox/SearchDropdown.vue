@@ -60,15 +60,15 @@ function filterTV(results: TVResult[]): TVResult[] {
 
 function addToChart(item: Result): void {
   // Get the index of the first null chart slot
-  const firstEmptyIndex = store.state.chart.items.indexOf(null)
+  const firstEmptyIndex = store.chart.items.indexOf(null)
 
-  const totalSlots = store.state.chart.size.x * store.state.chart.size.y
+  const totalSlots = store.chart.size.x * store.chart.size.y
 
   // Only add an item if there's a visible slot
   if (firstEmptyIndex < totalSlots) {
     const newItem = createChartItem(item)
-    store.commit('addItem', { item: newItem, index: firstEmptyIndex })
-    store.commit('setPopup', `Added ${newItem.title}`)
+    store.addItem({ item: newItem, index: firstEmptyIndex })
+    store.setPopup(`Added ${newItem.title}`)
   }
 }
 

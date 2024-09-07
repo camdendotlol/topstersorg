@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useStore } from '../../store'
 import { BackgroundTypes } from '../../types'
@@ -10,7 +10,7 @@ const store = useStore()
 const gap: Ref<number> = ref(0)
 const backgroundType: Ref<BackgroundTypes> = ref(BackgroundTypes.Image)
 
-const chart: Ref<Chart> = ref(store.state.chart)
+const chart: Ref<Chart> = ref(store.chart)
 
 // Buckle up, here come the element refs 🤠
 const displayTitlesRef: Ref<HTMLFormElement> = ref(null)
@@ -26,8 +26,8 @@ const showNumbersRef: Ref<HTMLFormElement> = ref(null)
 const showShadowsRef: Ref<HTMLFormElement> = ref(null)
 const fontRef: Ref<HTMLFormElement> = ref(null)
 
-store.watch(state => state.chart, () => {
-  chart.value = store.state.chart
+watch(() => store.chart, () => {
+  chart.value = store.chart
   backgroundType.value = chart.value.background.type
   populateForm(chart.value)
 })
@@ -39,58 +39,58 @@ onMounted(() => {
 
 function updateTitle(event: Event): void {
   const title = (event.target as HTMLFormElement).value
-  return store.commit('changeTitle', title)
+  return store.changeTitle(title)
 }
 
 function updateBackgroundColor(event: Event): void {
   const color = (event.target as HTMLFormElement).value
-  return store.commit('changeBackgroundColor', color)
+  return store.changeBackgroundColor(color)
 }
 
 function updateSizeX(event: Event): void {
   const value = Number.parseInt((event.target as HTMLFormElement).value)
-  return store.commit('changeSize', { axis: 'x', value })
+  return store.changeSize({ axis: 'x', value })
 }
 
 function updateSizeY(event: Event): void {
   const value = Number.parseInt((event.target as HTMLFormElement).value)
-  return store.commit('changeSize', { axis: 'y', value })
+  return store.changeSize({ axis: 'y', value })
 }
 
 function updateGap(event: Event): void {
   const value = Number.parseInt((event.target as HTMLFormElement).value)
   gap.value = value
-  return store.commit('changeGap', value)
+  return store.changeGap(value)
 }
 
 function changeShowNumbers(event: Event): void {
   const value = (event.target as HTMLFormElement).checked
-  return store.commit('toggleNumbers', value)
+  return store.toggleNumbers(value)
 }
 
 function changeShowShadows(event: Event): void {
   const value = (event.target as HTMLFormElement).checked
-  return store.commit('toggleShadows', value)
+  return store.toggleShadows(value)
 }
 
 function updateFont(event: Event): void {
   const value = (event.target as HTMLFormElement).value
-  return store.commit('changeFont', value)
+  return store.changeFont(value)
 }
 
 function updateTextColor(event: Event): void {
   const value = (event.target as HTMLFormElement).value
-  return store.commit('changeTextColor', value)
+  return store.changeTextColor(value)
 }
 
 function changeShowTitles(event: Event): void {
   const value: boolean = (event.target as HTMLFormElement).checked
-  return store.commit('toggleTitles', value)
+  return store.toggleTitles(value)
 }
 
 function initalSetup(): void {
-  if (store.state.chart) {
-    populateForm(store.state.chart)
+  if (store.chart) {
+    populateForm(store.chart)
   }
 }
 
@@ -132,7 +132,7 @@ function changeBackgroundType(event: Event): void {
 
 function updateBackgroundImage(event: Event): void {
   const url = ((event.target as HTMLFormElement).value)
-  store.commit('setBackgroundImage', url)
+  store.setBackgroundImage(url)
 }
 </script>
 
