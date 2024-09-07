@@ -138,196 +138,198 @@ function updateBackgroundImage(event: Event): void {
 
 <template>
   <table class="options-table">
-    <tr>
-      <td>
-        <label for="title">Title</label>
-      </td>
-      <td>
-        <input
-          id="title"
-          ref="titleRef"
-          type="text"
-          name="title"
-          @input="updateTitle"
-        >
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="display-titles">Display Titles</label>
-      </td>
-      <td>
-        <input
-          id="display-titles"
-          ref="displayTitlesRef"
-          type="checkbox"
-          name="display-titles"
-          @change="changeShowTitles"
-        >
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="chart-size">Width</label>
-      </td>
-      <td class="cell-with-value">
-        <span>{{ chart.size.x }}</span>
-        <input
-          id="x-axis"
-          ref="xAxisRef"
-          min="1"
-          max="12"
-          value="5"
-          type="range"
-          name="x-axis"
-          class="dimension-input"
-          @input="updateSizeX"
-        >
-      </td>
-    </tr>
-    <tr class="axis-row">
-      <td>
-        <label for="y-axis">Height</label>
-      </td>
-      <td class="cell-with-value">
-        <span>{{ chart.size.y }}</span>
-        <input
-          id="y-axis"
-          ref="yAxisRef"
-          min="1"
-          max="12"
-          value="5"
-          type="range"
-          name="y-axis"
-          class="dimension-input"
-          @input="updateSizeY"
-        >
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="background-type">Background type</label>
-      </td>
-      <td>
-        <select
-          id="background-type"
-          ref="backgroundTypeInputRef"
-          name="background-type"
-          @change="changeBackgroundType"
-        >
-          <option value="color">
-            Color
-          </option>
-          <option value="image">
-            Image
-          </option>
-        </select>
-      </td>
-    </tr>
-    <tr :class="backgroundType === 'color' ? '' : 'hidden'">
-      <td>
-        <label for="background-color">Background color</label>
-      </td>
-      <td>
-        <input
-          id="background-color"
-          ref="backgroundColorInputRef"
-          type="color"
-          name="background-color"
-          class="color-picker"
-          @change="updateBackgroundColor"
-        >
-      </td>
-    </tr>
-    <tr :class="backgroundType === 'image' ? '' : 'hidden'">
-      <td>
-        <label for="background-image">Background image</label>
-      </td>
-      <td>
-        <input
-          id="background-image"
-          ref="backgroundImageInputRef"
-          type="text"
-          name="background-image"
-          @change="updateBackgroundImage"
-        >
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="gap">Gap</label>
-      </td>
-      <td class="cell-with-value">
-        <span>{{ gap }}</span>
-        <input
-          id="gap"
-          ref="gapRef"
-          type="range"
-          min="0"
-          max="150"
-          value="0"
-          name="gap"
-          @input="updateGap"
-        >
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="show-numbers">Show Numbers</label>
-      </td>
-      <td>
-        <input
-          id="show-numbers"
-          ref="showNumbersRef"
-          type="checkbox"
-          name="show-numbers"
-          @change="changeShowNumbers"
-        >
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="show-shadows">Show Shadows</label>
-      </td>
-      <td>
-        <input
-          id="show-shadows"
-          ref="showShadowsRef"
-          type="checkbox"
-          name="show-shadows"
-          @change="changeShowShadows"
-        >
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="font">Font</label>
-      </td>
-      <td class="cell-with-value">
-        <input
-          id="font"
-          ref="fontRef"
-          type="text"
-          name="font"
-          @input="updateFont"
-        >
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <label for="text-color">Text color</label>
-      </td>
-      <td>
-        <input
-          id="text-color"
-          ref="textColorRef"
-          type="color"
-          name="text-color"
-          class="color-picker"
-          @change="updateTextColor"
-        >
-      </td>
-    </tr>
+    <tbody>
+      <tr>
+        <td>
+          <label for="title">Title</label>
+        </td>
+        <td>
+          <input
+            id="title"
+            ref="titleRef"
+            type="text"
+            name="title"
+            @input="updateTitle"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="display-titles">Display Titles</label>
+        </td>
+        <td>
+          <input
+            id="display-titles"
+            ref="displayTitlesRef"
+            type="checkbox"
+            name="display-titles"
+            @change="changeShowTitles"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="chart-size">Width</label>
+        </td>
+        <td class="cell-with-value">
+          <span>{{ chart.size.x }}</span>
+          <input
+            id="x-axis"
+            ref="xAxisRef"
+            min="1"
+            max="12"
+            value="5"
+            type="range"
+            name="x-axis"
+            class="dimension-input"
+            @input="updateSizeX"
+          >
+        </td>
+      </tr>
+      <tr class="axis-row">
+        <td>
+          <label for="y-axis">Height</label>
+        </td>
+        <td class="cell-with-value">
+          <span>{{ chart.size.y }}</span>
+          <input
+            id="y-axis"
+            ref="yAxisRef"
+            min="1"
+            max="12"
+            value="5"
+            type="range"
+            name="y-axis"
+            class="dimension-input"
+            @input="updateSizeY"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="background-type">Background type</label>
+        </td>
+        <td>
+          <select
+            id="background-type"
+            ref="backgroundTypeInputRef"
+            name="background-type"
+            @change="changeBackgroundType"
+          >
+            <option value="color">
+              Color
+            </option>
+            <option value="image">
+              Image
+            </option>
+          </select>
+        </td>
+      </tr>
+      <tr :class="backgroundType === 'color' ? '' : 'hidden'">
+        <td>
+          <label for="background-color">Background color</label>
+        </td>
+        <td>
+          <input
+            id="background-color"
+            ref="backgroundColorInputRef"
+            type="color"
+            name="background-color"
+            class="color-picker"
+            @change="updateBackgroundColor"
+          >
+        </td>
+      </tr>
+      <tr :class="backgroundType === 'image' ? '' : 'hidden'">
+        <td>
+          <label for="background-image">Background image</label>
+        </td>
+        <td>
+          <input
+            id="background-image"
+            ref="backgroundImageInputRef"
+            type="text"
+            name="background-image"
+            @change="updateBackgroundImage"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="gap">Gap</label>
+        </td>
+        <td class="cell-with-value">
+          <span>{{ gap }}</span>
+          <input
+            id="gap"
+            ref="gapRef"
+            type="range"
+            min="0"
+            max="150"
+            value="0"
+            name="gap"
+            @input="updateGap"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="show-numbers">Show Numbers</label>
+        </td>
+        <td>
+          <input
+            id="show-numbers"
+            ref="showNumbersRef"
+            type="checkbox"
+            name="show-numbers"
+            @change="changeShowNumbers"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="show-shadows">Show Shadows</label>
+        </td>
+        <td>
+          <input
+            id="show-shadows"
+            ref="showShadowsRef"
+            type="checkbox"
+            name="show-shadows"
+            @change="changeShowShadows"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="font">Font</label>
+        </td>
+        <td class="cell-with-value">
+          <input
+            id="font"
+            ref="fontRef"
+            type="text"
+            name="font"
+            @input="updateFont"
+          >
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="text-color">Text color</label>
+        </td>
+        <td>
+          <input
+            id="text-color"
+            ref="textColorRef"
+            type="color"
+            name="text-color"
+            class="color-picker"
+            @change="updateTextColor"
+          >
+        </td>
+      </tr>
+    </tbody>
   </table>
 </template>
 
