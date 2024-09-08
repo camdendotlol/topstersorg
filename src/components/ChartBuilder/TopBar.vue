@@ -17,7 +17,7 @@ const loading: Ref<boolean> = ref(false)
 
 async function saveChart() {
   loading.value = true
-  await downloadChart(store.state.chart)
+  await downloadChart(store.chart)
   loading.value = false
 }
 
@@ -30,7 +30,7 @@ function startNewChart() {
   const newUuid = appendChart(newChart)
   setActiveChart(newUuid)
 
-  store.commit('reset')
+  store.reset()
 }
 
 function deleteChart() {
@@ -44,14 +44,14 @@ function deleteChart() {
     if (Object.keys(newStoredCharts).length < 1) {
       // We've just deleted the only saved chart, so let's re-initialize.
       initializeFirstRun()
-      store.commit('reset')
+      store.reset()
     }
     else {
       // If there are other charts, pick the most recently created one.
       const chart = setActiveChart(getNewestChartUuid())
 
       addImgElements(chart.data)
-      store.commit('setEntireChart', chart.data)
+      store.setEntireChart(chart.data)
     }
   }
 }

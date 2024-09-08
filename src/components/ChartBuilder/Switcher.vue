@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { addImgElements } from '../../helpers/chart'
 import { getActiveChartUuid, getStoredCharts, getUuids, setActiveChart } from '../../helpers/localStorage'
@@ -12,7 +12,7 @@ const activeChartUuid: Ref<string> = ref(getActiveChartUuid())
 const charts: Ref<StoredCharts> = ref(getStoredCharts())
 const chartUuids: Ref<string[]> = ref(getUuids())
 
-store.watch(state => state.chart, () => {
+watch(() => store.chart, () => {
   updateChartList()
 })
 
@@ -35,7 +35,7 @@ function changeChart(event: Event) {
 
   activeChartUuid.value = uuid
 
-  store.commit('setEntireChart', chartToSwitchTo)
+  store.setEntireChart(chartToSwitchTo)
 }
 </script>
 

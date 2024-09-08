@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { getScaledDimensions } from '../../chartgen/lib'
 import { setImage } from '../../helpers/chart'
@@ -30,7 +30,7 @@ const lastMousePosition: Ref<{ x: number, y: number }> = ref({
 
 const store = useStore()
 
-store.watch(state => state.chart, () => {
+watch(() => store.chart, () => {
   renderChart()
 })
 
@@ -57,11 +57,11 @@ function renderChart() {
 }
 
 function checkDroppability(event: InteractionEvent | DragEvent) {
-  const canvasInfo = getCanvasInfo(canvas.value, store.state.chart)
+  const canvasInfo = getCanvasInfo(canvas.value, store.chart)
 
   const droppable = isDroppable(
     canvasInfo,
-    store.state.chart,
+    store.chart,
     getInteractionCoords(event, { x: canvas.value.offsetLeft, y: canvas.value.offsetTop }),
   )
 
@@ -78,7 +78,7 @@ function drawImageAtMouse(image: HTMLImageElement, coords: { x: number, y: numbe
     throw new Error('Canvas context not found, the canvas must have loaded incorrectly.')
   }
 
-  const canvasInfo = getCanvasInfo(canvas.value, store.state.chart)
+  const canvasInfo = getCanvasInfo(canvas.value, store.chart)
   const scaledDimensions = getScaledDimensions(image, 260)
 
   // Dividing by the scale ratio to get the canvas's original pixel size back.
@@ -134,7 +134,7 @@ function updateCursor(event: InteractionEvent) {
     // If we don't re-render, the dragged item from the previous frame remains visible and
     // it looks like that old Windows 95 bug with the window movement artifacts.
     renderChart()
-    insertPlaceholder(drawingCtx.value, store.state.chart, grabbedItem.value.originalIndex)
+    insertPlaceholder(drawingCtx.value, store.chart, grabbedItem.value.originalIndex)
 
     const coords = getInteractionCoords(event, { x: canvas.value.offsetLeft, y: canvas.value.offsetTop })
     drawImageAtMouse(grabbedItem.value.itemObject.coverImg, coords)
@@ -147,7 +147,7 @@ function resetCursor(event: InteractionEvent) {
   if (grabbedItem.value) {
     // Remove the item from the chart.
     // This is so users can remove an item by dragging it off the chart.
-    store.commit('addItem', {
+    store.addItem({
       item: null,
       index: grabbedItem.value.originalIndex,
     })
@@ -184,18 +184,18 @@ function getInteractionCoords(event: InteractionEvent, canvasOffset: { x: number
 
 // Calculate the index of the chart item in the chart array from its position on the chart
 function getItemIndexFromCoords(event: InteractionEvent) {
-  const canvasInfo = getCanvasInfo(canvas.value, store.state.chart)
+  const canvasInfo = getCanvasInfo(canvas.value, store.chart)
 
   const interactionCoords = getInteractionCoords(event, { x: canvas.value.offsetLeft, y: canvas.value.offsetTop })
 
-  const titleHeight = store.state.chart.title ? 60 * canvasInfo.scaleRatio : 0
+  const titleHeight = store.chart.title ? 60 * canvasInfo.scaleRatio : 0
 
   // Gets the coordinates on the chart (i.e. 4x3, not pixels)
   const xCoord = Math.floor(interactionCoords.x / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
   const yCoord = Math.floor((interactionCoords.y - titleHeight) / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
 
   // All we need is the index in the chart.items array
-  const itemsAbove = yCoord * store.state.chart.size.x
+  const itemsAbove = yCoord * store.chart.size.x
   return itemsAbove + xCoord
 }
 
@@ -206,7 +206,7 @@ function pickUpItem(event: InteractionEvent) {
   }
 
   const itemIndex = getItemIndexFromCoords(event)
-  const item = store.state.chart.items[itemIndex]
+  const item = store.chart.items[itemIndex]
 
   // This will trigger when the user tries to drag an empty placeholder slot
   if (!item) {
@@ -230,7 +230,7 @@ function pickUpItem(event: InteractionEvent) {
   renderChart()
 
   // Cover up the original spot since we're moving it
-  insertPlaceholder(drawingCtx.value, store.state.chart, itemIndex)
+  insertPlaceholder(drawingCtx.value, store.chart, itemIndex)
 
   // Draw the item at the center of the mouse cursor
   const coords = getInteractionCoords(event, { x: canvas.value.offsetLeft, y: canvas.value.offsetTop })
@@ -275,7 +275,7 @@ function dropItem(event: InteractionEvent | DragEvent) {
     // The image element doesn't survive the JSON->string->JSON transformation
     item.coverImg = setImage(item.coverURL)
 
-    store.commit('addItem', {
+    store.addItem({
       item,
       index: newIndex,
     })
@@ -285,15 +285,16 @@ function dropItem(event: InteractionEvent | DragEvent) {
       return null
     }
 
-    if (!store.state.chart.items[newIndex]) {
+    if (!store.chart.items[newIndex]) {
       // If the selected slot is empty, just
       // 1) move the item there
-      store.commit('addItem', {
+
+      store.addItem({
         item: grabbedItem.value.itemObject,
         index: newIndex,
       })
       // 2) and remove it from its old spot
-      store.commit('addItem', {
+      store.addItem({
         item: null,
         index: grabbedItem.value.originalIndex,
       })
@@ -301,7 +302,7 @@ function dropItem(event: InteractionEvent | DragEvent) {
     else {
       // If there's an item in the new slot, adjust the array
       // without deleting anything.
-      store.commit('moveItem', {
+      store.moveItem({
         item: grabbedItem.value.itemObject,
         oldIndex: grabbedItem.value.originalIndex,
         newIndex,

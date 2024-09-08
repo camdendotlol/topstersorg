@@ -1,22 +1,24 @@
 <script setup lang="ts">
+import { watch } from 'vue'
 import { useStore } from '../store'
 
 const store = useStore()
 
-store.watch(state => state.popupText, () => {
+// todo: make sure this works
+watch(() => store.popupText, () => {
   // Make sure not to reset the popup when something else has been added.
-  const oldText = store.state.popupText
+  const oldText = store.popupText
   setTimeout(() => {
-    if (store.state.popupText === oldText) {
-      store.commit('setPopup', null)
+    if (store.popupText === oldText) {
+      store.setPopup(null)
     }
   }, 1500)
 })
 </script>
 
 <template>
-  <div v-if="store.state.popupText" id="popup">
-    <p>{{ store.state.popupText }}</p>
+  <div v-if="store.popupText" id="popup">
+    <p>{{ store.popupText }}</p>
   </div>
 </template>
 
