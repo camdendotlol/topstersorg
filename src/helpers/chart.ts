@@ -1,6 +1,5 @@
 // Functions for filling in the chart.
 
-import { Store } from 'pinia'
 import fetchImageURL from '../api/fetchImage'
 import generateChart from '../chartgen'
 import { initialState, useStore } from '../store'
@@ -19,7 +18,6 @@ import {
   isMusicResult,
   isTVResult,
 } from './typeGuards'
-import type { State } from '../store'
 
 // Add the proper <img> elements into the chart state.
 // This is needed when loading a saved chart from localstorage.
