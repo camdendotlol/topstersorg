@@ -3,6 +3,7 @@ import { onMounted } from 'vue'
 import { initializeFirstRun } from '../helpers/chart'
 import {
   appendChart,
+  chartMigrations,
   getActiveChart,
   getActiveChartUuid,
   localStorageMigrations,
@@ -15,6 +16,7 @@ const store = useStore()
 
 onMounted(() => {
   localStorageMigrations()
+  chartMigrations()
 
   const activeChart = getActiveChart()
 

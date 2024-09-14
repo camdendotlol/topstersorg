@@ -3,7 +3,7 @@ import { onMounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useStore } from '../../store'
 import { BackgroundTypes } from '../../types'
-import type { Chart } from '../../types'
+import type { Chart, TitlePosition } from '../../types'
 
 const store = useStore()
 
@@ -25,6 +25,7 @@ const textColorRef: Ref<HTMLFormElement> = ref(null)
 const showNumbersRef: Ref<HTMLFormElement> = ref(null)
 const showShadowsRef: Ref<HTMLFormElement> = ref(null)
 const fontRef: Ref<HTMLFormElement> = ref(null)
+const titlePositionRef: Ref<HTMLFormElement> = ref(null)
 
 watch(() => store.chart, () => {
   chart.value = store.chart
@@ -88,6 +89,11 @@ function changeShowTitles(event: Event): void {
   return store.toggleTitles(value)
 }
 
+function changeTitlePosition(event: Event): void {
+  const value: TitlePosition = (event.target as HTMLFormElement).value
+  return store.setTitlePosition(value)
+}
+
 function initalSetup(): void {
   if (store.chart) {
     populateForm(store.chart)
@@ -121,6 +127,8 @@ function populateForm(chart: Chart): void {
   fontRef.value.value = chart.font
 
   gap.value = chart.gap
+
+  titlePositionRef.value.value = chart.titlePosition
 }
 
 function changeBackgroundType(event: Event): void {
@@ -327,6 +335,27 @@ function updateBackgroundImage(event: Event): void {
             class="color-picker"
             @change="updateTextColor"
           >
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="title-position">Title position</label>
+        </td>
+        <td>
+          <select
+            id="title-position"
+            ref="titlePositionRef"
+            name="title-position"
+            @change="changeTitlePosition"
+            @value="chart.titlePosition"
+          >
+            <option value="right">
+              Right
+            </option>
+            <option value="below">
+              Below
+            </option>
+          </select>
         </td>
       </tr>
     </tbody>

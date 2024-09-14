@@ -104,3 +104,30 @@ export function localStorageMigrations() {
     setActiveChart(activeUuid || Object.keys(newObj)[0])
   }
 }
+
+export function chartMigrations() {
+  const charts = getStoredCharts()
+
+  let changed = false
+
+  Object.keys(charts).forEach((uuid) => {
+    const chart = charts[uuid]
+
+    // add title position property
+    if (!chart.data.titlePosition) {
+      charts[uuid] = {
+        ...chart,
+        data: {
+          ...chart.data,
+          titlePosition: 'right',
+        },
+      }
+
+      changed = true
+    }
+  })
+
+  if (changed) {
+    setStoredCharts(charts)
+  }
+}

@@ -24,6 +24,8 @@ export enum SearchTypes {
   Custom = 'custom',
 }
 
+export type TitlePosition = 'right' | 'below'
+
 export interface Chart {
   title: string
   items: Array<ChartItem | null>
@@ -39,6 +41,7 @@ export interface Chart {
   font?: string
   textColor?: string
   shadows?: boolean
+  titlePosition: TitlePosition
 }
 
 export interface IgdbItem {
