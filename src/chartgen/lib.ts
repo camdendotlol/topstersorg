@@ -1,36 +1,4 @@
-interface ChartSize {
-  x: number
-  y: number
-}
-
-export enum BackgroundTypes {
-  Color = 'color',
-  Image = 'image',
-}
-
-export interface ChartItem {
-  title: string
-  creator?: string
-  coverURL: string
-  coverImg: HTMLImageElement
-}
-
-export interface Chart {
-  title: string
-  items: Array<ChartItem | null>
-  size: ChartSize
-  background: {
-    type: BackgroundTypes
-    value: string
-    img: HTMLImageElement | null
-  }
-  showNumbers: boolean
-  showTitles: boolean
-  gap: number
-  font?: string
-  textColor?: string
-  shadows?: boolean
-}
+import { BackgroundTypes, type Chart, type ChartItem } from '../types'
 
 interface TitleMap {
   [key: number]: string
@@ -42,16 +10,17 @@ export interface CanvasInfo {
   cellSize: number
   chartTitleMargin: number
   maxItemTitleWidth: number
-  titles: TitleMap
   ctx: CanvasRenderingContext2D
   fontSize: number
+  itemTitleHeight: number
+  titleMap: TitleMap
 }
 
 // The sidebar containing the titles of chart items should only be as
 // wide as the longest title, plus a little bit of margin.
 function getMaxTitleWidth(chart: Chart, titles: TitleMap, ctx: CanvasRenderingContext2D, fontSize: number): number {
   let maxTitleWidth = 0
-  ctx.font = `${fontSize}pt ${chart.font ? chart.font : 'monospace'}`
+  ctx.font = `${fontSize}px ${chart.font ? chart.font : 'monospace'}`
   if (chart.textColor && /^#[0-9A-F]{6}$/i.test(chart.textColor)) {
     ctx.fillStyle = chart.textColor
   }
@@ -103,15 +72,15 @@ export function getScaledDimensions(img: HTMLImageElement, cellSize: number): { 
   }
 }
 
-export function drawCover(cover: HTMLImageElement, coords: { x: number, y: number }, gap: number, canvasInfo: CanvasInfo): void {
+export function drawCover(cover: HTMLImageElement, coords: { x: number, y: number }, chart: Chart, canvasInfo: CanvasInfo): void {
   const dimensions = getScaledDimensions(cover, canvasInfo.cellSize)
 
+  const itemTitleGap = canvasInfo.itemTitleHeight * coords.y
+
   canvasInfo.ctx.drawImage(
-    // We have to cast this as HTMLImageElement even if it's a Node Canvas Image,
-    // because ctx doesn't know what to do with the latter.
-    cover as HTMLImageElement,
-    (coords.x * (canvasInfo.cellSize + gap)) + gap + findCenteringOffset(dimensions.width, canvasInfo.cellSize),
-    (coords.y * (canvasInfo.cellSize + gap)) + gap + findCenteringOffset(dimensions.height, canvasInfo.cellSize) + canvasInfo.chartTitleMargin,
+    cover,
+    (coords.x * (canvasInfo.cellSize + chart.gap)) + chart.gap + findCenteringOffset(dimensions.width, canvasInfo.cellSize),
+    (coords.y * (canvasInfo.cellSize + chart.gap)) + chart.gap + findCenteringOffset(dimensions.height, canvasInfo.cellSize) + canvasInfo.chartTitleMargin + itemTitleGap,
     dimensions.width,
     dimensions.height,
   )
@@ -143,10 +112,70 @@ export function buildTitles(chart: Chart): TitleMap {
   return titles
 }
 
-export function insertTitles(canvasInfo: CanvasInfo, chart: Chart, titles: TitleMap): void {
+export function truncateText(txt: string, maxLength: number) {
+  return txt.length > (maxLength + 3) ? `${txt.slice(0, maxLength).trim()}...` : txt
+}
+
+export function insertTitlesBelow(canvasInfo: CanvasInfo, chart: Chart) {
   const itemsInScope = chart.items.slice(0, chart.size.x * chart.size.y)
 
-  canvasInfo.ctx.font = `${canvasInfo.fontSize}pt ${chart.font ? chart.font : 'monospace'}`
+  canvasInfo.ctx.textAlign = 'center'
+  canvasInfo.ctx.lineWidth = 0.3
+  canvasInfo.ctx.strokeStyle = 'black'
+
+  const maxTitleLength = Math.floor((canvasInfo.cellSize + chart.gap) / (canvasInfo.fontSize / 1.4))
+
+  itemsInScope.forEach((item, index) => {
+    if (!item) {
+      return null
+    }
+
+    const column = index % chart.size.x
+    const row = Math.floor(index / chart.size.x)
+
+    const xCoord = (canvasInfo.cellSize * column) + (chart.gap * column + chart.gap) + (canvasInfo.cellSize / 2)
+    const yCoord = canvasInfo.chartTitleMargin + ((row + 1) * (canvasInfo.cellSize + chart.gap)) + (row * canvasInfo.itemTitleHeight + (canvasInfo.itemTitleHeight / 2) - 7)
+
+    const truncatedTitle = truncateText(item.title, maxTitleLength)
+
+    canvasInfo.ctx.font = `bold ${canvasInfo.fontSize}px ${chart.font ? chart.font : 'monospace'}`
+
+    canvasInfo.ctx.strokeText(
+      truncatedTitle,
+      xCoord,
+      yCoord,
+    )
+
+    canvasInfo.ctx.fillText(
+      truncatedTitle,
+      xCoord,
+      yCoord,
+    )
+
+    if (item.creator) {
+      canvasInfo.ctx.font = `lighter ${canvasInfo.fontSize}px ${chart.font ? chart.font : 'monospace'}`
+
+      const truncatedCreator = truncateText(item.creator, maxTitleLength)
+
+      canvasInfo.ctx.strokeText(
+        truncatedCreator,
+        xCoord,
+        yCoord + 10 + canvasInfo.fontSize,
+      )
+
+      canvasInfo.ctx.fillText(
+        truncatedCreator,
+        xCoord,
+        yCoord + 10 + canvasInfo.fontSize,
+      )
+    }
+  })
+}
+
+export function insertTitlesRight(canvasInfo: CanvasInfo, chart: Chart): void {
+  const itemsInScope = chart.items.slice(0, chart.size.x * chart.size.y)
+
+  canvasInfo.ctx.font = `${canvasInfo.fontSize}px ${chart.font ? chart.font : 'monospace'}`
   canvasInfo.ctx.textAlign = 'left'
   canvasInfo.ctx.lineWidth = 0.3
   canvasInfo.ctx.strokeStyle = 'black'
@@ -181,7 +210,7 @@ export function insertTitles(canvasInfo: CanvasInfo, chart: Chart, titles: Title
       return null
     }
 
-    const titleString = titles[index]
+    const titleString = canvasInfo.titleMap[index]
 
     canvasInfo.ctx.strokeText(
       titleString,
@@ -199,7 +228,6 @@ export function insertTitles(canvasInfo: CanvasInfo, chart: Chart, titles: Title
 
 // Just calculates some data and sets the size of the chart
 export function setup(canvas: HTMLCanvasElement, chart: Chart, cellSize: number): CanvasInfo {
-  const gap = chart.gap
   const ctx = canvas.getContext('2d', { alpha: false })
 
   if (!ctx) {
@@ -213,18 +241,25 @@ export function setup(canvas: HTMLCanvasElement, chart: Chart, cellSize: number)
   const fontSize = Math.floor(cellSize / 16.25)
 
   let maxItemTitleWidth = 0
-  let titles: TitleMap = {}
-  if (chart.showTitles) {
-    titles = buildTitles(chart)
-    maxItemTitleWidth = getMaxTitleWidth(chart, titles, ctx, fontSize)
+  let titleMap: TitleMap = {}
+
+  if (chart.showTitles && chart.titlePosition === 'right') {
+    titleMap = buildTitles(chart)
+    maxItemTitleWidth = getMaxTitleWidth(chart, titleMap, ctx, fontSize)
   }
 
   const chartTitleMargin = chart.title === '' ? 0 : 60
 
+  // assuming 15px margins above and below the text
+  const itemTitleHeight = chart.titlePosition === 'below' ? (fontSize * 2 + 30) : 0
+
+  // leave a margin if we're displaying titles below each item
+  const totalItemTitleHeight = (chart.size.y * itemTitleHeight)
+
   const pixelDimensions = {
     // room for each cell + gap between cells + margins
-    x: (chart.size.x * (cellSize + gap)) + gap + maxItemTitleWidth,
-    y: (chart.size.y * (cellSize + gap)) + gap + chartTitleMargin,
+    x: (chart.size.x * (cellSize + chart.gap)) + chart.gap + maxItemTitleWidth,
+    y: (chart.size.y * (cellSize + chart.gap)) + chart.gap + chartTitleMargin + totalItemTitleHeight,
   }
 
   canvas.width = pixelDimensions.x
@@ -236,9 +271,10 @@ export function setup(canvas: HTMLCanvasElement, chart: Chart, cellSize: number)
     cellSize,
     chartTitleMargin,
     maxItemTitleWidth,
-    titles,
+    titleMap,
     ctx,
     fontSize,
+    itemTitleHeight,
   }
 }
 
@@ -281,7 +317,7 @@ export function drawBackground(canvasInfo: CanvasInfo, chart: Chart): void {
 
 export function drawTitle(canvasInfo: CanvasInfo, chart: Chart): void {
   const ctx = canvasInfo.ctx
-  ctx.font = `38pt ${chart.font ? chart.font : 'monospace'}`
+  ctx.font = `38px ${chart.font ? chart.font : 'monospace'}`
   if (chart.textColor && /^#[0-9A-F]{6}$/i.test(chart.textColor)) {
     ctx.fillStyle = chart.textColor
   }
@@ -317,7 +353,7 @@ export function insertCoverImages(chart: Chart, canvasInfo: CanvasInfo): void {
     drawCover(
       item.coverImg,
       coords,
-      chart.gap,
+      chart,
       canvasInfo,
     )
   })

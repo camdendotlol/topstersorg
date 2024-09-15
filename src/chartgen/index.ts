@@ -1,29 +1,25 @@
 import {
-  buildTitles,
   drawBackground,
   drawTitle,
   insertCoverImages,
-  insertTitles,
+  insertTitlesBelow,
+  insertTitlesRight,
   setup,
 } from './lib'
-import type {
-  Chart,
-} from './lib'
+import type { Chart } from '../types'
 
 function generateChart(canvas: HTMLCanvasElement, chart: Chart, cellSize = 260): HTMLCanvasElement {
   const canvasInfo = setup(canvas, chart, cellSize)
 
   drawBackground(canvasInfo, chart)
 
-  // Default bahavior is to not include shadows, so we won't use them if chart.shadows is undefined.
-  if (chart.shadows === true) {
+  if (chart.shadows) {
     canvasInfo.ctx.shadowOffsetX = 2
     canvasInfo.ctx.shadowOffsetY = 2
     canvasInfo.ctx.shadowBlur = 4
     canvasInfo.ctx.shadowColor = 'rgba(0,0,0,0.6)'
   }
 
-  // Set up the request text color--default is white.
   if (chart.textColor && /^#[0-9A-F]{6}$/i.test(chart.textColor)) {
     canvasInfo.ctx.fillStyle = chart.textColor
   }
@@ -42,13 +38,12 @@ function generateChart(canvas: HTMLCanvasElement, chart: Chart, cellSize = 260):
   )
 
   if (chart.showTitles) {
-    buildTitles(chart)
-
-    insertTitles(
-      canvasInfo,
-      chart,
-      canvasInfo.titles,
-    )
+    if (chart.titlePosition === 'right') {
+      insertTitlesRight(canvasInfo, chart)
+    }
+    else if (chart.titlePosition === 'below') {
+      insertTitlesBelow(canvasInfo, chart)
+    }
   }
 
   return canvas

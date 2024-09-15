@@ -188,11 +188,9 @@ function getItemIndexFromCoords(event: InteractionEvent) {
 
   const interactionCoords = getInteractionCoords(event, { x: canvas.value.offsetLeft, y: canvas.value.offsetTop })
 
-  const titleHeight = store.chart.title ? 60 * canvasInfo.scaleRatio : 0
-
   // Gets the coordinates on the chart (i.e. 4x3, not pixels)
   const xCoord = Math.floor(interactionCoords.x / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
-  const yCoord = Math.floor((interactionCoords.y - titleHeight) / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
+  const yCoord = Math.floor((interactionCoords.y - canvasInfo.scaledTitleHeight) / (canvasInfo.scaledItemSize + canvasInfo.scaledGap + canvasInfo.scaledItemTitleHeight))
 
   // All we need is the index in the chart.items array
   const itemsAbove = yCoord * store.chart.size.x
