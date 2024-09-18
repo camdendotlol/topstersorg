@@ -8,10 +8,7 @@ import TopBar from './TopBar.vue'
   <div class="chart-builder">
     <div class="chart-builder-contents">
       <TopBar />
-      <div class="canvas-container">
-        <ChartCanvas id="chart-canvas" />
-        <InteractionCanvas id="interaction-canvas" />
-      </div>
+      <ChartCanvas />
     </div>
   </div>
 </template>

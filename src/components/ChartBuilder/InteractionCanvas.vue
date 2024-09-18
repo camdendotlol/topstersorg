@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import type { Ref } from 'vue'
-import { getScaledDimensions } from '../../chartgen/lib'
-import { setImage } from '../../helpers/chart'
+import { getScaledDimensions, setImage } from '../../helpers/chart'
 import { useStore } from '../../store'
 import { getCanvasInfo, insertPlaceholder, isDragAndDropEvent, isDroppable, isTouchEvent } from './lib'
 import type { ChartItem } from '../../types'
@@ -15,7 +14,7 @@ const grabbedItem: Ref<{
   itemObject: ChartItem
 } | null> = ref(null)
 
-const canvas: Ref<HTMLCanvasElement> = ref(null)
+const uiCanvas: Ref<HTMLCanvasElement> = ref(null)
 
 // We need to store the most recent touch position because the touchend event doesn't provide coordinates.
 const lastTouch: Ref<{ x: number, y: number }> = ref({
@@ -31,11 +30,11 @@ const lastMousePosition: Ref<{ x: number, y: number }> = ref({
 const store = useStore()
 
 watch(() => store.chart, () => {
-  renderChart()
+  renderInteractionChart()
 })
 
 const drawingCtx = computed(() => {
-  const ctx = canvas.value.getContext('2d')
+  const ctx = uiCanvas.value.getContext('2d')
   if (!ctx) {
     return null
   }
@@ -43,7 +42,7 @@ const drawingCtx = computed(() => {
   return ctx
 })
 
-function renderChart() {
+function renderInteractionChart() {
   // Is there a better way to get this canvas when it's in a sibling component?
   const chartCanvas = document.getElementById('chart-canvas') as HTMLCanvasElement | null
 
@@ -52,17 +51,17 @@ function renderChart() {
     return console.log('The canvas doesn\'nt exist! Maybe it tried to re-render after being unmounted.')
   }
 
-  canvas.value.width = chartCanvas.width
-  canvas.value.height = chartCanvas.height
+  uiCanvas.value.width = chartCanvas.width
+  uiCanvas.value.height = chartCanvas.height
 }
 
 function checkDroppability(event: InteractionEvent | DragEvent) {
-  const canvasInfo = getCanvasInfo(canvas.value, store.chart)
+  const canvasInfo = getCanvasInfo(uiCanvas.value, store.chart)
 
   const droppable = isDroppable(
     canvasInfo,
     store.chart,
-    getInteractionCoords(event, { x: canvas.value.offsetLeft, y: canvas.value.offsetTop }),
+    getInteractionCoords(event, { x: uiCanvas.value.offsetLeft, y: uiCanvas.value.offsetTop }),
   )
 
   if (droppable) {
@@ -78,7 +77,7 @@ function drawImageAtMouse(image: HTMLImageElement, coords: { x: number, y: numbe
     throw new Error('Canvas context not found, the canvas must have loaded incorrectly.')
   }
 
-  const canvasInfo = getCanvasInfo(canvas.value, store.chart)
+  const canvasInfo = getCanvasInfo(uiCanvas.value, store.chart)
   const scaledDimensions = getScaledDimensions(image, 260)
 
   // Dividing by the scale ratio to get the canvas's original pixel size back.
@@ -97,7 +96,7 @@ function updateCursor(event: InteractionEvent) {
   const touchEvent = isTouchEvent(event)
 
   if (!touchEvent) {
-    const canvasOffset = { x: canvas.value.offsetLeft, y: canvas.value.offsetTop }
+    const canvasOffset = { x: uiCanvas.value.offsetLeft, y: uiCanvas.value.offsetTop }
     lastMousePosition.value = {
       x: (event as MouseEvent).clientX - canvasOffset.x + window.scrollX,
       y: (event as MouseEvent).clientY - canvasOffset.y + window.scrollY,
@@ -116,8 +115,8 @@ function updateCursor(event: InteractionEvent) {
       y: event.touches[0].clientY,
     }
 
-    const coords = getInteractionCoords(event, { x: canvas.value.offsetLeft, y: canvas.value.offsetTop })
-    const canvasDimensions = canvas.value.getBoundingClientRect()
+    const coords = getInteractionCoords(event, { x: uiCanvas.value.offsetLeft, y: uiCanvas.value.offsetTop })
+    const canvasDimensions = uiCanvas.value.getBoundingClientRect()
 
     if (
       coords.x < 0
@@ -133,10 +132,10 @@ function updateCursor(event: InteractionEvent) {
     document.body.style.cursor = 'grab'
     // If we don't re-render, the dragged item from the previous frame remains visible and
     // it looks like that old Windows 95 bug with the window movement artifacts.
-    renderChart()
+    renderInteractionChart()
     insertPlaceholder(drawingCtx.value, store.chart, grabbedItem.value.originalIndex)
 
-    const coords = getInteractionCoords(event, { x: canvas.value.offsetLeft, y: canvas.value.offsetTop })
+    const coords = getInteractionCoords(event, { x: uiCanvas.value.offsetLeft, y: uiCanvas.value.offsetTop })
     drawImageAtMouse(grabbedItem.value.itemObject.coverImg, coords)
   }
 }
@@ -184,9 +183,9 @@ function getInteractionCoords(event: InteractionEvent, canvasOffset: { x: number
 
 // Calculate the index of the chart item in the chart array from its position on the chart
 function getItemIndexFromCoords(event: InteractionEvent) {
-  const canvasInfo = getCanvasInfo(canvas.value, store.chart)
+  const canvasInfo = getCanvasInfo(uiCanvas.value, store.chart)
 
-  const interactionCoords = getInteractionCoords(event, { x: canvas.value.offsetLeft, y: canvas.value.offsetTop })
+  const interactionCoords = getInteractionCoords(event, { x: uiCanvas.value.offsetLeft, y: uiCanvas.value.offsetTop })
 
   // Gets the coordinates on the chart (i.e. 4x3, not pixels)
   const xCoord = Math.floor(interactionCoords.x / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
@@ -225,13 +224,13 @@ function pickUpItem(event: InteractionEvent) {
 
   updateCursor(event)
 
-  renderChart()
+  renderInteractionChart()
 
   // Cover up the original spot since we're moving it
   insertPlaceholder(drawingCtx.value, store.chart, itemIndex)
 
   // Draw the item at the center of the mouse cursor
-  const coords = getInteractionCoords(event, { x: canvas.value.offsetLeft, y: canvas.value.offsetTop })
+  const coords = getInteractionCoords(event, { x: uiCanvas.value.offsetLeft, y: uiCanvas.value.offsetTop })
   drawImageAtMouse(grabbedItem.value.itemObject.coverImg, coords)
 }
 
@@ -257,7 +256,7 @@ function dropItem(event: InteractionEvent | DragEvent) {
   // If the spot doesn't contain a movable item, just put the item back where it came from.
   if (!checkDroppability(event)) {
     grabbedItem.value = null
-    renderChart()
+    renderInteractionChart()
     return null
   }
 
@@ -322,7 +321,7 @@ function allowDragAndDrop(event: DragEvent) {
 <template>
   <canvas
     id="interaction-canvas"
-    ref="canvas"
+    ref="uiCanvas"
     @mousemove="updateCursor"
     @mouseleave="resetCursor"
     @mousedown.left="pickUpItem"

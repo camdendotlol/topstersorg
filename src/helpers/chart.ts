@@ -1,12 +1,12 @@
 // Functions for filling in the chart.
 
 import fetchImageURL from '../api/fetchImage'
-import generateChart from '../chartgen'
+import Chart from '../chartgen/classVersion'
 import { initialState, useStore } from '../store'
 import {
   BackgroundTypes,
-  type Chart,
   type ChartItem,
+  type Chart as ChartType,
   type Result,
 } from '../types'
 import { appendChart, getActiveChart, setActiveChart } from './localStorage'
@@ -21,7 +21,7 @@ import {
 
 // Add the proper <img> elements into the chart state.
 // This is needed when loading a saved chart from localstorage.
-export function addImgElements(chart: Chart): Chart {
+export function addImgElements(chart: ChartType): ChartType {
   const itemsWithCovers = chart.items.map((item) => {
     if (!item) {
       return null
@@ -111,7 +111,7 @@ export function createChartItem(item: Result): ChartItem {
   }
 }
 
-export async function downloadChart(chart: Chart): Promise<void> {
+export async function downloadChart(chart: ChartType): Promise<void> {
   const chartData = { ...chart }
   const downloadableChart = await createDownloadableChart(chartData)
   const chartURL = downloadableChart.toDataURL()
@@ -119,7 +119,7 @@ export async function downloadChart(chart: Chart): Promise<void> {
 }
 
 // Hacky way to make sure all images are loaded in before saving the chart
-async function fillInItems(chart: Chart) {
+async function fillInItems(chart: ChartType) {
   const promises = []
 
   // Get background image
@@ -169,14 +169,16 @@ async function fillInItems(chart: Chart) {
 
 // Create a new canvas to render the final downloadable version.
 // This is needed to avoid CORS issues with third-party images.
-async function createDownloadableChart(data: Chart): Promise<HTMLCanvasElement> {
-  const chartCanvas = document.createElement('canvas')
-  const chart = await fillInItems(data)
+async function createDownloadableChart(data: ChartType): Promise<HTMLCanvasElement> {
+  const chartData = await fillInItems(data)
+
+  const canvas = document.createElement('canvas')
 
   // Populate the chart with the items etc.
-  generateChart(chartCanvas, chart)
+  const chart2 = new Chart(canvas)
+  chart2.generateChart(chartData)
 
-  return chartCanvas
+  return chart2.getCanvas()
 }
 
 // Saves the chart as an image
@@ -207,6 +209,28 @@ export function forceRefresh() {
 
   const activeChart = getActiveChart()
   store.setEntireChart(activeChart.data)
+}
+
+export function getScaledDimensions(img: HTMLImageElement, cellSize: number): { height: number, width: number } {
+  let differencePercentage = 1
+
+  if (img.width > cellSize && img.height > cellSize) {
+    differencePercentage = Math.min((cellSize / img.width), (cellSize / img.height))
+  }
+  else if (img.width > cellSize) {
+    differencePercentage = cellSize / img.width
+  }
+  else if (img.height > cellSize) {
+    differencePercentage = cellSize / img.height
+  }
+  else if (img.width < cellSize && img.height < cellSize) {
+    differencePercentage = Math.min((cellSize / img.width), (cellSize / img.height))
+  }
+
+  return {
+    height: Math.floor(img.height * differencePercentage),
+    width: Math.floor(img.width * differencePercentage),
+  }
 }
 
 export const periodHeaders = {
