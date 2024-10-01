@@ -3,7 +3,7 @@ import { onMounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useStore } from '../../store'
 import { BackgroundTypes } from '../../types'
-import type { Chart, TitlePosition } from '../../types'
+import type { Chart, Layout } from '../../types'
 
 const store = useStore()
 
@@ -25,7 +25,7 @@ const textColorRef: Ref<HTMLFormElement> = ref(null)
 const showNumbersRef: Ref<HTMLFormElement> = ref(null)
 const showShadowsRef: Ref<HTMLFormElement> = ref(null)
 const fontRef: Ref<HTMLFormElement> = ref(null)
-const titlePositionRef: Ref<HTMLFormElement> = ref(null)
+const layoutRef: Ref<HTMLFormElement> = ref(null)
 
 watch(() => store.chart, () => {
   chart.value = store.chart
@@ -89,9 +89,9 @@ function changeShowTitles(event: Event): void {
   return store.toggleTitles(value)
 }
 
-function changeTitlePosition(event: Event): void {
-  const value: TitlePosition = (event.target as HTMLFormElement).value
-  return store.setTitlePosition(value)
+function changeLayout(event: Event): void {
+  const value: Layout = (event.target as HTMLFormElement).value
+  return store.setLayout(value)
 }
 
 function initalSetup(): void {
@@ -128,7 +128,7 @@ function populateForm(chart: Chart): void {
 
   gap.value = chart.gap
 
-  titlePositionRef.value.value = chart.titlePosition
+  layoutRef.value.value = chart.layout
 }
 
 function changeBackgroundType(event: Event): void {
@@ -339,21 +339,21 @@ function updateBackgroundImage(event: Event): void {
       </tr>
       <tr>
         <td>
-          <label for="title-position">Title position</label>
+          <label for="layout">Layout</label>
         </td>
         <td>
           <select
-            id="title-position"
-            ref="titlePositionRef"
-            name="title-position"
-            @change="changeTitlePosition"
-            @value="chart.titlePosition"
+            id="layout"
+            ref="layoutRef"
+            name="layout"
+            @change="changeLayout"
+            @value="chart.layout"
           >
-            <option value="right">
-              Right
+            <option value="grid">
+              Grid
             </option>
-            <option value="below">
-              Below
+            <option value="classic">
+              Classic
             </option>
           </select>
         </td>

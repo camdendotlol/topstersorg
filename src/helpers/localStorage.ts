@@ -113,13 +113,13 @@ export function chartMigrations() {
   Object.keys(charts).forEach((uuid) => {
     const chart = charts[uuid]
 
-    // add title position property
-    if (!chart.data.titlePosition) {
+    // add layout property
+    if (!chart.data.layout) {
       charts[uuid] = {
         ...chart,
         data: {
           ...chart.data,
-          titlePosition: 'right',
+          layout: 'grid',
         },
       }
 

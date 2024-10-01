@@ -23,7 +23,7 @@ export function getCanvasInfo(canvas: HTMLCanvasElement, chart: Chart): CanvasIn
   const fontSize = Math.floor(ITEM_SIZE / 16.25)
 
   // assuming 15px margins above and below the text
-  const itemTitleHeight = chart.titlePosition === 'below' ? (fontSize * 2 + 30) : 0
+  const itemTitleHeight = chart.layout === 'classic' ? (fontSize * 2 + 30) : 0
 
   return {
     scaleRatio,
@@ -71,7 +71,7 @@ export function insertPlaceholder(drawingContext: CanvasRenderingContext2D | nul
 
   // todo: we're repeating this logic a lot lol
   const fontSize = Math.floor(ITEM_SIZE / 16.25)
-  const itemTitleHeight = chart.titlePosition === 'below' ? (fontSize * 2 + 30) : 0
+  const itemTitleHeight = chart.layout === 'classic' ? (fontSize * 2 + 30) : 0
 
   drawingContext.fillStyle = 'rgb(230, 230, 230)'
   // No need for scaled dimensions here, we're working on the original Canvas.

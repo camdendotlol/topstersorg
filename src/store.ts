@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { BackgroundTypes, type Chart, type ChartItem, type TitlePosition } from './types'
+import { BackgroundTypes, type Chart, type ChartItem, type Layout } from './types'
 
 export interface State {
   chart: Chart
@@ -29,7 +29,7 @@ export const initialState: {
     font: 'monospace',
     textColor: '#ffffff',
     shadows: true,
-    titlePosition: 'right',
+    layout: 'grid',
   },
 }
 
@@ -141,8 +141,8 @@ export const useStore = defineStore('store', {
     toggleShadows(newValue: boolean) {
       this.chart = { ...this.chart, shadows: newValue }
     },
-    setTitlePosition(newValue: TitlePosition) {
-      this.chart = { ...this.chart, titlePosition: newValue }
+    setLayout(newValue: Layout) {
+      this.chart = { ...this.chart, layout: newValue }
     },
     setEntireChart(payload: Chart) {
       this.chart = hydrateImages(payload)

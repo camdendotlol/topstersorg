@@ -18,6 +18,7 @@ class Chart {
   canvasInfo: CanvasInfo
   cellSize: number
   ctx: CanvasRenderingContext2D
+  itemDimensions: { height: number, width: number }[]
   titleMap: { [key: number]: string }
 
   itemCoords: { x: [number, number][], y: [number, number][] }
@@ -30,14 +31,6 @@ class Chart {
     this.ctx = this.canvas.getContext('2d', { alpha: false })
     this.itemCoords = { x: [], y: [] }
     this.newItemCoords = { x: new Set(), y: new Set() }
-  }
-
-  public getCanvas() {
-    return this.canvas
-  }
-
-  public getCanvasInfo() {
-    return this.canvasInfo
   }
 
   public getScaledCanvasInfo() {
@@ -67,7 +60,7 @@ class Chart {
 
     let maxItemTitleWidth = 0
 
-    if (this.data.showTitles && this.data.titlePosition === 'right') {
+    if (this.data.showTitles && this.data.layout === 'grid') {
       this.titleMap = this.buildTitles()
       maxItemTitleWidth = this.getMaxTitleWidth(fontSize)
     }
@@ -75,10 +68,20 @@ class Chart {
     const chartTitleMargin = this.data.title === '' ? 0 : 60
 
     // assuming 15px margins above and below the text
-    const itemTitleHeight = this.data.titlePosition === 'below' ? (fontSize * 2 + 30) : 0
+    const itemTitleHeight = this.data.layout === 'classic' ? (fontSize * 2 + 30) : 0
 
     // leave a margin if we're displaying titles below each item
     const totalItemTitleHeight = (this.data.size.y * itemTitleHeight)
+
+    const itemDimensions = this.data.items.slice(0, this.data.size.x * this.data.size.y).map((item) => {
+      if (item) {
+        return getScaledDimensions(item.coverImg, this.cellSize)
+      }
+
+      return null
+    })
+
+    this.itemDimensions = itemDimensions
 
     const pixelDimensions = {
       // room for each cell + gap between cells + margins
@@ -128,10 +131,10 @@ class Chart {
     this.insertCoverImages()
 
     if (this.data.showTitles) {
-      if (this.data.titlePosition === 'right') {
+      if (this.data.layout === 'grid') {
         this.insertTitlesRight()
       }
-      else if (this.data.titlePosition === 'below') {
+      else if (this.data.layout === 'classic') {
         this.insertTitlesBelow()
       }
     }
@@ -200,9 +203,10 @@ class Chart {
     }
   }
 
-  drawCover(cover: HTMLImageElement, coords: { x: number, y: number }): { x: [number, number], y: [number, number] } {
-    const dimensions = getScaledDimensions(cover, this.cellSize)
-
+  drawCover(cover: HTMLImageElement, coords: { x: number, y: number }, dimensions: {
+    height: number
+    width: number
+  }): { x: [number, number], y: [number, number] } {
     const itemTitleGap = this.canvasInfo.itemTitleHeight * coords.y
 
     const xCoord = (coords.x * (this.cellSize + this.data.gap)) + this.data.gap + this.findCenteringOffset(dimensions.width, this.cellSize)
@@ -241,9 +245,9 @@ class Chart {
 
   // Finds how many pixels the horizontal and/or vertical margin should be
   // in order to center the cover within its cell.
-  findCenteringOffset(dimension: number, cellSize: number) {
-    if (dimension < cellSize) {
-      return Math.floor((cellSize - dimension) / 2)
+  findCenteringOffset(dimension: number, maxPixels: number) {
+    if (dimension < maxPixels) {
+      return Math.floor((maxPixels - dimension) / 2)
     }
     else {
       return 0
@@ -297,6 +301,7 @@ class Chart {
       const pixelCoords = this.drawCover(
         item.coverImg,
         coords,
+        this.itemDimensions[index],
       )
 
       newCoords.x.push(pixelCoords.x[0])

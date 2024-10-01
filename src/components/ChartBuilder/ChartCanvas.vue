@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
-import Chart from '../../chartgen/classVersion'
+import Chart from '../../chartgen/ChartCanvas'
 import { getScaledDimensions, setImage } from '../../helpers/chart'
 import { useStore } from '../../store'
 import { BackgroundTypes } from '../../types'

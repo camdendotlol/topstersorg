@@ -1,7 +1,7 @@
 // Functions for filling in the chart.
 
 import fetchImageURL from '../api/fetchImage'
-import Chart from '../chartgen/classVersion'
+import Chart from '../chartgen/ChartCanvas'
 import { initialState, useStore } from '../store'
 import {
   BackgroundTypes,
@@ -178,7 +178,7 @@ async function createDownloadableChart(data: ChartType): Promise<HTMLCanvasEleme
   const chart2 = new Chart(canvas)
   chart2.generateChart(chartData)
 
-  return chart2.getCanvas()
+  return chart2.canvas
 }
 
 // Saves the chart as an image
