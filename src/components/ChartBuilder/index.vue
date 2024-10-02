@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import ChartCanvas from './ChartCanvas.vue'
-import InteractionCanvas from './InteractionCanvas.vue'
 import TopBar from './TopBar.vue'
 </script>
 
@@ -24,23 +23,6 @@ import TopBar from './TopBar.vue'
 .chart-builder-contents {
   margin: 0 auto;
   padding: 0;
-}
-
-.canvas-container {
-  display: grid;
-}
-
-.canvas-container canvas {
-  grid-column: 1;
-  grid-row: 1;
-}
-
-#chart-canvas {
-  z-index: 1;
-}
-
-#interaction-canvas {
-  z-index: 2;
 }
 
 @media screen and (max-width: 1000px) {

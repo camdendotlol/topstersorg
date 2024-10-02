@@ -30,6 +30,7 @@ export const initialState: {
     textColor: '#ffffff',
     shadows: true,
     layout: 'grid',
+    titlePositon: 'right',
   },
 }
 

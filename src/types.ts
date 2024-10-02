@@ -24,7 +24,9 @@ export enum SearchTypes {
   Custom = 'custom',
 }
 
-export type Layout = 'grid' | 'classic'
+export type Layout = 'grid' | 'tiered'
+
+export type TitlePositon = 'below' | 'right'
 
 export interface Chart {
   title: string
@@ -42,6 +44,7 @@ export interface Chart {
   textColor?: string
   shadows?: boolean
   layout: Layout
+  titlePositon: TitlePositon
 }
 
 export interface IgdbItem {

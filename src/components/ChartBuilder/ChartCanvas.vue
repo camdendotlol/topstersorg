@@ -61,8 +61,8 @@ const uiDrawingCtx = computed(() => {
   return ctx
 })
 
-function checkDroppability(event: InteractionEvent | DragEvent) {
-  return chart.value.isItemLocation(getInteractionCoords(event, { x: uiCanvas.value.offsetLeft, y: uiCanvas.value.offsetTop }))
+function getIndexByEvent(event: InteractionEvent | DragEvent) {
+  return chart.value.getIndexByLocation(getInteractionCoords(event, { x: uiCanvas.value.offsetLeft, y: uiCanvas.value.offsetTop }))
 }
 
 function drawImageAtMouse(image: HTMLImageElement, coords: { x: number, y: number }) {
@@ -86,7 +86,8 @@ function drawImageAtMouse(image: HTMLImageElement, coords: { x: number, y: numbe
 }
 
 function updateCursor(event: InteractionEvent) {
-  const isSelectable = checkDroppability(event)
+  const itemIndex = getIndexByEvent(event)
+
   const touchEvent = isTouchEvent(event)
 
   if (!touchEvent) {
@@ -95,10 +96,10 @@ function updateCursor(event: InteractionEvent) {
       x: (event as MouseEvent).clientX - canvasOffset.x + window.scrollX,
       y: (event as MouseEvent).clientY - canvasOffset.y + window.scrollY,
     }
-    if (isSelectable) {
+    if (itemIndex !== -1 && store.chart.items[itemIndex]) {
       document.body.style.cursor = 'pointer'
     }
-    else if (!isSelectable && !grabbedItem.value) {
+    else if (itemIndex === -1 && !grabbedItem.value) {
       document.body.style.cursor = 'default'
     }
   }
@@ -175,28 +176,15 @@ function getInteractionCoords(event: InteractionEvent, canvasOffset: { x: number
   }
 }
 
-// Calculate the index of the chart item in the chart array from its position on the chart
-function getItemIndexFromCoords(event: InteractionEvent) {
-  const canvasInfo = chart.value.getScaledCanvasInfo()
-
-  const interactionCoords = getInteractionCoords(event, { x: uiCanvas.value.offsetLeft, y: uiCanvas.value.offsetTop })
-
-  // Gets the coordinates on the chart (i.e. 4x3, not pixels)
-  const xCoord = Math.floor(interactionCoords.x / (canvasInfo.scaledItemSize + canvasInfo.scaledGap))
-  const yCoord = Math.floor((interactionCoords.y - canvasInfo.scaledTitleHeight) / (canvasInfo.scaledItemSize + canvasInfo.scaledGap + canvasInfo.scaledItemTitleHeight))
-
-  // All we need is the index in the chart.items array
-  const itemsAbove = yCoord * store.chart.size.x
-  return itemsAbove + xCoord
-}
-
 function pickUpItem(event: InteractionEvent) {
-  // Ignore if the spot doesn't contain a movable item
-  if (!checkDroppability(event)) {
+  const coords = getInteractionCoords(event, { x: uiCanvas.value.offsetLeft, y: uiCanvas.value.offsetTop })
+
+  const itemIndex = chart.value.getIndexByLocation(coords)
+
+  if (itemIndex === -1) {
     return null
   }
 
-  const itemIndex = getItemIndexFromCoords(event)
   const item = store.chart.items[itemIndex]
 
   // This will trigger when the user tries to drag an empty placeholder slot
@@ -224,7 +212,6 @@ function pickUpItem(event: InteractionEvent) {
   insertPlaceholder(uiDrawingCtx.value, store.chart, itemIndex)
 
   // Draw the item at the center of the mouse cursor
-  const coords = getInteractionCoords(event, { x: uiCanvas.value.offsetLeft, y: uiCanvas.value.offsetTop })
   drawImageAtMouse(grabbedItem.value.itemObject.coverImg, coords)
 }
 
@@ -247,14 +234,15 @@ function dropCanvasItem(event: InteractionEvent) {
 }
 
 function dropItem(event: InteractionEvent | DragEvent) {
+  const coords = getInteractionCoords(event, { x: uiCanvas.value.offsetLeft, y: uiCanvas.value.offsetTop })
+  const newIndex = chart.value.getIndexByLocation(coords)
+
   // If the spot doesn't contain a movable item, just put the item back where it came from.
-  if (!checkDroppability(event)) {
+  if (newIndex === -1) {
     grabbedItem.value = null
     renderInteractionChart()
     return null
   }
-
-  const newIndex = getItemIndexFromCoords(event)
 
   if (isDragAndDropEvent(event)) {
     const item = JSON.parse(event.dataTransfer?.getData('application/json') || 'null')

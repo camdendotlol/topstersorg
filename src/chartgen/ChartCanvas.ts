@@ -21,7 +21,9 @@ class Chart {
   itemDimensions: { height: number, width: number }[]
   titleMap: { [key: number]: string }
 
-  itemCoords: { x: [number, number][], y: [number, number][] }
+  indexedItemCoords: Array<{ x: [number, number], y: [number, number], placeholder?: boolean }>
+
+  // itemCoords: { x: [number, number][], y: [number, number][] }
 
   newItemCoords: { x: Set<number>, y: Set<number> }
 
@@ -29,7 +31,7 @@ class Chart {
     this.canvas = canvas
     this.cellSize = ITEM_SIZE
     this.ctx = this.canvas.getContext('2d', { alpha: false })
-    this.itemCoords = { x: [], y: [] }
+    this.indexedItemCoords = Array.from({ length: 144 })
     this.newItemCoords = { x: new Set(), y: new Set() }
   }
 
@@ -60,7 +62,7 @@ class Chart {
 
     let maxItemTitleWidth = 0
 
-    if (this.data.showTitles && this.data.layout === 'grid') {
+    if (this.data.showTitles && this.data.titlePositon === 'right') {
       this.titleMap = this.buildTitles()
       maxItemTitleWidth = this.getMaxTitleWidth(fontSize)
     }
@@ -68,7 +70,7 @@ class Chart {
     const chartTitleMargin = this.data.title === '' ? 0 : 60
 
     // assuming 15px margins above and below the text
-    const itemTitleHeight = this.data.layout === 'classic' ? (fontSize * 2 + 30) : 0
+    const itemTitleHeight = this.data.titlePositon === 'below' ? (fontSize * 2 + 30) : 0
 
     // leave a margin if we're displaying titles below each item
     const totalItemTitleHeight = (this.data.size.y * itemTitleHeight)
@@ -131,10 +133,10 @@ class Chart {
     this.insertCoverImages()
 
     if (this.data.showTitles) {
-      if (this.data.layout === 'grid') {
+      if (this.data.titlePositon === 'right') {
         this.insertTitlesRight()
       }
-      else if (this.data.layout === 'classic') {
+      else if (this.data.titlePositon === 'below') {
         this.insertTitlesBelow()
       }
     }
@@ -200,6 +202,19 @@ class Chart {
           )
         }
       }
+    }
+  }
+
+  // get the coords for a valid space to drop an item when no item is present
+  getPlaceholderCoords(coords: { x: number, y: number }): { x: [number, number], y: [number, number] } {
+    const itemTitleGap = this.canvasInfo.itemTitleHeight * coords.y
+
+    const xCoord = (coords.x * (this.cellSize + this.data.gap)) + this.data.gap
+    const yCoord = (coords.y * (this.cellSize + this.data.gap)) + this.data.gap + this.canvasInfo.chartTitleMargin + itemTitleGap
+
+    return {
+      x: [xCoord, xCoord + this.cellSize],
+      y: [yCoord, yCoord + this.cellSize],
     }
   }
 
@@ -278,13 +293,12 @@ class Chart {
   }
 
   insertCoverImages() {
-    this.itemCoords = { x: [], y: [] }
-    const newCoords = { x: [], y: [] }
+    this.indexedItemCoords = Array.from({ length: 144 })
 
     this.data.items.forEach((item: ChartItem | null, index: number) => {
-      if (!item) {
-        return null
-      }
+      // if (!item) {
+      //   return null
+      // }
 
       // Don't overflow outside the bounds of the chart
       // This way, items will be saved if the chart is too big for them
@@ -298,37 +312,38 @@ class Chart {
         y: Math.floor(index / this.data.size.x),
       }
 
-      const pixelCoords = this.drawCover(
-        item.coverImg,
-        coords,
-        this.itemDimensions[index],
-      )
-
-      newCoords.x.push(pixelCoords.x[0])
-      newCoords.x.push(pixelCoords.x[1])
-      newCoords.y.push(pixelCoords.y[0])
-      newCoords.y.push(pixelCoords.y[1])
-
-      this.itemCoords.x.push(pixelCoords.x)
-      this.itemCoords.y.push(pixelCoords.y)
+      if (item) {
+        const pixelCoords = this.drawCover(
+          item.coverImg,
+          coords,
+          this.itemDimensions[index],
+        )
+        this.indexedItemCoords[index] = {
+          x: [...pixelCoords.x],
+          y: [...pixelCoords.y],
+        }
+      }
+      else {
+        const placeholderCoords = this.getPlaceholderCoords(coords)
+        this.indexedItemCoords[index] = {
+          ...placeholderCoords,
+          placeholder: true,
+        }
+      }
     })
-
-    this.newItemCoords.x = new Set(newCoords.x.sort())
-    this.newItemCoords.y = new Set(newCoords.y.sort())
   }
 
   // should be a replacement for isDroppable
-  public isItemLocation(coords: { x: number, y: number }) {
+  public getIndexByLocation(coords: { x: number, y: number }) {
     const scaleRatio = this.canvas.clientHeight / this.canvas.height
 
     // convert the scaled pixel values back to unscaled
     const unscaledX = Math.floor(coords.x / scaleRatio)
     const unscaledY = Math.floor(coords.y / scaleRatio)
 
-    const xFound = !!this.itemCoords.x.find(xc => unscaledX >= xc[0] && unscaledX <= xc[1])
-    const yFound = !!this.itemCoords.y.find(yc => unscaledY >= yc[0] && unscaledY <= yc[1])
+    const itemsInScope = this.indexedItemCoords.slice(0, this.data.size.x * this.data.size.y)
 
-    return xFound && yFound
+    return itemsInScope.findIndex(coords => unscaledX >= coords.x[0] && unscaledX <= coords.x[1] && unscaledY >= coords.y[0] && unscaledY <= coords.y[1])
   }
 
   insertTitlesBelow() {
