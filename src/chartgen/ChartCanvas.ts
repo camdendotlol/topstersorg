@@ -23,8 +23,6 @@ class Chart {
 
   indexedItemCoords: Array<{ x: [number, number], y: [number, number], placeholder?: boolean }>
 
-  // itemCoords: { x: [number, number][], y: [number, number][] }
-
   newItemCoords: { x: Set<number>, y: Set<number> }
 
   constructor(canvas: HTMLCanvasElement) {
@@ -62,7 +60,7 @@ class Chart {
 
     let maxItemTitleWidth = 0
 
-    if (this.data.showTitles && this.data.titlePositon === 'right') {
+    if (this.data.showTitles && this.data.titlePosition === 'right') {
       this.titleMap = this.buildTitles()
       maxItemTitleWidth = this.getMaxTitleWidth(fontSize)
     }
@@ -70,7 +68,7 @@ class Chart {
     const chartTitleMargin = this.data.title === '' ? 0 : 60
 
     // assuming 15px margins above and below the text
-    const itemTitleHeight = this.data.titlePositon === 'below' ? (fontSize * 2 + 30) : 0
+    const itemTitleHeight = this.data.titlePosition === 'below' ? (fontSize * 2 + 30) : 0
 
     // leave a margin if we're displaying titles below each item
     const totalItemTitleHeight = (this.data.size.y * itemTitleHeight)
@@ -130,13 +128,18 @@ class Chart {
       this.drawTitle()
     }
 
-    this.insertCoverImages()
+    if (this.data.layout === 'grid') {
+      this.insertGridCoverImages()
+    }
+    else if (this.data.layout === 'tiered') {
+      this.insertTieredCoverImages()
+    }
 
     if (this.data.showTitles) {
-      if (this.data.titlePositon === 'right') {
+      if (this.data.titlePosition === 'right') {
         this.insertTitlesRight()
       }
-      else if (this.data.titlePositon === 'below') {
+      else if (this.data.titlePosition === 'below') {
         this.insertTitlesBelow()
       }
     }
@@ -292,14 +295,8 @@ class Chart {
     return maxTitleWidth + 20 + this.data.gap
   }
 
-  insertCoverImages() {
-    this.indexedItemCoords = Array.from({ length: 144 })
-
+  insertGridCoverImages() {
     this.data.items.forEach((item: ChartItem | null, index: number) => {
-      // if (!item) {
-      //   return null
-      // }
-
       // Don't overflow outside the bounds of the chart
       // This way, items will be saved if the chart is too big for them
       // and the user can just expand the chart and they'll fill in again
@@ -330,6 +327,12 @@ class Chart {
           placeholder: true,
         }
       }
+    })
+  }
+
+  insertTieredCoverImages() {
+    this.data.items.forEach((item: ChartItem | null, index: number) => {
+
     })
   }
 

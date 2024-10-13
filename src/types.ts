@@ -26,7 +26,9 @@ export enum SearchTypes {
 
 export type Layout = 'grid' | 'tiered'
 
-export type TitlePositon = 'below' | 'right'
+export type TitlePosition = 'below' | 'right'
+
+export type TieredSize = 'small' | 'medium' | 'large'
 
 export interface Chart {
   title: string
@@ -44,7 +46,8 @@ export interface Chart {
   textColor?: string
   shadows?: boolean
   layout: Layout
-  titlePositon: TitlePositon
+  titlePosition: TitlePosition
+  tieredSize: TieredSize
 }
 
 export interface IgdbItem {

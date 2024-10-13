@@ -127,12 +127,12 @@ export function chartMigrations() {
     }
 
     // add title position property
-    if (!chart.data.titlePositon) {
+    if (!chart.data.titlePosition) {
       charts[uuid] = {
         ...chart,
         data: {
           ...chart.data,
-          titlePositon: 'right',
+          titlePosition: 'right',
         },
       }
 

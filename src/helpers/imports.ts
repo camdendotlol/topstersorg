@@ -227,7 +227,9 @@ export async function importTopsters2(event: Event) {
               showTitles: charts[`${prefix}titled`] === 'true',
               gap: custom.padding * 5,
               font: custom.fontFamily,
-              layout: 'grid',
+              layout: 'tiered',
+              titlePosition: 'right',
+              tieredSize: 'medium',
             },
           }
 

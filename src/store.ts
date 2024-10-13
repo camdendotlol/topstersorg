@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { BackgroundTypes, type Chart, type ChartItem, type Layout } from './types'
+import { BackgroundTypes, type Chart, type ChartItem, type Layout, type TieredSize, type TitlePosition } from './types'
 
 export interface State {
   chart: Chart
@@ -30,7 +30,8 @@ export const initialState: {
     textColor: '#ffffff',
     shadows: true,
     layout: 'grid',
-    titlePositon: 'right',
+    titlePosition: 'right',
+    tieredSize: 'small',
   },
 }
 
@@ -112,17 +113,26 @@ export const useStore = defineStore('store', {
         },
       }
     },
-    changeSize(payload: { axis: string, value: number }) {
-      switch (payload.axis) {
-        case 'x':
-          this.chart = { ...this.chart, size: { y: this.chart.size.y, x: payload.value } }
-          break
-        case 'y':
-          this.chart = { ...this.chart, size: { x: this.chart.size.x, y: payload.value } }
-          break
-        default:
-          this.chart = { ...this.chart }
+    setBackgroundType(type: BackgroundTypes) {
+      this.chart = {
+        ...this.chart,
+        background: {
+          ...this.chart.background,
+          type,
+        },
       }
+    },
+    setHeight(payload: number) {
+      this.chart = { ...this.chart, size: {
+        ...this.chart.size,
+        y: payload,
+      } }
+    },
+    setWidth(payload: number) {
+      this.chart = { ...this.chart, size: {
+        ...this.chart.size,
+        x: payload,
+      } }
     },
     changeGap(newGap: number) {
       this.chart = { ...this.chart, gap: newGap }
@@ -145,8 +155,20 @@ export const useStore = defineStore('store', {
     setLayout(newValue: Layout) {
       this.chart = { ...this.chart, layout: newValue }
     },
+    setTitlePosition(newValue: TitlePosition) {
+      this.chart = { ...this.chart, titlePosition: newValue }
+    },
+    setTieredSize(newValue: TieredSize) {
+      this.chart = { ...this.chart, tieredSize: newValue }
+    },
     setEntireChart(payload: Chart) {
       this.chart = hydrateImages(payload)
+    },
+    setBooleanField(field: string, newValue: boolean) {
+      this.chart = { ...this.chart, [field]: newValue }
+    },
+    setStringField(field: string, newValue: string) {
+      this.chart = { ...this.chart, [field]: newValue }
     },
     reset() {
       this.chart = { ...initialState.chart }
