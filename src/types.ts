@@ -28,7 +28,7 @@ export type Layout = 'grid' | 'tiered'
 
 export type TitlePosition = 'below' | 'right'
 
-export type TieredSize = 'small' | 'medium' | 'large'
+export type TieredSize = 'medium' | 'large'
 
 export interface Chart {
   title: string

@@ -73,9 +73,15 @@ class Chart {
     // leave a margin if we're displaying titles below each item
     const totalItemTitleHeight = (this.data.size.y * itemTitleHeight)
 
-    const itemDimensions = this.data.items.slice(0, this.data.size.x * this.data.size.y).map((item) => {
+    const itemDimensions = this.data.items.slice(0, this.data.size.x * this.data.size.y).map((item, idx) => {
       if (item) {
-        return getScaledDimensions(item.coverImg, this.cellSize)
+        if (this.data.layout === 'tiered') {
+          const cellSize = this.getTieredCellSizeByIndex(idx)
+          return getScaledDimensions(item.coverImg, cellSize)
+        }
+        else {
+          return getScaledDimensions(item.coverImg, this.cellSize)
+        }
       }
 
       return null
@@ -221,26 +227,24 @@ class Chart {
     }
   }
 
-  drawCover(cover: HTMLImageElement, coords: { x: number, y: number }, dimensions: {
-    height: number
-    width: number
-  }): { x: [number, number], y: [number, number] } {
-    const itemTitleGap = this.canvasInfo.itemTitleHeight * coords.y
+  drawCover(cover: HTMLImageElement, gridCoords: { x: number, y: number }, idx: number) {
+    const dimensions = this.itemDimensions[idx]
 
-    const xCoord = (coords.x * (this.cellSize + this.data.gap)) + this.data.gap + this.findCenteringOffset(dimensions.width, this.cellSize)
-    const yCoord = (coords.y * (this.cellSize + this.data.gap)) + this.data.gap + this.findCenteringOffset(dimensions.height, this.cellSize) + this.canvasInfo.chartTitleMargin + itemTitleGap
+    const pixelCoords = this.data.layout === 'grid'
+      ? this.getGridPixelCoordsByIndex(gridCoords, idx)
+      : this.getTieredPixelCoordsByIndex(idx)
 
     this.ctx.drawImage(
       cover,
-      xCoord,
-      yCoord,
+      pixelCoords.x,
+      pixelCoords.y,
       dimensions.width,
       dimensions.height,
     )
 
     return {
-      x: [xCoord, xCoord + dimensions.width],
-      y: [yCoord, yCoord + dimensions.height],
+      x: [pixelCoords.x, pixelCoords.x + dimensions.width],
+      y: [pixelCoords.y, pixelCoords.y + dimensions.height],
     }
   }
 
@@ -332,7 +336,35 @@ class Chart {
 
   insertTieredCoverImages() {
     this.data.items.forEach((item: ChartItem | null, index: number) => {
+      // avoid rendering items that are out of bounds
+      const maxIdx = this.data.tieredSize === 'medium'
+        ? 42
+        : 100
 
+      if (index + 1 > maxIdx) {
+        return null
+      }
+
+      const coords = this.getTieredGridCoordsByIndex(index)
+
+      if (item) {
+        const pixelCoords = this.drawCover(
+          item.coverImg,
+          coords,
+          this.itemDimensions[index],
+        )
+        this.indexedItemCoords[index] = {
+          x: [...pixelCoords.x],
+          y: [...pixelCoords.y],
+        }
+      }
+      else {
+        const placeholderCoords = this.getPlaceholderCoords(coords)
+        this.indexedItemCoords[index] = {
+          ...placeholderCoords,
+          placeholder: true,
+        }
+      }
     })
   }
 
@@ -461,6 +493,119 @@ class Chart {
 
   truncateText(txt: string, maxLength: number) {
     return txt.length > (maxLength + 3) ? `${txt.slice(0, maxLength).trim()}...` : txt
+  }
+
+  // WIP
+  getTieredPixelCoordsByIndex(idx: number) {
+    const dimensions = this.itemDimensions[idx]
+    const tieredCellSize = this.getTieredCellSizeByIndex(idx)
+
+    const baseX = this.data.gap + this.findCenteringOffset(dimensions.width, tieredCellSize)
+    const baseY = this.data.gap + this.findCenteringOffset(dimensions.height, tieredCellSize)
+
+    if (this.data.tieredSize === 'large') {
+      if (idx > 58) {
+        // return (idx % )
+      }
+    }
+  }
+
+  getGridPixelCoordsByIndex(coords: { x: number, y: number }, idx: number) {
+    const itemTitleGap = this.canvasInfo.itemTitleHeight * coords.y
+    const dimensions = this.itemDimensions[idx]
+
+    const xCoord = (coords.x * (this.cellSize + this.data.gap)) + this.data.gap + this.findCenteringOffset(dimensions.width, this.cellSize)
+    const yCoord = (coords.y * (this.cellSize + this.data.gap)) + this.data.gap + this.findCenteringOffset(dimensions.height, this.cellSize) + this.canvasInfo.chartTitleMargin + itemTitleGap
+
+    return {
+      x: xCoord,
+      y: yCoord,
+    }
+  }
+
+  // gets the coords within the current section
+  getTieredGridCoordsByIndex(idx: number) {
+    if (this.data.tieredSize === 'large') {
+      if (idx > 58) {
+        const diff = idx - 58
+        return {
+          x: (diff % 14),
+          y: Math.floor(diff / 14),
+        }
+      }
+      else if (idx > 28) {
+        const diff = idx - 28
+        return {
+          x: (diff % 10),
+          y: Math.floor(diff / 10),
+        }
+      }
+      else if (idx > 10) {
+        const diff = idx - 10
+        return {
+          x: (diff % 6),
+          y: Math.floor(diff / 6),
+        }
+      }
+      else {
+        return {
+          x: idx % 5,
+          y: Math.floor(idx / 5),
+        }
+      }
+    }
+    else if (this.data.tieredSize === 'medium') {
+      if (idx > 22) {
+        const diff = idx - 22
+        return {
+          x: (diff % 10),
+          y: Math.floor(diff / 10),
+        }
+      }
+      else if (idx > 10) {
+        const diff = idx - 10
+        return {
+          x: (diff % 6),
+          y: Math.floor(diff / 6),
+        }
+      }
+      else {
+        return {
+          x: (idx % 5),
+          y: Math.floor(idx / 5),
+        }
+      }
+    }
+  }
+
+  getTieredCellSizeByIndex(idx: number) {
+    if (this.data.tieredSize === 'large') {
+      if (idx > 58) {
+        return this.cellSize / 4
+      }
+      else if (idx > 28) {
+        return this.cellSize / 2
+      }
+      else if (idx > 10) {
+        return this.cellSize
+      }
+      else {
+        return this.cellSize * 2
+      }
+    }
+    else {
+      if (this.data.tieredSize === 'medium') {
+        if (idx > 22) {
+          return this.cellSize / 2
+        }
+        else if (idx > 10) {
+          return this.cellSize
+        }
+        else {
+          return this.cellSize * 2
+        }
+      }
+    }
   }
 }
 

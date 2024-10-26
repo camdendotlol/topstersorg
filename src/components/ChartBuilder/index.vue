@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Chart from './Chart/index.vue'
 import ChartCanvas from './ChartCanvas.vue'
 import TopBar from './TopBar.vue'
 </script>
@@ -7,7 +8,8 @@ import TopBar from './TopBar.vue'
   <div class="chart-builder">
     <div class="chart-builder-contents">
       <TopBar />
-      <ChartCanvas />
+      <!-- <ChartCanvas /> -->
+      <Chart />
     </div>
   </div>
 </template>

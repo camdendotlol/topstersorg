@@ -229,7 +229,7 @@ export async function importTopsters2(event: Event) {
               font: custom.fontFamily,
               layout: 'tiered',
               titlePosition: 'right',
-              tieredSize: 'medium',
+              tieredSize: 'large',
             },
           }
 

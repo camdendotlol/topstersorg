@@ -31,7 +31,7 @@ export const initialState: {
     shadows: true,
     layout: 'grid',
     titlePosition: 'right',
-    tieredSize: 'small',
+    tieredSize: 'medium',
   },
 }
 
