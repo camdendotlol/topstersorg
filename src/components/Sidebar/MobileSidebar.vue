@@ -5,7 +5,7 @@ import { Tabs as TabsEnum } from '../../types'
 import PageTitle from '../PageTitle.vue'
 import Imports from './Imports/index.vue'
 import Info from './Info.vue'
-import Options from './Options.vue'
+import Options from './Options/index.vue'
 import Tabs from './Tabs.vue'
 
 const tabs: TabsEnum[] = [

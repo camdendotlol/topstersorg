@@ -15,11 +15,10 @@ export const initialState = {
       x: 5,
       y: 5,
     },
-    background: {
-      type: BackgroundTypes.Color,
-      value: '#000000',
-      img: null,
-    },
+    backgroundUrl: '',
+    backgroundColor: '#000000',
+    backgroundType: BackgroundTypes.Color,
+    backgroundImg: null,
     showNumbers: false,
     showTitles: true,
     gap: 20,
@@ -34,16 +33,13 @@ export const initialState = {
 function hydrateImages(chart: Chart) {
   return {
     ...chart,
-    background: chart.background.type === 'image'
-      ? {
-          ...chart.background,
-          img: (() => {
-            const img = new Image()
-            img.src = chart.background.value
-            return img
-          })(),
-        }
-      : chart.background,
+    backgroundImg: chart.backgroundType === 'image'
+      ? (() => {
+          const img = new Image()
+          img.src = chart.backgroundUrl
+          return img
+        })()
+      : null,
     items: chart.items.map((i) => {
       if (i && i.coverURL) {
         const img = new Image()
@@ -85,39 +81,35 @@ export const useStore = defineStore('store', {
     changeTitle(newTitle: string) {
       this.chart = { ...this.chart, title: newTitle }
     },
-    changeBackgroundColor(newColor: string) {
+    setBackgroundColor(hex: string) {
       this.chart = {
         ...this.chart,
-        background: {
-          type: BackgroundTypes.Color,
-          value: newColor,
-          img: null,
-        },
+        backgroundColor: hex,
       }
     },
-    setBackgroundImage(url: string) {
-      const image = new Image()
-      image.src = url
+    setBackgroundUrl(url: string) {
       this.chart = {
         ...this.chart,
-        background: {
-          type: BackgroundTypes.Image,
-          value: url,
-          img: image,
-        },
+        backgroundUrl: url,
       }
     },
-    changeSize(payload: { axis: string, value: number }) {
-      switch (payload.axis) {
-        case 'x':
-          this.chart = { ...this.chart, size: { y: this.chart.size.y, x: payload.value } }
-          break
-        case 'y':
-          this.chart = { ...this.chart, size: { x: this.chart.size.x, y: payload.value } }
-          break
-        default:
-          this.chart = { ...this.chart }
+    setBackgroundType(backgroundType: BackgroundTypes) {
+      this.chart = {
+        ...this.chart,
+        backgroundType,
       }
+    },
+    setHeight(payload: number) {
+      this.chart = { ...this.chart, size: {
+        ...this.chart.size,
+        y: payload,
+      } }
+    },
+    setWidth(payload: number) {
+      this.chart = { ...this.chart, size: {
+        ...this.chart.size,
+        x: payload,
+      } }
     },
     changeGap(newGap: number) {
       this.chart = { ...this.chart, gap: newGap }

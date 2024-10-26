@@ -25,14 +25,13 @@ export enum SearchTypes {
 }
 
 export interface Chart {
+  backgroundUrl: string
+  backgroundColor: string
+  backgroundType: BackgroundTypes
+  backgroundImg: HTMLImageElement | null
   title: string
   items: Array<ChartItem | null>
   size: ChartSize
-  background: {
-    type: BackgroundTypes
-    value: string
-    img: HTMLImageElement | null
-  }
   showNumbers: boolean
   showTitles: boolean
   gap: number
@@ -55,9 +54,22 @@ export interface OldStoredChart {
   currentlyActive: boolean
 }
 
+export interface PreMigrationChart extends Chart {
+  background?: {
+    type?: BackgroundTypes
+    value?: string
+    img?: HTMLImageElement | null
+  }
+}
+
 export interface StoredChart {
   timestamp: number
   data: Chart
+}
+
+export interface StoredPremigrationChart {
+  timestamp: number
+  data: PreMigrationChart
 }
 
 export interface StoredCharts {

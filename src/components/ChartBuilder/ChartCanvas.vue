@@ -21,8 +21,8 @@ const drawingCtx = computed(() => {
 })
 
 watch(() => store.chart, () => {
-  if (store.chart.background.type === 'image' && !store.chart.background.img.complete) {
-    store.chart.background.img.onload = () => {
+  if (store.chart.backgroundType === 'image' && store.chart.backgroundImg && !store.chart.backgroundImg.complete) {
+    store.chart.backgroundImg.onload = () => {
       renderChart()
     }
   }
@@ -36,13 +36,13 @@ onMounted(() => {
   }
 
   if (store.chart) {
-    if (store.chart.background.type === BackgroundTypes.Image) {
+    if (store.chart.backgroundType === BackgroundTypes.Image) {
       const bgImg = new Image()
-      bgImg.src = store.chart.background.value
+      bgImg.src = store.chart.backgroundUrl
       bgImg.onload = () => {
         renderChart()
       }
-      store.chart.background.img = bgImg
+      store.chart.backgroundImg = bgImg
     }
 
     hydrateImages(store.chart)

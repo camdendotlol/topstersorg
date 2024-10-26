@@ -109,7 +109,7 @@ button {
 input {
   padding: 8px;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   font-family: "Nunito", sans-serif;
   font-size: 14px;
   background-color: var(--input-bg);
@@ -121,7 +121,7 @@ select {
   font-family: "Nunito", sans-serif;
   font-size: 14px;
   padding: 4px;
-  border-radius: 6px;
+  border-radius: 4px;
   background-color: var(--input-bg);
   color: black;
   accent-color: initial;
