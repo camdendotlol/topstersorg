@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import type { Ref } from 'vue'
 import { BIconGearFill, BIconHouse, BIconPlusLg } from 'bootstrap-icons-vue'
 import { ref } from 'vue'
-import type { Ref } from 'vue'
 import DownloadButton from './components/buttons/Download.vue'
 import ChartBuilder from './components/ChartBuilder/index.vue'
 import LocalStorageWatcher from './components/LocalStorageWatcher.vue'
