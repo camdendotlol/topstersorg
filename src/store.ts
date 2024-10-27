@@ -88,6 +88,12 @@ export const useStore = defineStore('store', {
       }
     },
     setBackgroundUrl(url: string) {
+      const img = new Image()
+      img.src = url
+      img.onload = () => {
+        this.chart = { ...this.chart, backgroundImg: img }
+      }
+
       this.chart = {
         ...this.chart,
         backgroundUrl: url,

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
+import type { Chart } from '../../types'
+import { computed, onMounted, ref, watch } from 'vue'
 import generateChart from '../../chartgen'
 import { useStore } from '../../store'
 import { BackgroundTypes } from '../../types'
 import { insertPlaceholder } from './lib'
-import type { Chart } from '../../types'
 
 const canvas: Ref<HTMLCanvasElement> = ref(null)
 
