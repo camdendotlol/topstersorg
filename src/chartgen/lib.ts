@@ -1,7 +1,4 @@
-interface ChartSize {
-  x: number
-  y: number
-}
+import type { Chart } from '../types'
 
 export enum BackgroundTypes {
   Color = 'color',
@@ -13,23 +10,6 @@ export interface ChartItem {
   creator?: string
   coverURL: string
   coverImg: HTMLImageElement
-}
-
-export interface Chart {
-  title: string
-  items: Array<ChartItem | null>
-  size: ChartSize
-  background: {
-    type: BackgroundTypes
-    value: string
-    img: HTMLImageElement | null
-  }
-  showNumbers: boolean
-  showTitles: boolean
-  gap: number
-  font?: string
-  textColor?: string
-  shadows?: boolean
 }
 
 interface TitleMap {
@@ -245,20 +225,20 @@ export function setup(canvas: HTMLCanvasElement, chart: Chart, cellSize: number)
 export function drawBackground(canvasInfo: CanvasInfo, chart: Chart): void {
   const ctx = canvasInfo.ctx
 
-  if (chart.background.type === BackgroundTypes.Color) {
+  if (chart.backgroundType === BackgroundTypes.Color) {
     ctx.beginPath()
-    ctx.fillStyle = chart.background.value
+    ctx.fillStyle = chart.backgroundColor
     ctx.fillRect(0, 0, canvasInfo.width, canvasInfo.height)
   }
   else {
-    if (chart.background.img?.complete) {
-      const imageRatio = chart.background.img.height / chart.background.img.width
+    if (chart.backgroundImg?.complete) {
+      const imageRatio = chart.backgroundImg.height / chart.backgroundImg.width
       const canvasRatio = canvasInfo.height / canvasInfo.width
 
       if (imageRatio > canvasRatio) {
         const height = canvasInfo.width * imageRatio
         ctx.drawImage(
-          chart.background.img,
+          chart.backgroundImg,
           0,
           Math.floor((canvasInfo.height - height) / 2),
           canvasInfo.width,
@@ -268,7 +248,7 @@ export function drawBackground(canvasInfo: CanvasInfo, chart: Chart): void {
       else {
         const width = canvasInfo.width * canvasRatio / imageRatio
         ctx.drawImage(
-          chart.background.img,
+          chart.backgroundImg,
           Math.floor((canvasInfo.width - width) / 2),
           0,
           width,

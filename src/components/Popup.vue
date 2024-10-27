@@ -4,7 +4,6 @@ import { useStore } from '../store'
 
 const store = useStore()
 
-// todo: make sure this works
 watch(() => store.popupText, () => {
   // Make sure not to reset the popup when something else has been added.
   const oldText = store.popupText

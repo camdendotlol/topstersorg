@@ -6,9 +6,7 @@ import {
   insertTitles,
   setup,
 } from './lib'
-import type {
-  Chart,
-} from './lib'
+import type { Chart } from '../types'
 
 function generateChart(canvas: HTMLCanvasElement, chart: Chart, cellSize = 260): HTMLCanvasElement {
   const canvasInfo = setup(canvas, chart, cellSize)
