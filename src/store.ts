@@ -94,6 +94,14 @@ export const useStore = defineStore('store', {
       }
     },
     setBackgroundType(backgroundType: BackgroundTypes) {
+      if (backgroundType === BackgroundTypes.Image && this.chart.backgroundUrl) {
+        const img = new Image()
+        img.src = this.chart.backgroundUrl
+        img.onload = () => {
+          this.chart = { ...this.chart, backgroundImg: img }
+        }
+      }
+
       this.chart = {
         ...this.chart,
         backgroundType,
