@@ -129,7 +129,8 @@ select {
   background-image: url(/caret-down-fill.svg);
   background-repeat: no-repeat;
   background-position-y: center;
-  background-position-x: right 4px;
+  background-position-x: calc(100% - 6px);
+  padding-right: 20px;
 }
 
 .main {

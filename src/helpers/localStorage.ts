@@ -129,7 +129,7 @@ export function migrateChart(chart: StoredPremigrationChart) {
     chart.data.backgroundType = chart.data.background?.type || BackgroundTypes.Color
 
     chart.data.backgroundColor = chart.data.backgroundType === BackgroundTypes.Color
-      ? chart.data.background.value || '#000000'
+      ? chart.data.background?.value || '#000000'
       : '#000000'
 
     chart.data.backgroundUrl = chart.data.backgroundType === BackgroundTypes.Image
