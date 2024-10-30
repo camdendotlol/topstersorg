@@ -124,10 +124,10 @@ async function fillInItems(chart: Chart) {
 
   // Get background image
   if (
-    chart.background.type === BackgroundTypes.Image
-    && chart.background.value
+    chart.backgroundType === BackgroundTypes.Image
+    && chart.backgroundUrl
   ) {
-    const bgImgURL = await fetchImageURL(chart.background.value)
+    const bgImgURL = await fetchImageURL(chart.backgroundUrl)
     promises.push(
       new Promise<void>((resolve) => {
         const bgImg = new Image()
@@ -140,7 +140,7 @@ async function fillInItems(chart: Chart) {
           console.log(`Error downloading image from ${bgImgURL}`)
           resolve()
         }
-        chart.background.img = bgImg
+        chart.backgroundImg = bgImg
       }),
     )
   }

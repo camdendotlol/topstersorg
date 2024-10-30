@@ -1,10 +1,10 @@
 <script setup lang='ts'>
-import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
+import type { StoredCharts } from '../../types'
+import { ref, watch } from 'vue'
 import { addImgElements } from '../../helpers/chart'
 import { getActiveChartUuid, getStoredCharts, getUuids, setActiveChart } from '../../helpers/localStorage'
 import { useStore } from '../../store'
-import type { StoredCharts } from '../../types'
 
 const store = useStore()
 
@@ -62,5 +62,6 @@ function changeChart(event: Event) {
 #chart-switcher {
   width: 140px;
   color: #000000;
+  appearance: none;
 }
 </style>

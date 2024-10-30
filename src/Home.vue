@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import type { Ref } from 'vue'
 import { BIconGearFill, BIconHouse, BIconPlusLg } from 'bootstrap-icons-vue'
 import { ref } from 'vue'
-import type { Ref } from 'vue'
 import DownloadButton from './components/buttons/Download.vue'
 import ChartBuilder from './components/ChartBuilder/index.vue'
 import LocalStorageWatcher from './components/LocalStorageWatcher.vue'
@@ -109,7 +109,7 @@ button {
 input {
   padding: 8px;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   font-family: "Nunito", sans-serif;
   font-size: 14px;
   background-color: var(--input-bg);
@@ -121,10 +121,16 @@ select {
   font-family: "Nunito", sans-serif;
   font-size: 14px;
   padding: 4px;
-  border-radius: 6px;
-  background-color: var(--input-bg);
+  border-radius: 4px;
   color: black;
   accent-color: initial;
+  appearance: none;
+  background-color: var(--input-bg);
+  background-image: url(/caret-down-fill.svg);
+  background-repeat: no-repeat;
+  background-position-y: center;
+  background-position-x: calc(100% - 6px);
+  padding-right: 20px;
 }
 
 .main {

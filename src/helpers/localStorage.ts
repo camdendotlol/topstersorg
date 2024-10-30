@@ -1,6 +1,6 @@
 // Functions for dealing with localStorage
 
-import type { OldStoredChart, StoredChart, StoredCharts } from '../types'
+import { BackgroundTypes, type OldStoredChart, type StoredChart, type StoredCharts, type StoredPremigrationChart } from '../types'
 
 export function setActiveChart(uuid: string) {
   localStorage.setItem('activeChart', uuid)
@@ -76,7 +76,7 @@ export function appendChart(newChart: StoredChart, uuid?: string): string {
 
 // Migration to change to the new data format for charts.
 // See https://github.com/camdendotlol/topstersorg/issues/33
-export function localStorageMigrations() {
+export function newStructureMigration() {
   const charts = getStoredCharts() as unknown as OldStoredChart[]
 
   // If the `charts` value is an array instead of an object,
@@ -102,5 +102,44 @@ export function localStorageMigrations() {
 
     setStoredCharts(newObj)
     setActiveChart(activeUuid || Object.keys(newObj)[0])
+  }
+}
+
+export function localStorageMigrations() {
+  newStructureMigration()
+
+  const charts = getStoredCharts()
+
+  let changed = false
+
+  Object.keys(charts).forEach((uuid) => {
+    const chart = charts[uuid] as StoredPremigrationChart
+
+    changed = migrateChart(chart)
+  })
+
+  if (changed) {
+    setStoredCharts(charts)
+  }
+}
+
+// Applies migrations to a single chart and returns whether changes were made
+export function migrateChart(chart: StoredPremigrationChart) {
+  if (!chart.data.backgroundType) {
+    chart.data.backgroundType = chart.data.background?.type || BackgroundTypes.Color
+
+    chart.data.backgroundColor = chart.data.backgroundType === BackgroundTypes.Color
+      ? chart.data.background?.value || '#000000'
+      : '#000000'
+
+    chart.data.backgroundUrl = chart.data.backgroundType === BackgroundTypes.Image
+      ? chart.data.background?.value || ''
+      : ''
+
+    chart.data.backgroundImg = chart.data.background?.img
+      ? chart.data.background.img
+      : null
+
+    return true
   }
 }

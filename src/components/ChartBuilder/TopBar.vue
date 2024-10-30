@@ -1,13 +1,13 @@
 <!-- eslint-disable no-alert -->
 <script setup lang="ts">
+import type { Ref } from 'vue'
+import type { StoredChart } from '../../types'
 import { BIconArrowRepeat, BIconFileEarmarkArrowDown } from 'bootstrap-icons-vue'
 import { ref } from 'vue'
-import type { Ref } from 'vue'
 import { addImgElements, downloadChart, initializeFirstRun } from '../../helpers/chart'
 import { appendChart, destroyChart, getActiveChartUuid, getNewestChartUuid, getStoredCharts, setActiveChart } from '../../helpers/localStorage'
 import { initialState, useStore } from '../../store'
 import Switcher from './Switcher.vue'
-import type { StoredChart } from '../../types'
 
 const store = useStore()
 

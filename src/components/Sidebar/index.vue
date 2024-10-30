@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import type { Ref } from 'vue'
+import { ref } from 'vue'
 import { Tabs as TabsEnum } from '../../types'
 import PageTitle from '../PageTitle.vue'
 import Credits from './Credits.vue'
 import Imports from './Imports/index.vue'
 import Info from './Info.vue'
-import Options from './Options.vue'
+import Options from './Options/index.vue'
 import SearchBox from './SearchBox/index.vue'
 import Tabs from './Tabs.vue'
 
