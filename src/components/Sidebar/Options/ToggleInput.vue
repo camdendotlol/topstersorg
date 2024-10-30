@@ -58,7 +58,7 @@ input {
   height: 24px;
   position: relative;
   display: inline-block;
-  background-color: #e9e9eb;
+  background-color: var(--input-bg);
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.2s ease-out;
@@ -77,7 +77,7 @@ input {
 }
 
 input:checked + .switch {
-  background-color: var(--dark-accent);
+  background-color: var(--accent);
 }
 
 input:checked + .switch .slider {

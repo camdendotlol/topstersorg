@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import type { Ref } from 'vue'
+import { ref } from 'vue'
 import { Tabs as TabsEnum } from '../../types'
 import PageTitle from '../PageTitle.vue'
 import Credits from './Credits.vue'

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import type { Ref } from 'vue'
+import { computed } from 'vue'
 import { useStore } from '../../../store'
 
 interface Props {
@@ -55,6 +54,58 @@ function updateValue(event: Event) {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+input[type=range] {
+  appearance: none;
+  background: none;
+}
+
+input[type=range]::-moz-range-progress {
+  background-color: var(--accent);
+}
+
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 2px;
+  cursor: pointer;
+  background: #3071A9;
+  background-color: var(--input-bg);
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  background: #3071A9;
+  border-radius: 5px;
+  background-color: var(--input-bg);
+}
+
+input[type=range]::-webkit-slider-thumb {
+  height: 16px;
+  width: 16px;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 1px 1px 1px #000000;
+  background: var(--accent);
+  cursor: pointer;
+  appearance: none;
+  position: relative;
+  bottom: 6px;
+}
+
+input[type=range]::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 1px 1px 1px #000000;
+  background: var(--accent);
+  cursor: pointer;
+  appearance: none;
+  position: relative;
+  bottom: 6px;
 }
 
 .slider-container {

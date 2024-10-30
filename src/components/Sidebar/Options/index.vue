@@ -132,7 +132,7 @@ const storeRef = storeToRefs(store)
 .options-list {
   display: flex;
   flex-flow: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .layout-settings {

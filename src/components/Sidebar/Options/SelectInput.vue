@@ -44,10 +44,16 @@ function updateValue(event: Event) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
 }
+
 select {
   display: inline;
   width: 60px;
+  border: none;
+  min-width: 80px;
+}
+
+select:hover {
+  cursor: pointer;
 }
 </style>

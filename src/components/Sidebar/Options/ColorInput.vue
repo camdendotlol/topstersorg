@@ -25,13 +25,15 @@ function updateValue(event: Event) {
     <label :for="props.property">
       {{ props.label }}
     </label>
-    <input
-      :id="props.property"
-      :name="props.property"
-      type="color"
-      :value="propertyValue"
-      @change="updateValue"
-    >
+    <div class="color-input" :style="{ backgroundColor: propertyValue }">
+      <input
+        :id="props.property"
+        :name="props.property"
+        type="color"
+        :value="propertyValue"
+        @change="updateValue"
+      >
+    </div>
   </div>
 </template>
 
@@ -42,9 +44,25 @@ function updateValue(event: Event) {
   justify-content: space-between;
 }
 
+.color-input {
+  border: 2px solid var(--input-bg);
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+}
+
+input:hover {
+  cursor:pointer;
+}
+
 input {
   padding: 0;
   border: none;
   border-radius: 2px;
+  opacity: 0;
+  display: block;
+  border: none;
+  height: 100%;
+  width: 100%;
 }
 </style>

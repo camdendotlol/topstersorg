@@ -122,9 +122,14 @@ select {
   font-size: 14px;
   padding: 4px;
   border-radius: 4px;
-  background-color: var(--input-bg);
   color: black;
   accent-color: initial;
+  appearance: none;
+  background-color: var(--input-bg);
+  background-image: url(/caret-down-fill.svg);
+  background-repeat: no-repeat;
+  background-position-y: center;
+  background-position-x: right 4px;
 }
 
 .main {
