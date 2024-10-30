@@ -88,7 +88,6 @@ const storeRef = storeToRefs(store)
         property="gap"
         :max="150"
         :min="0"
-        :data-list-step-interval="25"
         @handle-change="store.changeGap"
       />
       <div class="separator" aria-hidden />
