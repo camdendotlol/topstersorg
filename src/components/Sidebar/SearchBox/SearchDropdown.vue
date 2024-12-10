@@ -1,10 +1,4 @@
 <script setup lang="ts">
-import { createChartItem } from '../../../helpers/chart'
-import { useStore } from '../../../store'
-import {
-  SearchTypes,
-} from '../../../types'
-import ResultItem from './ResultItem.vue'
 import type {
   BookResult,
   GameResult,
@@ -13,6 +7,12 @@ import type {
   Result,
   TVResult,
 } from '../../../types'
+import { createChartItem } from '../../../helpers/chart'
+import { useStore } from '../../../store'
+import {
+  SearchTypes,
+} from '../../../types'
+import ResultItem from './ResultItem.vue'
 
 interface Props {
   results: any[]

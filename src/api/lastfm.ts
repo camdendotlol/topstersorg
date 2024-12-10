@@ -1,5 +1,5 @@
-import { errorMessages } from './errors'
 import type { LastfmChartResponseItem, LastfmDataType, Period } from '../types'
+import { errorMessages } from './errors'
 
 async function queryLastFM(query: string): Promise<unknown[]> {
   if (query === '') {

@@ -2,10 +2,10 @@
 
 // Functions related to importing and exporting charts
 
+import type { ChartItem, StoredChart, StoredCharts, StoredPremigrationChart } from '../types'
 import { BackgroundTypes } from '../types'
 import { forceRefresh } from './chart'
 import { appendChart, findByUuid, getActiveChart, getActiveChartUuid, getNewestChartUuid, migrateChart, setActiveChart, updateStoredChart } from './localStorage'
-import type { ChartItem, StoredChart, StoredCharts, StoredPremigrationChart } from '../types'
 
 async function unzlib(data: Uint8Array) {
   const stream = new Response(data).body.pipeThrough(new DecompressionStream('deflate'))

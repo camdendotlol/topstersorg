@@ -1,11 +1,11 @@
 <!-- eslint-disable no-alert -->
 <script setup lang="ts">
-import { ref } from 'vue'
 import type { Ref } from 'vue'
+import type { ChartItem, LastfmChartResponseItem, Period } from '../../../types'
+import { ref } from 'vue'
 import { getLastfmChart } from '../../../api/lastfm'
 import { createNewChart, periodHeaders } from '../../../helpers/chart'
 import { initialState, useStore } from '../../../store'
-import type { ChartItem, LastfmChartResponseItem, Period } from '../../../types'
 
 const store = useStore()
 

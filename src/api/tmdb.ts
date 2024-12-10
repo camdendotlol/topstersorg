@@ -1,5 +1,5 @@
-import { errorMessages } from './errors'
 import type { MovieResult, TVResult } from '../types'
+import { errorMessages } from './errors'
 
 async function queryTmdb(url: string): Promise<Array<MovieResult | TVResult>> {
   const res = await fetch(url)
