@@ -10,7 +10,7 @@ export const initialState = {
   popupText: null,
   chart: {
     title: '',
-    items: Array.from({ length: 144 }).fill(null) as null[],
+    items: Array.from({ length: 144 }).fill(null),
     size: {
       x: 5,
       y: 5,
@@ -26,7 +26,7 @@ export const initialState = {
     textColor: '#ffffff',
     shadows: true,
   },
-}
+} as State
 
 // Image elements are stored in localStorage as empty objects ({})
 // so we need to fill in the img elements when a chart first loads.
