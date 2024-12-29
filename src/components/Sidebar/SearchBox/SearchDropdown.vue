@@ -73,11 +73,12 @@ function addToChart(item: Result): void {
 }
 
 function initDrag(event: DragEvent, result: Result): void {
-  const itemString = JSON.stringify(createChartItem(result))
-  // Some null-checking is needed here to satisfy TS
+  const dragData = JSON.stringify({
+    item: createChartItem(result),
+  })
+
   if (event.dataTransfer) {
-    // Put the item object into the the payload
-    event.dataTransfer.setData('application/json', itemString)
+    event.dataTransfer.setData('application/json', dragData)
   }
 }
 </script>

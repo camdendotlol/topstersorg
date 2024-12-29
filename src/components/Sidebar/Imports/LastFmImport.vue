@@ -45,13 +45,10 @@ async function importLastFmChart() {
 
   const newItems: ChartItem[] = filtered.map((item: LastfmChartResponseItem) => {
     const coverURL = item.image.find(i => i.size === 'extralarge')['#text']
-    const coverImg = new Image()
-    coverImg.src = coverURL
 
     return {
       title: item.name,
       creator: item.artist.name,
-      coverImg,
       coverURL,
     }
   })
