@@ -25,31 +25,40 @@ function setCurrentTab(tab: TabsEnum) {
 </script>
 
 <template>
-  <div class="sidebar">
-    <div class="sidebar-block title-block">
-      <PageTitle />
-    </div>
-    <div class="tabbed-sidebar-block">
-      <Tabs
-        :tabs="tabs"
-        :current-tab="currentTab"
-        @set-current-tab="setCurrentTab"
-      />
-      <div class="sidebar-content">
-        <SearchBox v-if="currentTab === TabsEnum.AddItems" />
-        <Options v-else-if="currentTab === TabsEnum.Options" />
-        <Imports v-else-if="currentTab === TabsEnum.ImportsExports" />
-        <Info v-else-if="currentTab === TabsEnum.Info" />
-        <div
-          v-if="currentTab === TabsEnum.AddItems || currentTab === TabsEnum.Info"
-          class="sidebar-block mobile-credits-block"
-        >
-          <Credits />
+  <div class="sidebar-container">
+    <Tabs
+      :tabs="tabs"
+      :current-tab="currentTab"
+      class="mobile-tabs"
+      @set-current-tab="setCurrentTab"
+    />
+    <div class="sidebar">
+      <div class="sidebar-block title-block">
+        <PageTitle />
+      </div>
+      <div class="tabbed-sidebar-block">
+        <Tabs
+          :tabs="tabs"
+          :current-tab="currentTab"
+          class="desktop-tabs"
+          @set-current-tab="setCurrentTab"
+        />
+        <div class="sidebar-content">
+          <SearchBox v-if="currentTab === TabsEnum.AddItems" />
+          <Options v-else-if="currentTab === TabsEnum.Options" />
+          <Imports v-else-if="currentTab === TabsEnum.ImportsExports" />
+          <Info v-else-if="currentTab === TabsEnum.Info" />
+          <div
+            v-if="currentTab === TabsEnum.AddItems || currentTab === TabsEnum.Info"
+            class="sidebar-block mobile-credits-block"
+          >
+            <Credits />
+          </div>
         </div>
       </div>
-    </div>
-    <div class="sidebar-block desktop-credits-block">
-      <Credits />
+      <div class="sidebar-block desktop-credits-block">
+        <Credits />
+      </div>
     </div>
   </div>
 </template>
@@ -60,6 +69,10 @@ function setCurrentTab(tab: TabsEnum) {
 }
 
 .mobile-credits-block {
+  display: none;
+}
+
+.mobile-tabs {
   display: none;
 }
 
@@ -93,7 +106,7 @@ function setCurrentTab(tab: TabsEnum) {
   }
 
   .sidebar {
-    height: 60dvh;
+    height: 50dvh;
     background: #000000;
     z-index: 1;
   }
@@ -123,6 +136,14 @@ function setCurrentTab(tab: TabsEnum) {
 
   .mobile-credits-block {
     display: initial;
+  }
+
+  .mobile-tabs {
+    display: flex;
+  }
+
+  .desktop-tabs {
+    display: none;
   }
 }
 </style>

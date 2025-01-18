@@ -30,8 +30,8 @@ import TopBar from './TopBar.vue'
 @media screen and (max-width: 1000px) {
   .chart-builder {
     width: 100%;
-    height: 40dvh;
-    max-height: 40dvh;
+    height: 50dvh;
+    max-height: 50dvh;
     overflow-y: auto;
   }
 
