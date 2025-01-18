@@ -111,6 +111,7 @@ function deleteItem() {
   display: flex;
   align-items: center;
   justify-content: center;
+  touch-action: pinch-zoom;
 }
 
 .item-img {
@@ -152,6 +153,7 @@ function deleteItem() {
 
 .placeholder {
   background-color: rgba(90, 90, 90, 0.6);
+  touch-action: auto;
 }
 
 @media (hover: none) {

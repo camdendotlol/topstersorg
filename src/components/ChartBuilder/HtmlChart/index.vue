@@ -106,7 +106,6 @@ onUnmounted(() => {
   transform-origin: top left;
   top: 0;
   left: 420px;
-  touch-action: pinch-zoom;
 }
 
 #chart .chart-title {
