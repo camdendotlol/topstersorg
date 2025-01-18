@@ -65,7 +65,8 @@ function setCurrentTab(tab: TabsEnum) {
 
 <style scoped>
 .sidebar {
-  width: 100%;
+  position: fixed;
+  width: 400px;
 }
 
 .mobile-credits-block {
@@ -109,6 +110,8 @@ function setCurrentTab(tab: TabsEnum) {
     height: 50dvh;
     background: #000000;
     z-index: 1;
+    position: static;
+    width: 100%;
   }
 
   .sidebar-block {

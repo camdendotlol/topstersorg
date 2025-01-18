@@ -40,7 +40,6 @@ const emit = defineEmits([
   border-radius: 6px 6px 0 0;
   width: 100%;
   gap: 4px;
-  /* background: #2a2a2a; */
 }
 
 .nav-list-item {
@@ -72,9 +71,13 @@ const emit = defineEmits([
 
   .nav-list {
     position: absolute;
-    top: calc(50dvh - 30px);
+    top: calc(50dvh - 30.5px);
     z-index: 2;
-    height: 26px;
+  }
+
+  .tab-item {
+    box-shadow: 0 0 2.5px 2px rgba(0, 0, 0, 0.18);;
+
   }
 
   .active {

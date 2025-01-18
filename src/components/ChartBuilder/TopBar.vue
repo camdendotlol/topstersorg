@@ -4,7 +4,7 @@ import type { Ref } from 'vue'
 import type { StoredChart } from '../../types'
 import { BIconArrowRepeat, BIconFileEarmarkArrowDown } from 'bootstrap-icons-vue'
 import { ref } from 'vue'
-import { addImgElements, downloadChart, initializeFirstRun } from '../../helpers/chart'
+import { downloadChart, initializeFirstRun } from '../../helpers/chart'
 import { appendChart, destroyChart, getActiveChartUuid, getNewestChartUuid, getStoredCharts, setActiveChart } from '../../helpers/localStorage'
 import { initialState, useStore } from '../../store'
 import Switcher from './Switcher.vue'
@@ -50,7 +50,6 @@ function deleteChart() {
       // If there are other charts, pick the most recently created one.
       const chart = setActiveChart(getNewestChartUuid())
 
-      addImgElements(chart.data)
       store.setEntireChart(chart.data)
     }
   }
@@ -95,7 +94,6 @@ function deleteChart() {
   width: calc(100% - 500px);
   height: 40px;
   background: var(--ui-bg);
-  position: absolute;
   display: block;
   top: 0;
   left: 450px;
@@ -104,6 +102,8 @@ function deleteChart() {
   padding: 0;
   gap: 50px;
   color: white;
+  z-index: 2;
+  position: fixed;
 }
 
 .download-button {
@@ -154,7 +154,6 @@ function deleteChart() {
     border-radius: 0;
     left: 0;
     margin: none;
-    position: fixed;
     z-index: 1;
   }
 

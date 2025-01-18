@@ -133,7 +133,7 @@ export const useStore = defineStore('store', {
       // For numbered charts, we use this variable to track the number
       // of each non-null item. We can't just use the index because
       // we don't want to count null numbers.
-      let counter = 0
+      let counter = 1
 
       return state.chart.items.map((item, idx) => {
         if (!item) {

@@ -16,23 +16,6 @@ import {
   isTVResult,
 } from './typeGuards'
 
-// Add the proper <img> elements into the chart state.
-// This is needed when loading a saved chart from localstorage.
-export function addImgElements(chart: Chart): Chart {
-  const itemsWithCovers = chart.items.map((item) => {
-    if (!item) {
-      return null
-    }
-
-    return item
-  })
-
-  return {
-    ...chart,
-    items: itemsWithCovers,
-  }
-}
-
 // To run the first time Topsters.org launches, or when we want to reset everything.
 export function initializeFirstRun(): void {
   const newUuid = appendChart({
@@ -128,7 +111,7 @@ export async function downloadChart(): Promise<void> {
     onclone,
     proxy: `${import.meta.env.VITE_BACKEND_URL}/api/proxy`,
     backgroundColor: null,
-    scale: 1.5,
+    scale: 1.25,
   })
 
   const blob = await new Promise(resolve => result.toBlob(resolve)) as Blob

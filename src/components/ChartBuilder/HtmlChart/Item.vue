@@ -51,6 +51,8 @@ function handleDragStart(ev: DragEvent) {
 }
 
 function handleDrop(ev: DragEvent) {
+  ev.preventDefault()
+
   const dragData = JSON.parse(ev.dataTransfer?.getData('application/json') || 'null')
 
   if (dragData) {
@@ -79,7 +81,7 @@ function deleteItem() {
     :class="`item ${props.item ? '' : 'placeholder'}`"
     :data-index="props.index"
     :title="props.title"
-    :draggable="!!props.item"
+    :draggable="props.item ? 'true' : 'false'"
     :style="props.item ? undefined : imgStyle"
     @dragstart="handleDragStart"
     @dragover="allowDrop"
