@@ -14,7 +14,6 @@ import TopBar from './TopBar.vue'
 
 <style scoped>
 .chart-builder {
-  flex-grow: 1;
   margin: 0;
   text-align: center;
   padding: 0;
@@ -31,6 +30,14 @@ import TopBar from './TopBar.vue'
 @media screen and (max-width: 1000px) {
   .chart-builder {
     width: 100%;
+    height: 40dvh;
+    max-height: 40dvh;
+    overflow-y: auto;
+  }
+
+  .chart-builder-contents {
+    max-height: unset;
+    position: relative;
   }
 }
 </style>

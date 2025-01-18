@@ -40,6 +40,7 @@ const emit = defineEmits([
   border-radius: 6px 6px 0 0;
   width: 100%;
   gap: 4px;
+  background: #2a2a2a;
 }
 
 .nav-list-item {
@@ -67,6 +68,10 @@ const emit = defineEmits([
 @media screen and (max-width: 1000px) {
   .active {
     text-decoration: underline;
+  }
+
+  .nav-list {
+    background: #000000;
   }
 }
 </style>

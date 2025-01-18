@@ -14,6 +14,7 @@ function onResize() {
   if (chartRef.value) {
     const windowWidth = chartRef.value.parentElement.offsetWidth
     // add 100 to factor in the 50px X margins
+    // plus another 50 for some reason because it looks right
     const chartWidth = chartRef.value.offsetWidth + 150
 
     const ratio = windowWidth / chartWidth
@@ -21,6 +22,11 @@ function onResize() {
     chartRef.value.style.transform = `scale(${ratio})`
     chartRef.value.style.marginLeft = `${40 * ratio}px`
     chartRef.value.style.marginRight = `${40 * ratio}px`
+
+    // set the parent container's height so you can scroll vertically
+    // to see the whole chart on mobile
+    const parentEl = chartRef.value.parentElement
+    parentEl.style.height = `${Math.floor(chartRef.value.offsetHeight * ratio + 60)}px`
   }
 }
 
@@ -42,7 +48,7 @@ function getBackgroundStyle(chart: Chart): CSSProperties {
   // default to black background when no image URL has been entered
   if (!chart.backgroundUrl) {
     return ({
-      backgroundColor: '#000',
+      backgroundColor: '#000000',
     })
   }
 
@@ -120,7 +126,6 @@ onUnmounted(() => {
 @media screen and (max-width: 1000px) {
   #chart {
     left: 0;
-    /* margin-top: 50px; */
   }
 }
 </style>

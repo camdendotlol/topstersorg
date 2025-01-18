@@ -153,10 +153,15 @@ function deleteChart() {
     width: 100%;
     border-radius: 0;
     left: 0;
+    margin: none;
+    position: fixed;
+    z-index: 1;
   }
 
-  .download-button {
-    display: none;
+  .switcher-menu {
+    max-width: 60%;
+    gap: 8px;
   }
+
 }
 </style>

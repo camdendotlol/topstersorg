@@ -3,11 +3,9 @@ import { BackgroundTypes, type Chart, type ChartItem } from './types'
 
 export interface State {
   chart: Chart
-  popupText: string | null
 }
 
 export const initialState = {
-  popupText: null,
   chart: {
     title: '',
     items: Array.from({ length: 144 }).fill(null),
@@ -42,9 +40,6 @@ export const useStore = defineStore('store', {
     return { ...initialState }
   },
   actions: {
-    setPopup(text: string | null) {
-      this.popupText = text
-    },
     // For overriding the existing item (e.g. adding to a null slot, or removing an item)
     addItem(payload: { item: ChartItem | null, index: number }) {
       const itemsArray = this.chart.items

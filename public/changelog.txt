@@ -1,24 +1,8 @@
-???, 2025: Replaced the Canvas chart with regular HTML elements.
+???, 2025:
 
-This is the most substantial update to the site so far, as it involved totally rewriting the code that renders the chart.
-
-Building the chart with Canvas was a really interesting and math-heavy project for the fresh grad that I was in 2021, but Canvas requires calculating everything pixel-by-pixel and its performance depends on the user's browser/GPU and the developer's ability to optimize. Making any changes to the chart (such as adding a new layout) was *complicated*, because I needed to write tons of calculations to tell the browser where to place each element - again, on a pixel-by-pixel basis.
-
-There's no reason to have to do that when you can write regular HTML and CSS, offloading the positioning math to the browser. The only real benefit to the Canvas method was pixel-perfect control of the layout, but I think I've found the right set of CSS rules to give me that anyway.
-
-You shouldn't see any substantial visible changes with this update, but everything should run better in general:
-
-* Chart downloads are much faster
-* Thanks to the chart being a normal HTML element, all the issues with graphical performance, framerate, etc. should be completely gone
-* On mobile devices, you should now be able to zoom and pan with two fingers even when the chart takes up your whole screen
-* Any rare bugs with chart rendering (which I'm sure existed even if I wasn't aware of them) should be fixed
-
-This also makes it way easier for me to build new features. In the near future, I expect to add:
-
-* Topsters 2-style tiered layouts
-* Topsters 1-style layout with the text under the items instead of to the side
-* The ability to click a button on an item to edit its properties (artist and title)
-* A secret, totally original, fourth thing that I won't announce in advance
+* Added a new mobile UI that's very similar to the desktop UI, instead of maintaining two separate interfaces for desktop and mobile. 
+* Replaced the very complex Canvas graphics code with plain HTML elements and browser-native drag and drop functionality. This change is less immediately noticeable but should vastly improve performance, reduce bugs, and make it a lot easier for me to add features such as new layouts in the future.
+* Updated the method for removing items from the chart. Instead of dragging an item out of bounds, there is now an X button on each item. This button appears on hover when using a mouse, and is always visible when on a touchscreen.
 
 October 29, 2024: Redesigned the Options menu to be nicer looking, especially on Safari. Also, rewrote the Options menu code to be cleaner and less bug prone.
 

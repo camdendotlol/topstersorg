@@ -26,7 +26,7 @@ function setCurrentTab(tab: TabsEnum) {
 
 <template>
   <div class="sidebar">
-    <div class="sidebar-block">
+    <div class="sidebar-block title-block">
       <PageTitle />
     </div>
     <div class="tabbed-sidebar-block">
@@ -40,18 +40,32 @@ function setCurrentTab(tab: TabsEnum) {
         <Options v-else-if="currentTab === TabsEnum.Options" />
         <Imports v-else-if="currentTab === TabsEnum.ImportsExports" />
         <Info v-else-if="currentTab === TabsEnum.Info" />
+        <div
+          v-if="currentTab === TabsEnum.AddItems || currentTab === TabsEnum.Info"
+          class="sidebar-block mobile-credits-block"
+        >
+          <Credits />
+        </div>
       </div>
     </div>
-    <div class="sidebar-block">
+    <div class="sidebar-block desktop-credits-block">
       <Credits />
     </div>
   </div>
 </template>
 
 <style scoped>
+.sidebar {
+  width: 100%;
+}
+
+.mobile-credits-block {
+  display: none;
+}
+
 .sidebar-block {
   margin: 10px;
-  width: 400px;
+  width: 100%;
   background: rgba(20, 20, 20, 0.8);
   border-radius: 6px;
   text-align: center;
@@ -60,7 +74,7 @@ function setCurrentTab(tab: TabsEnum) {
 
 .tabbed-sidebar-block {
   margin: 10px;
-  width: 400px;
+  width: 100%;
   text-align: center;
 }
 
@@ -74,8 +88,41 @@ function setCurrentTab(tab: TabsEnum) {
 }
 
 @media screen and (max-width: 1000px) {
-  .sidebar {
+  .title-block {
     display: none;
+  }
+
+  .sidebar {
+    height: 60dvh;
+    background: #000000;
+    z-index: 1;
+  }
+
+  .sidebar-block {
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    padding: 10px 0;
+  }
+
+  .sidebar-content {
+    max-height: 100%;
+    border-radius: 0;
+    background: #000000;
+  }
+
+  .tabbed-sidebar-block {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .desktop-credits-block {
+    display: none;
+  }
+
+  .mobile-credits-block {
+    display: initial;
   }
 }
 </style>

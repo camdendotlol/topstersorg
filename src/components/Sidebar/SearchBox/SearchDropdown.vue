@@ -68,7 +68,6 @@ function addToChart(item: Result): void {
   if (firstEmptyIndex < totalSlots) {
     const newItem = createChartItem(item)
     store.addItem({ item: newItem, index: firstEmptyIndex })
-    store.setPopup(`Added ${newItem.title}`)
   }
 }
 
@@ -92,7 +91,7 @@ function initDrag(event: DragEvent, result: Result): void {
       >
         <ResultItem
           :image-data="{ src: `https://covers.openlibrary.org/b/olid/${result.cover_edition_key}-L.jpg`, alt: result.title }"
-          draggable="true"
+          draggable
           @click="addToChart(result)"
           @dragstart="(event) => initDrag(event, result)"
         />
@@ -105,7 +104,7 @@ function initDrag(event: DragEvent, result: Result): void {
       >
         <ResultItem
           :image-data="{ src: result.image[result.image.length - 1]['#text'], alt: result.name }"
-          draggable="true"
+          draggable
           @click="addToChart(result)"
           @dragstart="(event) => initDrag(event, result)"
         />
@@ -118,7 +117,7 @@ function initDrag(event: DragEvent, result: Result): void {
       >
         <ResultItem
           :image-data="{ src: result.cover, alt: result.name }"
-          draggable="true"
+          draggable
           @click="addToChart(result)"
           @dragstart="(event) => initDrag(event, result)"
         />
@@ -131,7 +130,7 @@ function initDrag(event: DragEvent, result: Result): void {
       >
         <ResultItem
           :image-data="{ src: `https://image.tmdb.org/t/p/w185/${result.poster_path}`, alt: result.title }"
-          draggable="true"
+          draggable
           @click="addToChart(result)"
           @dragstart="(event) => initDrag(event, result)"
         />
@@ -144,7 +143,7 @@ function initDrag(event: DragEvent, result: Result): void {
       >
         <ResultItem
           :image-data="{ src: `https://image.tmdb.org/t/p/w185/${result.poster_path}`, alt: result.name }"
-          draggable="true"
+          draggable
           @click="addToChart(result)"
           @dragstart="(event) => initDrag(event, result)"
         />
@@ -157,8 +156,7 @@ function initDrag(event: DragEvent, result: Result): void {
       <li>
         <ResultItem
           :image-data="{ src: results[0].imageURL, alt: results[0].title }"
-          draggable="true"
-          class="centered-item"
+          draggable
           @click="addToChart(results[0])"
           @dragstart="(event) => initDrag(event, results[0])"
         />
