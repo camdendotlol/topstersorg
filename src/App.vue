@@ -85,7 +85,7 @@ select {
 @media screen and (max-width: 1000px) {
   .main {
     grid-template-columns: 1fr;
-    grid-template-rows: 2fr 3fr;
+    grid-template-rows: 1fr 1fr;
   }
 
   .main > div:first-child {

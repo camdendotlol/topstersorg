@@ -166,6 +166,10 @@ async function importLastFmChart() {
   margin: 0 40px;
 }
 
+.form-item input {
+  font-size: 16px;
+}
+
 .form-item label {
   font-size: 0.8rem;
 }

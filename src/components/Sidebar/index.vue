@@ -108,9 +108,10 @@ function setCurrentTab(tab: TabsEnum) {
 
   .sidebar {
     height: 50dvh;
+    max-height: 50dvh;
     background: #000000;
     z-index: 1;
-    position: static;
+    position: absolute;
     width: 100%;
   }
 
@@ -119,6 +120,7 @@ function setCurrentTab(tab: TabsEnum) {
     margin: 0;
     border-radius: 0;
     padding: 10px 0;
+    max-height: 100%;
   }
 
   .sidebar-content {

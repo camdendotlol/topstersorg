@@ -77,7 +77,6 @@ const emit = defineEmits([
 
   .tab-item {
     box-shadow: 0 0 2.5px 2px rgba(0, 0, 0, 0.18);;
-
   }
 
   .active {
