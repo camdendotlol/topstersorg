@@ -111,7 +111,7 @@ export async function downloadChart(): Promise<void> {
     onclone,
     proxy: `${import.meta.env.VITE_BACKEND_URL}/api/proxy`,
     backgroundColor: null,
-    scale: 1.25,
+    scale: 1,
   })
 
   const blob = await new Promise(resolve => result.toBlob(resolve)) as Blob
