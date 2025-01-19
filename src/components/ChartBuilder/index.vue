@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import HtmlChart from './HtmlChart/index.vue'
+import Chart from './Chart/index.vue'
 import TopBar from './TopBar.vue'
 </script>
 
@@ -7,7 +7,7 @@ import TopBar from './TopBar.vue'
   <div class="chart-builder">
     <div class="chart-builder-contents">
       <TopBar />
-      <HtmlChart />
+      <Chart />
     </div>
   </div>
 </template>
