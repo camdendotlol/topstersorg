@@ -43,10 +43,12 @@ async function importLastFmChart() {
     return true
   })
 
-  const newItems: ChartItem[] = filtered.map((item: LastfmChartResponseItem) => {
+  const newItems = Array.from({ length: 144 }).fill(null) as ChartItem[]
+
+  filtered.forEach((item: LastfmChartResponseItem, idx) => {
     const coverURL = item.image.find(i => i.size === 'extralarge')['#text']
 
-    return {
+    newItems[idx] = {
       title: item.name,
       creator: item.artist.name,
       coverURL,

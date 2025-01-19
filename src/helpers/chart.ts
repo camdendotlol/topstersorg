@@ -91,8 +91,8 @@ export async function downloadChart(): Promise<void> {
   const onclone = (doc: Document) => {
     const chart = doc.querySelector('#chart') as HTMLElement
     chart.style.transform = 'none'
-    chart.style.maxHeight = '5000px'
-    chart.style.maxWidth = '5000px'
+    chart.style.maxHeight = '10000px'
+    chart.style.maxWidth = '10000px'
 
     const placeholders = doc.querySelectorAll('.placeholder')
 
