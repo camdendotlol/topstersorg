@@ -1,4 +1,4 @@
-???, 2025:
+January 23, 2025:
 
 * Added a new mobile UI that's very similar to the desktop UI, instead of maintaining two separate interfaces for desktop and mobile. 
 * Replaced the very complex Canvas graphics code with plain HTML elements and browser-native drag and drop functionality. This change is less immediately noticeable but should vastly improve performance, reduce bugs, and make it a lot easier for me to add features such as new layouts in the future.
