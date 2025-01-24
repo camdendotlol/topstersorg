@@ -44,10 +44,10 @@ function setCurrentTab(tab: TabsEnum) {
           @set-current-tab="setCurrentTab"
         />
         <div class="sidebar-content">
-          <SearchBox v-if="currentTab === TabsEnum.AddItems" />
-          <Options v-else-if="currentTab === TabsEnum.Options" />
-          <Imports v-else-if="currentTab === TabsEnum.ImportsExports" />
-          <Info v-else-if="currentTab === TabsEnum.Info" />
+          <SearchBox :class="currentTab === TabsEnum.AddItems ? '' : 'hidden-tab'" />
+          <Options :class="currentTab === TabsEnum.Options ? '' : 'hidden-tab'" />
+          <Imports :class="currentTab === TabsEnum.ImportsExports ? '' : 'hidden-tab'" />
+          <Info :class="currentTab === TabsEnum.Info ? '' : 'hidden-tab'" />
           <div
             v-if="currentTab === TabsEnum.AddItems || currentTab === TabsEnum.Info"
             class="sidebar-block mobile-credits-block"
@@ -67,6 +67,10 @@ function setCurrentTab(tab: TabsEnum) {
 .sidebar {
   position: fixed;
   width: 400px;
+}
+
+.hidden-tab {
+  display: none;
 }
 
 .mobile-credits-block {
