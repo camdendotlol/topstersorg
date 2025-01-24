@@ -1,3 +1,11 @@
+January 24, 2025:
+
+This update addresses some feedback about the mobile UI in yesterday's update.
+
+* Added the ability to collapse the bottom pane using a new button on the righthand side of the tab bar. When the pane is collapsed, tapping on a tab will also expand the pane.
+* Set the bottom pane to be collapsed by default so you can see your entire chart when you first load the page.
+* Reduced the number of columns in the search results so the items are larger. I used a pixel-based width measurement, but for most phones this should mean dropping from 4 columns to 3.
+
 January 23, 2025:
 
 * Added a new mobile UI that's very similar to the desktop UI, instead of maintaining two separate interfaces for desktop and mobile. 
