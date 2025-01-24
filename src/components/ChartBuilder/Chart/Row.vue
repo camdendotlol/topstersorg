@@ -51,5 +51,6 @@ const titleListStyle: ComputedRef<CSSProperties> = computed(() => ({
   font-size: 20px;
   line-height: 1;
   list-style: none;
+  -webkit-text-size-adjust:100%
 }
 </style>
