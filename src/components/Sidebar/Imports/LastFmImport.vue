@@ -77,7 +77,7 @@ async function importLastFmChart() {
     ...initialState.chart,
     title: `${username}'s ${periodHeaders[period]} Chart`,
     items: newItems,
-    size: getSize(newItems.length),
+    size: getSize(filtered.length),
   })
 
   if (missingCovers.length > 0) {
