@@ -2,12 +2,15 @@
 import ChartBuilder from './components/ChartBuilder/index.vue'
 import LocalStorageWatcher from './components/LocalStorageWatcher.vue'
 import Sidebar from './components/Sidebar/index.vue'
+import { useStore } from './store'
 import './global.css'
+
+const store = useStore()
 </script>
 
 <template>
   <LocalStorageWatcher>
-    <div class="main">
+    <div :class="`main ${store.$state.collapsed ? 'collapsed' : ''}`">
       <Sidebar />
       <ChartBuilder />
     </div>
@@ -86,6 +89,11 @@ select {
   .main {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
+  }
+
+  .main.collapsed {
+    grid-template-rows: 1fr;
+    overflow: hidden;
   }
 
   .main > div:first-child {

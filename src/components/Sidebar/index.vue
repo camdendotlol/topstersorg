@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Ref } from 'vue'
 import { ref } from 'vue'
+import { useStore } from '../../store'
 import { Tabs as TabsEnum } from '../../types'
 import PageTitle from '../PageTitle.vue'
 import Credits from './Credits.vue'
@@ -17,15 +18,20 @@ const tabs: TabsEnum[] = [
   TabsEnum.Info,
 ]
 
+const store = useStore()
+
 const currentTab: Ref<TabsEnum> = ref(TabsEnum.AddItems)
 
 function setCurrentTab(tab: TabsEnum) {
   currentTab.value = tab
+  if (store.$state.collapsed) {
+    store.toggleCollapse()
+  }
 }
 </script>
 
 <template>
-  <div class="sidebar-container">
+  <div :class="`sidebar-container ${store.$state.collapsed ? 'collapsed' : ''}`">
     <Tabs
       :tabs="tabs"
       :current-tab="currentTab"
@@ -153,6 +159,23 @@ function setCurrentTab(tab: TabsEnum) {
 
   .desktop-tabs {
     display: none;
+  }
+
+  .sidebar-container.collapsed {
+    height: 0;
+    overflow: hidden;
+    background: none;
+  }
+
+  .sidebar-container.collapsed .sidebar {
+    height: 0;
+    filter: opacity(0);
+  }
+
+  .sidebar-container.collapsed .sidebar .tabbed-sidebar-block {
+    background: none;
+    height: 0;
+    max-height: 0;
   }
 }
 </style>

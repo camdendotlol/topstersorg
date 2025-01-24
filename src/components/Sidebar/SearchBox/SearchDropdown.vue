@@ -176,7 +176,7 @@ function initDrag(event: DragEvent, result: Result): void {
 
 ul {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 70px);
+  grid-template-columns: repeat(auto-fill, 90px);
   align-items: center;
   justify-content: space-evenly;
   gap: 4px;

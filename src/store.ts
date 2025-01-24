@@ -3,6 +3,7 @@ import { BackgroundTypes, type Chart, type ChartItem } from './types'
 
 export interface State {
   chart: Chart
+  collapsed: boolean
 }
 
 export const initialState = {
@@ -24,6 +25,7 @@ export const initialState = {
     shadows: true,
     roundCorners: false,
   },
+  collapsed: true,
 } as State
 
 interface ItemData {
@@ -124,6 +126,9 @@ export const useStore = defineStore('store', {
     },
     reset() {
       this.chart = { ...initialState.chart }
+    },
+    toggleCollapse() {
+      this.collapsed = !this.collapsed
     },
   },
   getters: {

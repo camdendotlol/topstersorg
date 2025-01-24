@@ -1,7 +1,6 @@
 // Functions for filling in the chart.
 
 import type {
-  Chart,
   ChartItem,
   Result,
 } from '../types'
