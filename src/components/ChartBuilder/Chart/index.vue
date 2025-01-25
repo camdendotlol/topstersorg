@@ -12,21 +12,23 @@ const chartRef = ref<HTMLDivElement>(null)
 
 function onResize() {
   if (chartRef.value) {
-    const windowWidth = chartRef.value.parentElement.offsetWidth
+    const windowHeight = window.innerHeight
+    const containerWidth = chartRef.value.parentElement.offsetWidth
+
+    const chartHeight = chartRef.value.offsetHeight + 420
     // add 100 to factor in the 50px X margins
     // plus another 50 for some reason because it looks right
-    const chartWidth = chartRef.value.offsetWidth + 150
+    const chartWidth = chartRef.value.offsetWidth + 100
 
-    const ratio = windowWidth / chartWidth
+    const ratio = Math.min(containerWidth / chartWidth, windowHeight / chartHeight)
 
     chartRef.value.style.transform = `scale(${ratio})`
-    chartRef.value.style.marginLeft = `${40 * ratio}px`
-    chartRef.value.style.marginRight = `${40 * ratio}px`
+    chartRef.value.style.marginLeft = `-${Math.floor((chartWidth * ratio / 2) - (50 * ratio))}px`
 
     // set the parent container's height so you can scroll vertically
     // to see the whole chart on mobile
     const parentEl = chartRef.value.parentElement
-    parentEl.style.height = `${Math.floor(chartRef.value.offsetHeight * ratio + 90)}px`
+    parentEl.style.height = `${Math.floor(chartRef.value.offsetHeight * ratio + 150)}px`
   }
 }
 
@@ -105,7 +107,6 @@ onUnmounted(() => {
   position: absolute;
   transform-origin: top left;
   top: 0;
-  left: 420px;
 }
 
 #chart .chart-title {
@@ -120,11 +121,5 @@ onUnmounted(() => {
   margin: 0;
   padding: 0;
   width: 100%;
-}
-
-@media screen and (max-width: 1000px) {
-  #chart {
-    left: 0;
-  }
 }
 </style>
