@@ -28,7 +28,7 @@ function onResize() {
     // set the parent container's height so you can scroll vertically
     // to see the whole chart on mobile
     const parentEl = chartRef.value.parentElement
-    parentEl.style.height = `${Math.floor(chartRef.value.offsetHeight * ratio + 150)}px`
+    parentEl.style.height = `${Math.floor(chartRef.value.offsetHeight * ratio + 90)}px`
   }
 }
 
