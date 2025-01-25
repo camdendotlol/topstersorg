@@ -41,6 +41,7 @@ const titleListStyle: ComputedRef<CSSProperties> = computed(() => ({
 .item-row {
   display: flex;
   justify-content: flex-start;
+  width: 100%;
 }
 
 .title-list {

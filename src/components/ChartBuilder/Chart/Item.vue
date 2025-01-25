@@ -109,6 +109,7 @@ function deleteItem() {
 .item {
   height: 260px;
   width: 260px;
+  min-width: 260px;
   position: relative;
   display: flex;
   align-items: center;
