@@ -46,12 +46,13 @@ const titleListStyle: ComputedRef<CSSProperties> = computed(() => ({
 
 .title-list {
   text-wrap-mode: nowrap;
+  white-space: nowrap;
   text-align: left;
   padding: 0;
   margin: 0;
   font-size: 20px;
   line-height: 1;
   list-style: none;
-  -webkit-text-size-adjust:100%
+  -webkit-text-size-adjust:100%;
 }
 </style>
