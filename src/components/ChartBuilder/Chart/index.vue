@@ -33,7 +33,7 @@ function onResize() {
 }
 
 // re-scale the chart when the state changes
-watch(store, () => {
+watch([store, chartRef], () => {
   onResize()
   // { flush: 'post' } tells Vue to wait until the state is finished changing
   // before running the watcher function. otherwise, onResize runs before the
