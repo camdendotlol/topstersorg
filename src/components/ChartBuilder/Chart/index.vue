@@ -12,7 +12,7 @@ const chartRef = ref<HTMLDivElement>(null)
 
 function onResize() {
   if (chartRef.value) {
-    const windowHeight = window.innerHeight
+    const windowHeight = document.documentElement.clientHeight
     const containerWidth = chartRef.value.parentElement.offsetWidth
 
     const chartHeight = chartRef.value.offsetHeight + 420
