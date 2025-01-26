@@ -7,3 +7,18 @@
 
     color-scheme: dark;
 }
+
+.dnd-container {
+    height: 260px;
+    width: 260px;
+    position: fixed;
+    left: 10000px;
+}
+
+.dnd-img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    filter: opacity(0.9);
+}
+

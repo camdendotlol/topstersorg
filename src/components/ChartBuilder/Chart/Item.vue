@@ -24,29 +24,28 @@ function handleDragStart(ev: DragEvent) {
   })
 
   if (ev.dataTransfer) {
-    // create a 100px image to show at the cursor. if we don't do this, the browser will show the
-    // original image without scaling applied, which can be gigantic when on a smaller screen
-    // or on a large chart.
     const dragImg = new Image()
+    dragImg.classList.add('dnd-img')
     dragImg.src = props.item.coverURL
-    dragImg.style.height = '100%'
-    dragImg.style.width = '100%'
-    dragImg.style.objectFit = 'contain'
-    dragImg.style.filter = 'opacity(0.9)'
 
     const container = document.createElement('div')
-    container.style.height = '80px'
-    container.style.width = '80px'
-    container.style.position = 'fixed'
-    container.style.left = '10000px'
+    container.classList.add('dnd-container')
     container.appendChild(dragImg)
+
+    // match the item's scale to the chart
+    const chart = document.getElementById('chart')
+    const chartTransform = chart.style.transform
+    const scaleRatio = chartTransform.slice(6, chartTransform.length - 1)
+    const scaledSize = 260 * Number.parseFloat(scaleRatio)
+    container.style.height = `${scaledSize}px`
+    container.style.width = `${scaledSize}px`
 
     const appEl = document.querySelector('#app')
     appEl.appendChild(container)
 
     ev.dataTransfer.effectAllowed = 'move'
     ev.dataTransfer.setData('application/json', dragData)
-    ev.dataTransfer.setDragImage(container, 40, 40)
+    ev.dataTransfer.setDragImage(container, scaledSize / 2, scaledSize / 2)
   }
 }
 
