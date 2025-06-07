@@ -94,8 +94,11 @@ onUnmounted(() => {
         {{ store.chart.title }}
       </p>
     </div>
-    <div class="row-flex" :style="{ gap: `${store.chart.gap}px`, padding: `${store.chart.gap}px`, paddingTop: store.chart.title ? `${store.chart.gap / 2}px` : `${store.chart.gap}px` }">
-      <Row v-for="rowNumber in store.chart.size.y" :key="rowNumber" :row="rowNumber" />
+    <div
+      class="row-flex"
+      :style="{ gap: `${store.chart.gap}px`, padding: `${store.chart.gap}px`, paddingTop: store.chart.title ? `${store.chart.gap / 2}px` : `${store.chart.gap}px` }"
+    >
+      <Row v-for="(row, idx) in store.rows" :key="idx" :row="row" />
     </div>
   </div>
 </template>

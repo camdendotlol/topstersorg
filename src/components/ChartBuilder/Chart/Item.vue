@@ -1,10 +1,19 @@
 <script setup lang="ts">
 import type { ComputedRef, CSSProperties } from 'vue'
+import type { ChartItem } from '../../../types'
 import { BIconX } from 'bootstrap-icons-vue'
 import { computed } from 'vue'
 import { useStore } from '../../../store'
+import { TitlePosition } from '../../../types'
 
-const props = defineProps(['item', 'index', 'title'])
+interface Props {
+  item?: ChartItem
+  index: number
+  title?: string
+  size: number
+}
+
+const props = defineProps<Props>()
 
 const store = useStore()
 
@@ -64,6 +73,16 @@ function handleDrop(ev: DragEvent) {
   }
 }
 
+const itemStyle: ComputedRef<CSSProperties> = computed(() => {
+  return {
+    borderRadius: props.item ? undefined : store.chart.roundCorners ? `${props.size}px` : '',
+    boxShadow: props.item ? undefined : store.chart.shadows ? '2px 2px 4px rgba(0,0,0,0.6)' : '',
+    height: `${props.size}px`,
+    width: `${props.size}px`,
+    minWidth: `${props.size}px`,
+  }
+})
+
 const imgStyle: ComputedRef<CSSProperties> = computed(() => ({
   borderRadius: store.chart.roundCorners ? '10px' : '',
   boxShadow: store.chart.shadows ? '2px 2px 4px rgba(0,0,0,0.6)' : '',
@@ -81,7 +100,7 @@ function deleteItem() {
     :data-index="props.index"
     :title="props.title"
     :draggable="props.item ? 'true' : 'false'"
-    :style="props.item ? undefined : imgStyle"
+    :style="itemStyle"
     @dragstart="handleDragStart"
     @dragover="allowDrop"
     @drop="handleDrop"
@@ -101,14 +120,12 @@ function deleteItem() {
       class="item-img"
       :style="imgStyle"
     >
+    <span v-if="store.chart.titlePosition === TitlePosition.Below">{title}</span>
   </div>
 </template>
 
 <style scoped>
 .item {
-  height: 260px;
-  width: 260px;
-  min-width: 260px;
   position: relative;
   display: flex;
   align-items: center;

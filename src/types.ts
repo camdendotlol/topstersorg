@@ -23,6 +23,24 @@ export enum SearchTypes {
   Custom = 'custom',
 }
 
+export enum Layout {
+  Grid = 'grid',
+  Tiered = 'tiered',
+}
+
+export type TieredSize = '42' | '100'
+
+export enum TitlePosition {
+  Right = 'right',
+  Below = 'below',
+}
+
+export interface Row {
+  start: number
+  end: number
+  size: number
+}
+
 export interface Chart {
   backgroundUrl: string
   backgroundColor: string
@@ -37,6 +55,9 @@ export interface Chart {
   textColor?: string
   shadows?: boolean
   roundCorners: boolean
+  layout: Layout
+  tieredSize: TieredSize
+  titlePosition: TitlePosition
 }
 
 export interface IgdbItem {

@@ -1,32 +1,47 @@
 <script setup lang="ts">
 import type { ComputedRef, CSSProperties } from 'vue'
+import type { Row } from '../../../types'
 import { computed } from 'vue'
 import { useStore } from '../../../store'
+import { TitlePosition } from '../../../types'
 import Item from './Item.vue'
 
-const props = defineProps(['row'])
+interface Props {
+  row: Row
+}
+
+const props = defineProps<Props>()
 
 const store = useStore()
 
-const rowItems = computed(() => {
-  const start = (props.row - 1) * store.chart.size.x
-  const end = start + store.chart.size.x
-  return store.items.slice(start, end)
-})
+const rowItems = computed(() => store.items.slice(props.row.start, props.row.end))
 
 const titleListStyle: ComputedRef<CSSProperties> = computed(() => ({
-  lineHeight: store.chart.size.x > 10 ? '1' : '1.2',
+  lineHeight: (props.row.end - props.row.start) > 10 ? '1' : '1.2',
 }))
+
+const rowStyles: ComputedRef<CSSProperties> = computed(() => ({
+  gap: `${store.chart.gap}px`,
+}))
+
+const itemSize = computed(() => {
+  const itemCount = props.row.end - props.row.start
+  const baseSize = (6 * 260) + (store.chart.gap * (6 + 1))
+
+  const result = (baseSize / itemCount) - store.chart.gap
+
+  return result
+})
 </script>
 
 <template>
-  <div class="item-row" :style="{ gap: `${store.chart.gap}px`, gridTemplateColumns: `repeat(${store.chart.size.y + 1}, 1fr)` }">
+  <div class="item-row" :style="rowStyles">
     <template
       v-for="item in rowItems" :key="item.originalIndex"
     >
-      <Item :item="item.data" :index="item.originalIndex" :title="item.title" />
+      <Item :item="item.data" :index="item.originalIndex" :title="item.title" :size="itemSize" />
     </template>
-    <ol v-if="store.chart.showTitles && rowItems.some(i => i.title)" class="title-list" :style="titleListStyle">
+    <ol v-if="store.chart.titlePosition === TitlePosition.Right && store.chart.showTitles && rowItems.some(i => i.title)" class="title-list" :style="titleListStyle">
       <li v-for="(item, idx) in rowItems" :key="idx">
         <span v-if="item.number">
           {{ store.chart.showNumbers ? `${item.number}.` : '' }}

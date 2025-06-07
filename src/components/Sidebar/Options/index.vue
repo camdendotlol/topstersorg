@@ -21,32 +21,56 @@ const storeRef = storeToRefs(store)
       @handle-change="store.changeTitle"
     />
     <div class="separator" aria-hidden />
+    <SelectInput
+      label="Layout"
+      property="layout"
+      :options="['grid', 'tiered']"
+      :value="storeRef.chart.value.layout"
+      @handle-change="store.setLayout"
+    />
+    <div class="separator" aria-hidden />
+    <template
+      v-if="storeRef.chart.value.layout === 'tiered'"
+    >
+      <SelectInput
+        label="Size"
+        property="tieredSize"
+        :options="['42', '100']"
+        :value="storeRef.chart.value.tieredSize"
+        @handle-change="store.setTieredSize"
+      />
+      <div class="separator" aria-hidden />
+    </template>
     <ToggleInput
       label="Show Titles"
       property="showTitles"
       @handle-change="store.toggleTitles"
     />
     <div class="separator" aria-hidden />
-    <RangeInput
-      label="Width"
-      property="chartWidth"
-      :min="1"
-      :max="12"
-      :value="storeRef.chart.value.size.x"
-      :data-list-step-interval="1"
-      @handle-change="store.setWidth"
-    />
-    <div class="separator" aria-hidden />
-    <RangeInput
-      label="Height"
-      property="chartHeight"
-      :min="1"
-      :max="12"
-      :value="storeRef.chart.value.size.y"
-      :data-list-step-interval="1"
-      @handle-change="store.setHeight"
-    />
-    <div class="separator" aria-hidden />
+    <template
+      v-if="storeRef.chart.value.layout === 'grid'"
+    >
+      <RangeInput
+        label="Width"
+        property="chartWidth"
+        :min="1"
+        :max="12"
+        :value="storeRef.chart.value.size.x"
+        :data-list-step-interval="1"
+        @handle-change="store.setWidth"
+      />
+      <div class="separator" aria-hidden />
+      <RangeInput
+        label="Height"
+        property="chartHeight"
+        :min="1"
+        :max="12"
+        :value="storeRef.chart.value.size.y"
+        :data-list-step-interval="1"
+        @handle-change="store.setHeight"
+      />
+      <div class="separator" aria-hidden />
+    </template>
     <SelectInput
       label="Background Type"
       property="backgroundType"

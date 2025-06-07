@@ -1,7 +1,7 @@
 // Functions for dealing with localStorage
 
 import { v4 as uuidv4 } from 'uuid'
-import { BackgroundTypes, type OldStoredChart, type StoredChart, type StoredCharts, type StoredPremigrationChart } from '../types'
+import { BackgroundTypes, Layout, type OldStoredChart, type StoredChart, type StoredCharts, type StoredPremigrationChart, TitlePosition } from '../types'
 
 export function setActiveChart(uuid: string) {
   localStorage.setItem('activeChart', uuid)
@@ -144,6 +144,21 @@ export function migrateChart(chart: StoredPremigrationChart) {
 
   if (typeof chart.data.roundCorners === 'undefined') {
     chart.data.roundCorners = false
+    changed = true
+  }
+
+  if (!chart.data.layout) {
+    chart.data.layout = Layout.Grid
+    changed = true
+  }
+
+  if (!chart.data.tieredSize) {
+    chart.data.tieredSize = '42'
+    changed = true
+  }
+
+  if (!chart.data.titlePosition) {
+    chart.data.titlePosition = TitlePosition.Right
     changed = true
   }
 

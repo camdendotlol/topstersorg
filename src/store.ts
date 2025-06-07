@@ -1,5 +1,6 @@
+import type { BackgroundTypes, Chart, ChartItem, Layout, Row, TieredSize, TitlePosition } from './types'
 import { defineStore } from 'pinia'
-import { BackgroundTypes, type Chart, type ChartItem } from './types'
+import { calculateRows } from './helpers/chart'
 
 export interface State {
   chart: Chart
@@ -16,7 +17,7 @@ export const initialState = {
     },
     backgroundUrl: '',
     backgroundColor: '#000000',
-    backgroundType: BackgroundTypes.Color,
+    backgroundType: 'color',
     showNumbers: false,
     showTitles: true,
     gap: 20,
@@ -24,6 +25,8 @@ export const initialState = {
     textColor: '#ffffff',
     shadows: true,
     roundCorners: false,
+    layout: 'grid',
+    tieredSize: '42',
   },
   collapsed: true,
 } as State
@@ -130,6 +133,15 @@ export const useStore = defineStore('store', {
     toggleCollapse() {
       this.collapsed = !this.collapsed
     },
+    setLayout(payload: Layout) {
+      this.chart = { ...this.chart, layout: payload }
+    },
+    setTieredSize(payload: TieredSize) {
+      this.chart = { ...this.chart, tieredSize: payload }
+    },
+    setTitlePosition(payload: TitlePosition) {
+      this.chart = { ...this.chart, titlePosition: payload }
+    },
   },
   getters: {
     // Get the list of chart items, along with some computed metadata
@@ -155,6 +167,9 @@ export const useStore = defineStore('store', {
           originalIndex: idx,
         }
       })
+    },
+    rows(state): Row[] {
+      return calculateRows(state.chart)
     },
   },
 })
