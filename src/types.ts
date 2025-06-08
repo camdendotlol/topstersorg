@@ -23,10 +23,7 @@ export enum SearchTypes {
   Custom = 'custom',
 }
 
-export enum Layout {
-  Grid = 'grid',
-  Tiered = 'tiered',
-}
+export type Layout = 'grid' | 'tiered'
 
 export type TieredSize = '42' | '100'
 

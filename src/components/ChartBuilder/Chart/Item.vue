@@ -75,7 +75,6 @@ function handleDrop(ev: DragEvent) {
 
 const itemStyle: ComputedRef<CSSProperties> = computed(() => {
   return {
-    borderRadius: props.item ? undefined : store.chart.roundCorners ? `${props.size}px` : '',
     boxShadow: props.item ? undefined : store.chart.shadows ? '2px 2px 4px rgba(0,0,0,0.6)' : '',
     height: `${props.size}px`,
     width: `${props.size}px`,

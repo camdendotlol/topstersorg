@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia'
 import { useStore } from '../../../store'
 import { BackgroundTypes } from '../../../types'
 import ColorInput from './ColorInput.vue'
+import LayoutInput from './LayoutInput.vue'
 import RangeInput from './RangeInput.vue'
 import SelectInput from './SelectInput.vue'
 import TextInput from './TextInput.vue'
@@ -14,19 +15,12 @@ const storeRef = storeToRefs(store)
 
 <template>
   <div class="options-list">
+    <LayoutInput />
     <div class="separator" aria-hidden />
     <TextInput
       label="Title"
       property="title"
       @handle-change="store.changeTitle"
-    />
-    <div class="separator" aria-hidden />
-    <SelectInput
-      label="Layout"
-      property="layout"
-      :options="['grid', 'tiered']"
-      :value="storeRef.chart.value.layout"
-      @handle-change="store.setLayout"
     />
     <div class="separator" aria-hidden />
     <template

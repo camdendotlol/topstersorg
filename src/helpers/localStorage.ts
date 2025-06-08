@@ -1,7 +1,7 @@
 // Functions for dealing with localStorage
 
 import { v4 as uuidv4 } from 'uuid'
-import { BackgroundTypes, Layout, type OldStoredChart, type StoredChart, type StoredCharts, type StoredPremigrationChart, TitlePosition } from '../types'
+import { BackgroundTypes, type OldStoredChart, type StoredChart, type StoredCharts, type StoredPremigrationChart, TitlePosition } from '../types'
 
 export function setActiveChart(uuid: string) {
   localStorage.setItem('activeChart', uuid)
@@ -148,7 +148,7 @@ export function migrateChart(chart: StoredPremigrationChart) {
   }
 
   if (!chart.data.layout) {
-    chart.data.layout = Layout.Grid
+    chart.data.layout = 'grid'
     changed = true
   }
 

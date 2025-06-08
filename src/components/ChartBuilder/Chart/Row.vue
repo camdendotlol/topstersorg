@@ -25,12 +25,15 @@ const rowStyles: ComputedRef<CSSProperties> = computed(() => ({
 }))
 
 const itemSize = computed(() => {
-  const itemCount = props.row.end - props.row.start
-  const baseSize = (6 * 260) + (store.chart.gap * (6 + 1))
+  if (store.chart.layout === 'tiered') {
+    const itemCount = props.row.end - props.row.start
+    const baseSize = (6 * 260) + (store.chart.gap * (6 + 1))
 
-  const result = (baseSize / itemCount) - store.chart.gap
-
-  return result
+    return Math.round((baseSize / itemCount) - store.chart.gap)
+  }
+  else {
+    return 260
+  }
 })
 </script>
 
