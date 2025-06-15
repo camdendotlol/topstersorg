@@ -57,6 +57,13 @@ export interface Chart {
   titlePosition: TitlePosition
 }
 
+export interface ItemData {
+  data: ChartItem | null
+  title?: string
+  number?: number
+  originalIndex: number
+}
+
 export interface IgdbItem {
   name: string
   cover: string

@@ -1,4 +1,4 @@
-import type { BackgroundTypes, Chart, ChartItem, Layout, Row, TieredSize, TitlePosition } from './types'
+import type { BackgroundTypes, Chart, ChartItem, ItemData, Layout, Row, TieredSize, TitlePosition } from './types'
 import { defineStore } from 'pinia'
 import { calculateRows } from './helpers/chart'
 
@@ -30,13 +30,6 @@ export const initialState = {
   },
   collapsed: true,
 } as State
-
-interface ItemData {
-  data: ChartItem | null
-  title?: string
-  number?: number
-  originalIndex: number
-}
 
 const buildTitle = (item: ChartItem) => `${[item.creator, item.title].filter(Boolean).join(' - ')}`
 

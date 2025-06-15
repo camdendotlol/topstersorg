@@ -3,7 +3,7 @@
 // Functions related to importing and exporting charts
 
 import type { ChartItem, StoredChart, StoredCharts, StoredPremigrationChart } from '../types'
-import { BackgroundTypes } from '../types'
+import { BackgroundTypes, TitlePosition } from '../types'
 import { forceRefresh } from './chart'
 import { appendChart, findByUuid, getActiveChart, getActiveChartUuid, getNewestChartUuid, migrateChart, setActiveChart, updateStoredChart } from './localStorage'
 
@@ -227,6 +227,9 @@ export async function importTopsters2(event: Event) {
               gap: custom.padding * 5,
               font: custom.fontFamily,
               roundCorners: false,
+              layout: 'grid',
+              tieredSize: '42',
+              titlePosition: TitlePosition.Right,
             },
           }
 

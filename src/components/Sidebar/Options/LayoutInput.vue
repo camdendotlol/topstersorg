@@ -7,9 +7,12 @@ const store = useStore()
 </script>
 
 <template>
-  <span>Layout</span>
-  <div class="layout-input-container">
+  <div
+    aria-label="layout"
+    class="layout-input-container"
+  >
     <button
+      aria-label="Grid"
       :class="store.chart.layout === 'grid' ? 'selected' : ''"
       type="button"
       @click="() => store.setLayout('grid')"
@@ -18,6 +21,7 @@ const store = useStore()
       <span>Grid</span>
     </button>
     <button
+      aria-label="Tiered"
       :class="store.chart.layout === 'tiered' ? 'selected' : ''"
       type="button"
       @click="() => store.setLayout('tiered')"

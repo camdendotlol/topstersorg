@@ -7,7 +7,7 @@ import { useStore } from '../../../store'
 import { TitlePosition } from '../../../types'
 
 interface Props {
-  item?: ChartItem
+  item?: ChartItem | null
   index: number
   title?: string
   size: number
@@ -43,18 +43,23 @@ function handleDragStart(ev: DragEvent) {
 
     // match the item's scale to the chart
     const chart = document.getElementById('chart')
-    const chartTransform = chart.style.transform
-    const scaleRatio = chartTransform.slice(6, chartTransform.length - 1)
-    const scaledSize = 260 * Number.parseFloat(scaleRatio)
-    container.style.height = `${scaledSize}px`
-    container.style.width = `${scaledSize}px`
+    if (chart) {
+      const chartTransform = chart.style.transform
+      const scaleRatio = chartTransform.slice(6, chartTransform.length - 1)
+      const scaledSize = 260 * Number.parseFloat(scaleRatio)
+      container.style.height = `${scaledSize}px`
+      container.style.width = `${scaledSize}px`
 
-    const appEl = document.querySelector('#app')
-    appEl.appendChild(container)
+      const appEl = document.querySelector('#app')
 
-    ev.dataTransfer.effectAllowed = 'move'
-    ev.dataTransfer.setData('application/json', dragData)
-    ev.dataTransfer.setDragImage(container, scaledSize / 2, scaledSize / 2)
+      if (appEl) {
+        appEl.appendChild(container)
+
+        ev.dataTransfer.effectAllowed = 'move'
+        ev.dataTransfer.setData('application/json', dragData)
+        ev.dataTransfer.setDragImage(container, scaledSize / 2, scaledSize / 2)
+      }
+    }
   }
 }
 

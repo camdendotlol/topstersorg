@@ -5,19 +5,20 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useStore } from '../../../store'
 import { BackgroundTypes } from '../../../types'
 import Row from './Row.vue'
+import TitleList from './TitleList.vue'
 
 const store = useStore()
 
-const chartRef = ref<HTMLDivElement>(null)
+const chartRef = ref<HTMLDivElement | null>(null)
 
 function onResize() {
-  if (chartRef.value) {
+  if (chartRef.value && chartRef.value.parentElement) {
     const windowHeight = document.documentElement.clientHeight
     const containerWidth = chartRef.value.parentElement.offsetWidth
 
     const chartHeight = chartRef.value.offsetHeight + 420
+
     // add 100 to factor in the 50px X margins
-    // plus another 50 for some reason because it looks right
     const chartWidth = chartRef.value.offsetWidth + 100
 
     const ratio = Math.min(containerWidth / chartWidth, windowHeight / chartHeight)
@@ -79,8 +80,22 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  window.onresize = undefined
+  window.onresize = null
 })
+
+// whether to display the titles on the righthand side for tiered charts
+const showTieredTitles = computed(() => {
+  return store.chart.layout === 'tiered'
+    && store.chart.showTitles
+    && store.chart.titlePosition === 'right'
+    && store.items.some(i => i?.title)
+})
+
+const titleListContainerStyles: ComputedRef<CSSProperties> = computed(() => ({
+  marginTop: `${store.chart.gap}px`,
+  marginLeft: '0px',
+  marginRight: `${store.chart.gap / 2}px`,
+}))
 </script>
 
 <template>
@@ -89,16 +104,29 @@ onUnmounted(() => {
     ref="chartRef"
     :style="chartStyle"
   >
-    <div v-if="store.chart.title">
-      <p class="chart-title" :style="chartTitleStyle">
-        {{ store.chart.title }}
-      </p>
-    </div>
-    <div
-      class="row-flex"
-      :style="{ gap: `${store.chart.gap}px`, padding: `${store.chart.gap}px`, paddingTop: store.chart.title ? `${store.chart.gap / 2}px` : `${store.chart.gap}px` }"
-    >
-      <Row v-for="(row, idx) in store.rows" :key="idx" :row="row" />
+    <p v-if="store.chart.title" class="chart-title" :style="chartTitleStyle">
+      {{ store.chart.title }}
+    </p>
+    <div class="chart-content">
+      <div
+        class="row-flex"
+        :style="{ gap: `${store.chart.gap}px`, padding: `${store.chart.gap}px`, paddingTop: store.chart.title ? `${store.chart.gap / 2}px` : `${store.chart.gap}px` }"
+      >
+        <Row v-for="(row, idx) in store.rows" :key="idx" :row="row" />
+      </div>
+      <template v-if="showTieredTitles">
+        <div
+          class="title-list-container"
+          :style="titleListContainerStyles"
+        >
+          <TitleList
+            v-for="row in store.rows"
+            :key="row.start"
+            :items="store.items.slice(row.start, row.end)"
+            :show-numbers="store.chart.showNumbers"
+          />
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -124,5 +152,15 @@ onUnmounted(() => {
   margin: 0;
   padding: 0;
   width: 100%;
+}
+
+.chart-content {
+  display: flex;
+}
+
+.title-list-container {
+  display: flex;
+  flex-flow: column;
+  /* gap: 28px; */
 }
 </style>

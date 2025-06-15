@@ -5,6 +5,7 @@ import { computed } from 'vue'
 import { useStore } from '../../../store'
 import { TitlePosition } from '../../../types'
 import Item from './Item.vue'
+import TitleList from './TitleList.vue'
 
 interface Props {
   row: Row
@@ -16,10 +17,6 @@ const store = useStore()
 
 const rowItems = computed(() => store.items.slice(props.row.start, props.row.end))
 
-const titleListStyle: ComputedRef<CSSProperties> = computed(() => ({
-  lineHeight: (props.row.end - props.row.start) > 10 ? '1' : '1.2',
-}))
-
 const rowStyles: ComputedRef<CSSProperties> = computed(() => ({
   gap: `${store.chart.gap}px`,
 }))
@@ -29,11 +26,18 @@ const itemSize = computed(() => {
     const itemCount = props.row.end - props.row.start
     const baseSize = (6 * 260) + (store.chart.gap * (6 + 1))
 
-    return Math.round((baseSize / itemCount) - store.chart.gap)
+    return (baseSize / itemCount) - store.chart.gap
   }
   else {
     return 260
   }
+})
+
+const showTitles = computed(() => {
+  return store.chart.showTitles
+    && store.chart.layout === 'grid'
+    && store.chart.titlePosition === TitlePosition.Right
+    && rowItems.value.some(i => i?.title)
 })
 </script>
 
@@ -44,14 +48,11 @@ const itemSize = computed(() => {
     >
       <Item :item="item.data" :index="item.originalIndex" :title="item.title" :size="itemSize" />
     </template>
-    <ol v-if="store.chart.titlePosition === TitlePosition.Right && store.chart.showTitles && rowItems.some(i => i.title)" class="title-list" :style="titleListStyle">
-      <li v-for="(item, idx) in rowItems" :key="idx">
-        <span v-if="item.number">
-          {{ store.chart.showNumbers ? `${item.number}.` : '' }}
-          {{ item.title }}
-        </span>
-      </li>
-    </ol>
+    <TitleList
+      v-if="showTitles"
+      :items="rowItems"
+      :show-numbers="store.chart.showNumbers"
+    />
   </div>
 </template>
 
@@ -60,17 +61,5 @@ const itemSize = computed(() => {
   display: flex;
   justify-content: flex-start;
   width: 100%;
-}
-
-.title-list {
-  text-wrap-mode: nowrap;
-  white-space: nowrap;
-  text-align: left;
-  padding: 0;
-  margin: 0;
-  font-size: 20px;
-  line-height: 1;
-  list-style: none;
-  -webkit-text-size-adjust:100%;
 }
 </style>
