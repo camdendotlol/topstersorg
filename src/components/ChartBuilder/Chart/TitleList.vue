@@ -2,7 +2,7 @@
 import type { ItemData } from '../../../types'
 
 interface Props {
-  items: ItemData[]
+  items: (ItemData | null)[]
   showNumbers: boolean
 }
 

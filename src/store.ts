@@ -139,7 +139,7 @@ export const useStore = defineStore('store', {
   getters: {
     // Get the list of chart items, along with some computed metadata
     // that's generally useful throughout the application.
-    items(state): Array<ItemData | null> {
+    items(state): Array<ItemData> {
       // For numbered charts, we use this variable to track the number
       // of each non-null item. We can't just use the index because
       // we don't want to count null numbers.

@@ -13,25 +13,29 @@ import {
 } from '../../../helpers/imports'
 import LastFmImport from './LastFmImport.vue'
 
-const topsters2ImportRef: Ref<HTMLInputElement> = ref(null)
-const uploadRef: Ref<HTMLInputElement> = ref(null)
+const topsters2ImportRef: Ref<HTMLInputElement | null> = ref(null)
+const uploadRef: Ref<HTMLInputElement | null> = ref(null)
 
-function uploadPicked(e) {
+function uploadPicked(e: MouseEvent) {
   e.preventDefault()
-  uploadRef.value.click()
+  if (uploadRef.value) {
+    uploadRef.value.click()
+  }
 }
 
-function importTopsters2ChartsPicked(e) {
+function importTopsters2ChartsPicked(e: MouseEvent) {
   e.preventDefault()
-  topsters2ImportRef.value.click()
+  if (topsters2ImportRef.value) {
+    topsters2ImportRef.value.click()
+  }
 }
 
-function importTopsters2Charts(event) {
-  importTopsters2(event)
+function importTopsters2Charts(e: Event) {
+  importTopsters2(e)
 }
 
-async function callImportCharts(event) {
-  await importChart(event)
+async function callImportCharts(e: Event) {
+  await importChart(e)
 }
 </script>
 

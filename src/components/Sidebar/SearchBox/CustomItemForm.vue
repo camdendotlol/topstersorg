@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import type { Ref } from 'vue'
 import { ref } from 'vue'
 
 const emit = defineEmits([
   'updateResults',
 ])
 
-const urlInput: Ref<HTMLInputElement> = ref(null)
-const titleInput: Ref<HTMLInputElement> = ref(null)
-const creatorInput: Ref<HTMLInputElement> = ref(null)
+const title = ref('')
+const creator = ref('')
+const url = ref('')
 
 function buildResultItem() {
-  if (urlInput.value.value) {
+  if (url.value) {
     const item = {
-      title: titleInput.value.value,
-      creator: creatorInput.value.value,
-      imageURL: urlInput.value.value,
+      title: title.value,
+      creator: creator.value,
+      imageURL: url.value,
       type: 'custom',
     }
 
@@ -32,7 +31,7 @@ function buildResultItem() {
       </label>
       <input
         id="custom-image-url"
-        ref="urlInput"
+        v-model="url"
         required
         type="text"
       >
@@ -43,7 +42,7 @@ function buildResultItem() {
       </label>
       <input
         id="custom-image-title"
-        ref="titleInput"
+        v-model="title"
         type="text"
       >
     </div>
@@ -53,7 +52,7 @@ function buildResultItem() {
       </label>
       <input
         id="custom-image-creator"
-        ref="creatorInput"
+        v-model="creator"
         type="text"
       >
     </div>

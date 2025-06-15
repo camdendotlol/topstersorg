@@ -10,7 +10,13 @@ export function setActiveChart(uuid: string) {
 }
 
 export function getActiveChartUuid(): string {
-  return localStorage.getItem('activeChart')
+  const activeChartUuid = localStorage.getItem('activeChart')
+  if (activeChartUuid) {
+    return activeChartUuid
+  }
+  else {
+    throw new Error('No active chart found.')
+  }
 }
 
 export function getActiveChart(): StoredChart {

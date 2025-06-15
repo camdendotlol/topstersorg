@@ -12,7 +12,7 @@ const props = defineProps<Props>()
 const emit = defineEmits(['handleChange'])
 
 const store = useStore()
-const propertyValue = computed(() => typeof props.value !== 'undefined' ? props.value : store.chart[props.property])
+const propertyValue = computed(() => typeof props.value !== 'undefined' ? props.value : store.chart[props.property as keyof typeof store.chart])
 
 function updateValue(event: Event) {
   const val = (event.target as HTMLInputElement).value

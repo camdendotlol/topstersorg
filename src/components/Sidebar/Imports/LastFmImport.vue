@@ -1,6 +1,5 @@
 <!-- eslint-disable no-alert -->
 <script setup lang="ts">
-import type { Ref } from 'vue'
 import type { ChartItem, LastfmChartResponseItem, Period } from '../../../types'
 import { ref } from 'vue'
 import { getLastfmChart } from '../../../api/lastfm'
@@ -9,49 +8,43 @@ import { initialState, useStore } from '../../../store'
 
 const store = useStore()
 
-const lastFmUsername: Ref<HTMLInputElement> = ref(null)
-const lastFmPeriodDropdown: Ref<HTMLSelectElement> = ref(null)
+const lastFmUsername = ref('')
+const lastFmPeriod = ref<Period>('1month')
 
 async function importLastFmChart() {
-  const username = lastFmUsername.value.value
-
-  if (!username)
+  if (!lastFmUsername.value) {
     return null
-
-  const periodDropdown = lastFmPeriodDropdown.value
-  const period = periodDropdown.options[periodDropdown.selectedIndex].value as Period
+  }
 
   let results: LastfmChartResponseItem[]
 
   try {
-    results = await getLastfmChart(username, 'albums', period)
+    results = await getLastfmChart(lastFmUsername.value, 'albums', lastFmPeriod.value)
   }
   catch {
     alert('Something went wrong when downloading your Last.fm data! Is your username spelled correctly?')
     return null
   }
+
   const missingCovers: string[] = []
 
-  const filtered = results.filter((item: LastfmChartResponseItem) => {
-    const coverURL = item.image.find(i => i.size === 'extralarge')['#text']
-
-    if (coverURL === '') {
-      missingCovers.push(`${item.artist.name} - ${item.name}`)
-      return false
-    }
-
-    return true
-  })
-
   const newItems = Array.from({ length: 144 }).fill(null) as ChartItem[]
+  let nonNullItemCount = 0
 
-  filtered.forEach((item: LastfmChartResponseItem, idx) => {
-    const coverURL = item.image.find(i => i.size === 'extralarge')['#text']
+  results.forEach((item: LastfmChartResponseItem, idx) => {
+    const cover = item.image.find(i => i.size === 'extralarge')
 
-    newItems[idx] = {
-      title: item.name,
-      creator: item.artist.name,
-      coverURL,
+    if (cover) {
+      const coverURL = cover['#text']
+      newItems[idx] = {
+        title: item.name,
+        creator: item.artist.name,
+        coverURL,
+      }
+      nonNullItemCount++
+    }
+    else {
+      missingCovers.push(`${item.artist.name} - ${item.name}`)
     }
   })
 
@@ -75,9 +68,9 @@ async function importLastFmChart() {
 
   store.setEntireChart({
     ...initialState.chart,
-    title: `${username}'s ${periodHeaders[period]} Chart`,
+    title: `${lastFmUsername.value}'s ${periodHeaders[lastFmPeriod.value]} Chart`,
     items: newItems,
-    size: getSize(filtered.length),
+    size: getSize(nonNullItemCount),
   })
 
   if (missingCovers.length > 0) {
@@ -104,7 +97,7 @@ async function importLastFmChart() {
       </label>
       <input
         id="lastFmUsername"
-        ref="lastFmUsername"
+        v-model="lastFmUsername"
         type="text"
         name="lastFmUsername"
         placeholder="username"
@@ -117,7 +110,7 @@ async function importLastFmChart() {
       </label>
       <select
         id="lastFmPeriodDropdown"
-        ref="lastFmPeriodDropdown"
+        v-model="lastFmPeriod"
         name="lastFmPeriodDropdown"
       >
         <option value="overall">

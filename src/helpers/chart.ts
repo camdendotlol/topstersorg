@@ -155,20 +155,7 @@ export function forceRefresh() {
 const tieredRowItemCounts = [5, 5, 6, 6, 6, 10, 10, 10, 14, 14, 14, 14]
 
 export function calculateRows(chart: Chart): Row[] {
-  if (chart.layout === 'grid') {
-    const result = []
-    for (let i = 0; i < chart.size.y; i++) {
-      const start = i * chart.size.x
-      const end = start + chart.size.x
-      result.push({
-        start,
-        end,
-        size: 1,
-      })
-    }
-    return result
-  }
-  else if (chart.layout === 'tiered') {
+  if (chart.layout === 'tiered') {
     let sum = 0
     const result = []
     for (const itemCount of tieredRowItemCounts.slice(0, chart.tieredRowCount)) {
@@ -180,6 +167,19 @@ export function calculateRows(chart: Chart): Row[] {
       sum += itemCount
     }
 
+    return result
+  }
+  else {
+    const result = []
+    for (let i = 0; i < chart.size.y; i++) {
+      const start = i * chart.size.x
+      const end = start + chart.size.x
+      result.push({
+        start,
+        end,
+        size: 1,
+      })
+    }
     return result
   }
 }

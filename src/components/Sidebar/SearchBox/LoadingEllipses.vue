@@ -3,7 +3,7 @@ import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 const ellipses = ref('')
 const direction = ref('up')
-const interval = ref(null)
+const interval = ref<number | null>(null)
 
 function getNewEllipses(el: string) {
   let result

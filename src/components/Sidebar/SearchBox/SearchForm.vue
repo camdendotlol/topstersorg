@@ -17,7 +17,7 @@ const emit = defineEmits([
 
 const loading = ref(false)
 
-const searchbox = ref(null)
+const query = ref('')
 
 // Hacky workaround to an annoying Vue bug:
 // Emit arguments don't seem to be passed when the emit
@@ -34,10 +34,8 @@ async function handleSearch() {
     return null
   }
 
-  const query = searchbox.value.value
-
   loading.value = true
-  const results = await queryMethodMap[props.searchType](query)
+  const results = await queryMethodMap[props.searchType as keyof typeof queryMethodMap](query.value)
   if (results) {
     emit('updateResults', results)
   }
@@ -68,7 +66,7 @@ function getInputPlaceholder() {
     >
       <input
         id="searchbox"
-        ref="searchbox"
+        v-model="query"
         :placeholder="getInputPlaceholder()"
       >
       <button type="submit" class="submit-button">

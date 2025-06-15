@@ -8,15 +8,27 @@ import { forceRefresh } from './chart'
 import { appendChart, findByUuid, getActiveChart, getActiveChartUuid, getNewestChartUuid, migrateChart, setActiveChart, updateStoredChart } from './localStorage'
 
 async function unzlib(data: Uint8Array) {
-  const stream = new Response(data).body.pipeThrough(new DecompressionStream('deflate'))
+  const { body } = new Response(data)
 
-  return new Uint8Array(await new Response(stream).arrayBuffer())
+  if (body) {
+    const stream = body.pipeThrough(new DecompressionStream('deflate'))
+    return new Uint8Array(await new Response(stream).arrayBuffer())
+  }
+  else {
+    throw new Error('Can\'t unzlib: body is empty.')
+  }
 }
 
 async function zlib(data: Uint8Array) {
-  const stream = new Response(data).body.pipeThrough(new CompressionStream('deflate'))
+  const { body } = new Response(data)
 
-  return new Uint8Array(await new Response(stream).arrayBuffer())
+  if (body) {
+    const stream = body.pipeThrough(new CompressionStream('deflate'))
+    return new Uint8Array(await new Response(stream).arrayBuffer())
+  }
+  else {
+    throw new Error('Can\'t zlib: body is empty.')
+  }
 }
 
 function downloadChartData(data: string, title: string, timestamp: number) {
@@ -63,43 +75,45 @@ export async function parseUploadedText(text: string) {
 }
 
 export async function importChart(event: Event) {
-  const files = (event.target as HTMLInputElement).files
+  const { files } = event.target as HTMLInputElement
 
-  try {
-    const text = await files[0].text()
-    const results = await parseUploadedText(text)
-    const json = JSON.parse(results) as StoredCharts
+  if (files) {
+    try {
+      const text = await files[0].text()
+      const results = await parseUploadedText(text)
+      const json = JSON.parse(results) as StoredCharts
 
-    const newChartUuid = Object.keys(json)[0]
-    const existingChart = findByUuid(newChartUuid)
-    const newChart = json[newChartUuid] as StoredPremigrationChart
+      const newChartUuid = Object.keys(json)[0]
+      const existingChart = findByUuid(newChartUuid)
+      const newChart = json[newChartUuid] as StoredPremigrationChart
 
-    migrateChart(newChart)
+      migrateChart(newChart)
 
-    let overwriteConsent = false
+      let overwriteConsent = false
 
-    if (existingChart) {
-      if (window.confirm('This chart already exists locally. Do you want to overwrite it?')) {
+      if (existingChart) {
+        if (window.confirm('This chart already exists locally. Do you want to overwrite it?')) {
+          overwriteConsent = true
+          updateStoredChart(newChart, newChartUuid)
+          setActiveChart(newChartUuid)
+          forceRefresh()
+        }
+      }
+      else {
         overwriteConsent = true
-        updateStoredChart(newChart, newChartUuid)
+        appendChart(newChart, newChartUuid)
         setActiveChart(newChartUuid)
         forceRefresh()
       }
-    }
-    else {
-      overwriteConsent = true
-      appendChart(newChart, newChartUuid)
-      setActiveChart(newChartUuid)
-      forceRefresh()
-    }
 
-    if (overwriteConsent) {
-      alert(`"${newChart.data.title}" imported successfully!`)
+      if (overwriteConsent) {
+        alert(`"${newChart.data.title}" imported successfully!`)
+      }
     }
-  }
-  catch (e) {
-    console.error(e)
-    alert(`Failed to import charts: ${e}`)
+    catch (e) {
+      console.error(e)
+      alert(`Failed to import charts: ${e}`)
+    }
   }
 }
 

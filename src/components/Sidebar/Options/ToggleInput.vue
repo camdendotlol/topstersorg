@@ -11,7 +11,7 @@ const props = defineProps<Props>()
 const emit = defineEmits(['handleChange'])
 
 const store = useStore()
-const propertyValue = computed(() => store.chart[props.property])
+const propertyValue = computed(() => store.chart[props.property as keyof typeof store.chart] as boolean)
 
 function toggle() {
   return emit('handleChange', !propertyValue.value)
