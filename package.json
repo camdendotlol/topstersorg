@@ -14,18 +14,18 @@
     "bootstrap-icons-vue": "^1.11.3",
     "drag-drop-touch": "github:drag-drop-touch-js/dragdroptouch",
     "html2canvas": "github:camdendotlol/html2canvas-smart-cors#master",
-    "pinia": "^2.3.0",
-    "uuid": "^11.0.3",
+    "pinia": "^3.0.3",
+    "uuid": "^11.1.0",
     "vue": "^3.5.13"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^3.11.2",
+    "@antfu/eslint-config": "^4.11.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/tsconfig": "^0.7.0",
-    "eslint": "^9.16.0",
+    "eslint": "^9.23.0",
     "typescript": "^5.6.3",
     "vite": "^6.0.11",
     "vite-svg-loader": "^5.1.0",
-    "vue-tsc": "^2.2.0"
+    "vue-tsc": "^2.2.8"
   }
 }
