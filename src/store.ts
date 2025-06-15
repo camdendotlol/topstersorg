@@ -1,4 +1,4 @@
-import type { BackgroundTypes, Chart, ChartItem, ItemData, Layout, Row, TieredSize, TitlePosition } from './types'
+import type { BackgroundTypes, Chart, ChartItem, ItemData, Layout, Row, TitlePosition } from './types'
 import { defineStore } from 'pinia'
 import { calculateRows } from './helpers/chart'
 
@@ -26,7 +26,7 @@ export const initialState = {
     shadows: true,
     roundCorners: false,
     layout: 'grid',
-    tieredSize: '42',
+    tieredRowCount: 6,
   },
   collapsed: true,
 } as State
@@ -129,8 +129,8 @@ export const useStore = defineStore('store', {
     setLayout(payload: Layout) {
       this.chart = { ...this.chart, layout: payload }
     },
-    setTieredSize(payload: TieredSize) {
-      this.chart = { ...this.chart, tieredSize: payload }
+    setTieredRowCount(payload: number) {
+      this.chart = { ...this.chart, tieredRowCount: payload }
     },
     setTitlePosition(payload: TitlePosition) {
       this.chart = { ...this.chart, titlePosition: payload }

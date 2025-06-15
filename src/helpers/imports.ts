@@ -228,7 +228,7 @@ export async function importTopsters2(event: Event) {
               font: custom.fontFamily,
               roundCorners: false,
               layout: 'grid',
-              tieredSize: '42',
+              tieredRowCount: 6,
               titlePosition: TitlePosition.Right,
             },
           }

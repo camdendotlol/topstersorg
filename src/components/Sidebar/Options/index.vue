@@ -26,12 +26,14 @@ const storeRef = storeToRefs(store)
     <template
       v-if="storeRef.chart.value.layout === 'tiered'"
     >
-      <SelectInput
-        label="Size"
-        property="tieredSize"
-        :options="['42', '100']"
-        :value="storeRef.chart.value.tieredSize"
-        @handle-change="store.setTieredSize"
+      <RangeInput
+        label="Rows"
+        property="tieredRowCount"
+        :min="1"
+        :max="12"
+        :value="storeRef.chart.value.tieredRowCount"
+        :data-list-step-interval="1"
+        @handle-change="store.setTieredRowCount"
       />
       <div class="separator" aria-hidden />
     </template>

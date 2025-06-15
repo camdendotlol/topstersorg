@@ -152,8 +152,8 @@ export function migrateChart(chart: StoredPremigrationChart) {
     changed = true
   }
 
-  if (!chart.data.tieredSize) {
-    chart.data.tieredSize = '42'
+  if (!chart.data.tieredRowCount) {
+    chart.data.tieredRowCount = 6
     changed = true
   }
 

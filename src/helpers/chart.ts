@@ -151,19 +151,8 @@ export function forceRefresh() {
   store.setEntireChart(activeChart.data)
 }
 
-const tieredChartRowCounts = {
-  42: [5, 5, 6, 6, 10, 10],
-  100: [5, 5, 6, 6, 6, 10, 10, 10, 14, 14, 14],
-}
-
-// the multiple of the default item size to be applied to items
-// in a row of the given size
-const tieredChartRowSizes = {
-  5: 2,
-  6: 1.654,
-  10: 0.964,
-  14: 0.664,
-}
+// mapping of how many items to show per row
+const tieredRowItemCounts = [5, 5, 6, 6, 6, 10, 10, 10, 14, 14, 14, 14]
 
 export function calculateRows(chart: Chart): Row[] {
   if (chart.layout === 'grid') {
@@ -182,14 +171,13 @@ export function calculateRows(chart: Chart): Row[] {
   else if (chart.layout === 'tiered') {
     let sum = 0
     const result = []
-    for (const rowCount of tieredChartRowCounts[chart.tieredSize]) {
+    for (const itemCount of tieredRowItemCounts.slice(0, chart.tieredRowCount)) {
       result.push({
         start: sum,
-        end: sum + rowCount,
-        size: tieredChartRowSizes[rowCount],
+        end: sum + itemCount,
       })
 
-      sum += rowCount
+      sum += itemCount
     }
 
     return result

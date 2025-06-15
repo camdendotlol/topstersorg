@@ -25,8 +25,6 @@ export enum SearchTypes {
 
 export type Layout = 'grid' | 'tiered'
 
-export type TieredSize = '42' | '100'
-
 export enum TitlePosition {
   Right = 'right',
   Below = 'below',
@@ -35,7 +33,6 @@ export enum TitlePosition {
 export interface Row {
   start: number
   end: number
-  size: number
 }
 
 export interface Chart {
@@ -53,7 +50,7 @@ export interface Chart {
   shadows?: boolean
   roundCorners: boolean
   layout: Layout
-  tieredSize: TieredSize
+  tieredRowCount: number
   titlePosition: TitlePosition
 }
 
