@@ -4,13 +4,14 @@ import type { ItemData } from '../../../types'
 interface Props {
   items: (ItemData | null)[]
   showNumbers: boolean
+  align: 'left' | 'right'
 }
 
 const props = defineProps<Props>()
 </script>
 
 <template>
-  <ol class="title-list">
+  <ol class="title-list" :style="{ textAlign: props.align }">
     <li v-for="(item, idx) in props.items" :key="idx">
       <span v-if="item?.number">
         {{ props.showNumbers ? `${item.number}.` : '' }}
@@ -24,7 +25,6 @@ const props = defineProps<Props>()
 .title-list {
   text-wrap-mode: nowrap;
   white-space: nowrap;
-  text-align: left;
   padding: 0;
   margin: 10px;
   font-size: 20px;

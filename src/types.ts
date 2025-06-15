@@ -26,6 +26,7 @@ export enum SearchTypes {
 export type Layout = 'grid' | 'tiered'
 
 export enum TitlePosition {
+  Left = 'left',
   Right = 'right',
   Below = 'below',
 }

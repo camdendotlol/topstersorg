@@ -87,7 +87,7 @@ onUnmounted(() => {
 const showTieredTitles = computed(() => {
   return store.chart.layout === 'tiered'
     && store.chart.showTitles
-    && store.chart.titlePosition === 'right'
+    && store.chart.titlePosition !== 'below'
     && store.items.some(i => i?.title)
 })
 
@@ -108,13 +108,7 @@ const titleListContainerStyles: ComputedRef<CSSProperties> = computed(() => ({
       {{ store.chart.title }}
     </p>
     <div class="chart-content">
-      <div
-        class="row-flex"
-        :style="{ gap: `${store.chart.gap}px`, padding: `${store.chart.gap}px`, paddingTop: store.chart.title ? `${store.chart.gap / 2}px` : `${store.chart.gap}px` }"
-      >
-        <Row v-for="(row, idx) in store.rows" :key="idx" :row="row" />
-      </div>
-      <template v-if="showTieredTitles">
+      <template v-if="showTieredTitles && store.chart.titlePosition === 'left'">
         <div
           class="title-list-container"
           :style="titleListContainerStyles"
@@ -122,6 +116,27 @@ const titleListContainerStyles: ComputedRef<CSSProperties> = computed(() => ({
           <TitleList
             v-for="row in store.rows"
             :key="row.start"
+            align="right"
+            :items="store.items.slice(row.start, row.end)"
+            :show-numbers="store.chart.showNumbers"
+          />
+        </div>
+      </template>
+      <div
+        class="row-flex"
+        :style="{ gap: `${store.chart.gap}px`, padding: `${store.chart.gap}px`, paddingTop: store.chart.title ? `${store.chart.gap / 2}px` : `${store.chart.gap}px` }"
+      >
+        <Row v-for="(row, idx) in store.rows" :key="idx" :row="row" />
+      </div>
+      <template v-if="showTieredTitles && store.chart.titlePosition === 'right'">
+        <div
+          class="title-list-container"
+          :style="titleListContainerStyles"
+        >
+          <TitleList
+            v-for="row in store.rows"
+            :key="row.start"
+            align="left"
             :items="store.items.slice(row.start, row.end)"
             :show-numbers="store.chart.showNumbers"
           />
@@ -161,6 +176,5 @@ const titleListContainerStyles: ComputedRef<CSSProperties> = computed(() => ({
 .title-list-container {
   display: flex;
   flex-flow: column;
-  /* gap: 28px; */
 }
 </style>

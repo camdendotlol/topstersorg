@@ -78,14 +78,17 @@ function handleDrop(ev: DragEvent) {
   }
 }
 
-const itemStyle: ComputedRef<CSSProperties> = computed(() => {
-  return {
-    boxShadow: props.item ? undefined : store.chart.shadows ? '2px 2px 4px rgba(0,0,0,0.6)' : '',
-    height: `${props.size}px`,
-    width: `${props.size}px`,
-    minWidth: `${props.size}px`,
-  }
-})
+const itemContainerStyle: ComputedRef<CSSProperties> = computed(() => ({
+  width: `${props.size}px`,
+  minWidth: `${props.size}px`,
+}))
+
+const itemStyle: ComputedRef<CSSProperties> = computed(() => ({
+  boxShadow: props.item ? undefined : store.chart.shadows ? '2px 2px 4px rgba(0,0,0,0.6)' : '',
+  height: (store.chart.titlePosition === 'below' && props.item) ? 'initial' : `${props.size}px`,
+  width: `${props.size}px`,
+  minWidth: `${props.size}px`,
+}))
 
 const imgStyle: ComputedRef<CSSProperties> = computed(() => ({
   borderRadius: store.chart.roundCorners ? '10px' : '',
@@ -95,52 +98,76 @@ const imgStyle: ComputedRef<CSSProperties> = computed(() => ({
 function deleteItem() {
   store.addItem({ item: null, index: props.index })
 }
+
+const showTitles = computed(() => {
+  return store.chart.titlePosition === TitlePosition.Below
+    && store.chart.showTitles
+})
 </script>
 
 <template>
-  <div
-    :key="props.item ? props.item.coverURL : props.index"
-    :class="`item ${props.item ? '' : 'placeholder'}`"
-    :data-index="props.index"
-    :title="props.title"
-    :draggable="props.item ? 'true' : 'false'"
-    :style="itemStyle"
-    @dragstart="handleDragStart"
-    @dragover="allowDrop"
-    @drop="handleDrop"
-  >
-    <button
-      v-if="props.item"
-      class="delete-button"
-      data-html2canvas-ignore
-      title="Delete item"
-      @click="deleteItem"
+  <div class="item-container" :style="itemContainerStyle">
+    <div
+      :key="props.item ? props.item.coverURL : props.index"
+      :class="`item ${props.item ? '' : 'placeholder'}`"
+      :data-index="props.index"
+      :title="props.title"
+      :draggable="props.item ? 'true' : 'false'"
+      :style="itemStyle"
+      @dragstart="handleDragStart"
+      @dragover="allowDrop"
+      @drop="handleDrop"
     >
-      <BIconX />
-    </button>
-    <img
-      v-if="item"
-      :src="item.coverURL"
-      class="item-img"
-      :style="imgStyle"
+      <button
+        v-if="props.item"
+        class="delete-button"
+        data-html2canvas-ignore
+        title="Delete item"
+        @click="deleteItem"
+      >
+        <BIconX />
+      </button>
+      <img
+        v-if="item"
+        :src="item.coverURL"
+        class="item-img"
+        :style="imgStyle"
+      >
+    </div>
+    <div
+      v-if="item && showTitles"
+      class="title-container"
     >
-    <span v-if="store.chart.titlePosition === TitlePosition.Below">{title}</span>
+      <p class="title">
+        {{ item.title }}
+      </p>
+      <p v-if="item.creator" class="creator">
+        {{ item.creator }}
+      </p>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.item-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .item {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   touch-action: pinch-zoom;
+  width: 100%;
 }
 
 .item-img {
   max-height: 100%;
   max-width: 100%;
-  height: inherit;
 }
 
 .item-img:hover {
@@ -177,6 +204,29 @@ function deleteItem() {
 .placeholder {
   background-color: rgba(90, 90, 90, 0.6);
   touch-action: auto;
+}
+
+.title-container {
+  width: 80%;
+  font-size: 22px;
+  line-height: 1.1;
+  margin-top: 6px;
+}
+
+.title-container p {
+  padding: 0;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title-container .title {
+  font-weight: 700;
+}
+
+.title-container .creator {
+  font-weight: 300;
 }
 
 @media (hover: none) {

@@ -43,6 +43,16 @@ const storeRef = storeToRefs(store)
       @handle-change="store.toggleTitles"
     />
     <div class="separator" aria-hidden />
+    <template v-if="store.chart.showTitles">
+      <SelectInput
+        label="Title Position"
+        property="titlePosition"
+        :options="['right', 'left', 'below']"
+        :value="storeRef.chart.value.titlePosition"
+        @handle-change="store.setTitlePosition"
+      />
+      <div class="separator" aria-hidden />
+    </template>
     <template
       v-if="storeRef.chart.value.layout === 'grid'"
     >

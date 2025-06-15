@@ -19,6 +19,7 @@ const rowItems = computed(() => store.items.slice(props.row.start, props.row.end
 
 const rowStyles: ComputedRef<CSSProperties> = computed(() => ({
   gap: `${store.chart.gap}px`,
+  justifyContent: store.chart.titlePosition === 'left' ? 'flex-end' : 'flex-start',
 }))
 
 const itemSize = computed(() => {
@@ -36,20 +37,27 @@ const itemSize = computed(() => {
 const showTitles = computed(() => {
   return store.chart.showTitles
     && store.chart.layout === 'grid'
-    && store.chart.titlePosition === TitlePosition.Right
+    && store.chart.titlePosition !== TitlePosition.Below
     && rowItems.value.some(i => i?.title)
 })
 </script>
 
 <template>
   <div class="item-row" :style="rowStyles">
+    <TitleList
+      v-if="showTitles && store.chart.titlePosition === 'left'"
+      align="right"
+      :items="rowItems"
+      :show-numbers="store.chart.showNumbers"
+    />
     <template
       v-for="item in rowItems" :key="item.originalIndex"
     >
       <Item :item="item.data" :index="item.originalIndex" :title="item.title" :size="itemSize" />
     </template>
     <TitleList
-      v-if="showTitles"
+      v-if="showTitles && store.chart.titlePosition === 'right'"
+      align="left"
       :items="rowItems"
       :show-numbers="store.chart.showNumbers"
     />
@@ -59,7 +67,6 @@ const showTitles = computed(() => {
 <style scoped>
 .item-row {
   display: flex;
-  justify-content: flex-start;
   width: 100%;
 }
 </style>
