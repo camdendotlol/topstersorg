@@ -93,6 +93,7 @@ const itemStyle: ComputedRef<CSSProperties> = computed(() => ({
 const imgStyle: ComputedRef<CSSProperties> = computed(() => ({
   borderRadius: store.chart.roundCorners ? '10px' : '',
   boxShadow: store.chart.shadows ? '2px 2px 4px rgba(0,0,0,0.6)' : '',
+  height: (store.chart.titlePosition === 'below') ? `${props.size}px` : 'initial',
 }))
 
 function deleteItem() {

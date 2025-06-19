@@ -37,7 +37,7 @@ function onResize() {
 watch([store, chartRef], () => {
   onResize()
   // { flush: 'post' } tells Vue to wait until the state is finished changing
-  // before running the watcher function. otherwise, onResize runs before the
+  // before running the watch callback. otherwise, onResize runs before the
   // chart is finished updating and gets stuck one state update behind.
 }, { flush: 'post' })
 
