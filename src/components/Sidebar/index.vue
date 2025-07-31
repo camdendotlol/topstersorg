@@ -146,6 +146,10 @@ function setCurrentTab(tab: TabsEnum) {
     background: #000000;
   }
 
+  .announcement {
+    display: none;
+  }
+
   .tabbed-sidebar-block {
     margin: 0;
     width: 100%;
