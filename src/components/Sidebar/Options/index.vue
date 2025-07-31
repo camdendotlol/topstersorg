@@ -15,13 +15,13 @@ const storeRef = storeToRefs(store)
 
 <template>
   <div class="options-list">
-    <LayoutInput />
-    <div class="separator" aria-hidden />
     <TextInput
       label="Title"
       property="title"
       @handle-change="store.changeTitle"
     />
+    <div class="separator" aria-hidden />
+    <LayoutInput />
     <div class="separator" aria-hidden />
     <template
       v-if="storeRef.chart.value.layout === 'tiered'"
