@@ -43,9 +43,6 @@ function setCurrentTab(tab: TabsEnum) {
         <PageTitle />
       </div>
       <div class="tabbed-sidebar-block">
-        <p class="announcement">
-          Note: Last.fm (which powers our music search) currently has a bug where it only searches album/song names instead of artist names. Albums should come up if you search for their titles.
-        </p>
         <Tabs
           :tabs="tabs"
           :current-tab="currentTab"
@@ -76,10 +73,6 @@ function setCurrentTab(tab: TabsEnum) {
 .sidebar {
   position: fixed;
   width: 400px;
-}
-
-.announcement {
-  font-size: 12px;
 }
 
 .hidden-tab {
