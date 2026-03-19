@@ -37,7 +37,7 @@ export function isMovieResult(item: Result): item is MovieResult {
 }
 
 export function isTVResult(item: Result): item is TVResult {
-  if ((item as TVResult).name && (item as MovieResult).poster_path) {
+  if ((item as TVResult).name && (item as TVResult).poster_path) {
     return true
   }
   else {

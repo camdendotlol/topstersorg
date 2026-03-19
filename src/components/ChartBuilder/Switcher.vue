@@ -44,8 +44,8 @@ function changeChart(event: Event) {
       @change="changeChart"
     >
       <option
-        v-for="(uuid, index) in chartUuids"
-        :key="index"
+        v-for="uuid in chartUuids"
+        :key="uuid"
         :value="uuid"
         :selected="uuid === activeChartUuid"
       >

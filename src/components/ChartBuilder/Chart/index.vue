@@ -75,11 +75,11 @@ const chartStyle: ComputedRef<CSSProperties> = computed(() => ({
 }))
 
 onMounted(() => {
-  window.onresize = onResize
+  window.addEventListener('resize', onResize)
 })
 
 onUnmounted(() => {
-  window.onresize = undefined
+  window.removeEventListener('resize', onResize)
 })
 </script>
 

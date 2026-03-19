@@ -50,7 +50,7 @@ const storeRef = storeToRefs(store)
     <SelectInput
       label="Background Type"
       property="backgroundType"
-      :options="['color', 'image']"
+      :options="Object.values(BackgroundTypes)"
       :value="storeRef.chart.value.backgroundType"
       @handle-change="store.setBackgroundType"
     />
