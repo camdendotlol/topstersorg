@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ComputedRef, CSSProperties } from 'vue'
 import type { Chart } from '../../../types'
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useStore } from '../../../store'
 import { BackgroundTypes } from '../../../types'
 import Row from './Row.vue'
@@ -9,11 +9,31 @@ import Row from './Row.vue'
 const store = useStore()
 
 const chartRef = ref<HTMLDivElement>(null)
+const hasScaled = ref(false)
+
+let resizeObserver: ResizeObserver | undefined
+let animationFrame: number | undefined
+
+function scheduleResize() {
+  if (animationFrame) {
+    cancelAnimationFrame(animationFrame)
+  }
+
+  animationFrame = requestAnimationFrame(() => {
+    onResize()
+  })
+}
 
 function onResize() {
   if (chartRef.value) {
+    const parentEl = chartRef.value.parentElement
+
+    if (!parentEl) {
+      return
+    }
+
     const windowHeight = document.documentElement.clientHeight
-    const containerWidth = chartRef.value.parentElement.offsetWidth
+    const containerWidth = parentEl.offsetWidth
 
     const chartHeight = chartRef.value.offsetHeight + 420
     // add 100 to factor in the 50px X margins
@@ -27,14 +47,16 @@ function onResize() {
 
     // set the parent container's height so you can scroll vertically
     // to see the whole chart on mobile
-    const parentEl = chartRef.value.parentElement
     parentEl.style.height = `${Math.floor(chartRef.value.offsetHeight * ratio + 90)}px`
+
+    hasScaled.value = true
   }
 }
 
 // re-scale the chart when the state changes
-watch([store, chartRef], () => {
-  onResize()
+watch([store, chartRef], async () => {
+  await nextTick()
+  scheduleResize()
   // { flush: 'post' } tells Vue to wait until the state is finished changing
   // before running the watcher function. otherwise, onResize runs before the
   // chart is finished updating and gets stuck one state update behind.
@@ -74,12 +96,36 @@ const chartStyle: ComputedRef<CSSProperties> = computed(() => ({
   ...getBackgroundStyle(store.chart),
 }))
 
-onMounted(() => {
-  window.addEventListener('resize', onResize)
+onMounted(async () => {
+  await nextTick()
+
+  scheduleResize()
+
+  window.addEventListener('resize', scheduleResize)
+
+  if (chartRef.value) {
+    resizeObserver = new ResizeObserver(() => {
+      scheduleResize()
+    })
+
+    resizeObserver.observe(chartRef.value)
+
+    if (chartRef.value.parentElement) {
+      resizeObserver.observe(chartRef.value.parentElement)
+    }
+  }
 })
 
 onUnmounted(() => {
-  window.removeEventListener('resize', onResize)
+  window.removeEventListener('resize', scheduleResize)
+
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+  }
+
+  if (animationFrame) {
+    cancelAnimationFrame(animationFrame)
+  }
 })
 </script>
 
@@ -87,6 +133,7 @@ onUnmounted(() => {
   <div
     id="chart"
     ref="chartRef"
+    :class="{ 'is-scaled': hasScaled }"
     :style="chartStyle"
   >
     <div v-if="store.chart.title">
@@ -107,6 +154,11 @@ onUnmounted(() => {
   position: absolute;
   transform-origin: top left;
   top: 0;
+  visibility: hidden;
+}
+
+#chart.is-scaled {
+  visibility: visible;
 }
 
 #chart .chart-title {
