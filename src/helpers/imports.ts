@@ -7,14 +7,18 @@ import { BackgroundTypes } from '../types'
 import { forceRefresh } from './chart'
 import { appendChart, findByUuid, getActiveChart, getActiveChartUuid, getNewestChartUuid, migrateChart, setActiveChart, updateStoredChart } from './localStorage'
 
+function toArrayBuffer(data: Uint8Array): ArrayBuffer {
+  return data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength) as ArrayBuffer
+}
+
 async function unzlib(data: Uint8Array) {
-  const stream = new Response(data).body.pipeThrough(new DecompressionStream('deflate'))
+  const stream = new Response(toArrayBuffer(data)).body.pipeThrough(new DecompressionStream('deflate'))
 
   return new Uint8Array(await new Response(stream).arrayBuffer())
 }
 
 async function zlib(data: Uint8Array) {
-  const stream = new Response(data).body.pipeThrough(new CompressionStream('deflate'))
+  const stream = new Response(toArrayBuffer(data)).body.pipeThrough(new CompressionStream('deflate'))
 
   return new Uint8Array(await new Response(stream).arrayBuffer())
 }
