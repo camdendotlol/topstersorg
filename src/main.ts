@@ -1,4 +1,4 @@
-import { enableDragDropTouch } from 'drag-drop-touch'
+import { enableDragDropTouch } from '@dragdroptouch/drag-drop-touch'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import App from './App.vue'
