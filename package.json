@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vue-tsc && vite build",
     "preview": "vite preview --port 5050",
     "lint": "eslint .",
@@ -14,17 +14,17 @@
     "bootstrap-icons-vue": "^1.11.3",
     "drag-drop-touch": "github:drag-drop-touch-js/dragdroptouch",
     "html2canvas": "github:camdendotlol/html2canvas-smart-cors#prod",
-    "pinia": "^2.3.0",
-    "uuid": "^11.0.3",
-    "vue": "^3.5.13"
+    "pinia": "^3.0.4",
+    "uuid": "^14.0.0",
+    "vue": "^3.5.34"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^3.11.2",
-    "@vitejs/plugin-vue": "^5.2.1",
-    "@vue/tsconfig": "^0.7.0",
-    "eslint": "^9.16.0",
-    "typescript": "^5.6.3",
-    "vite": "^6.0.11",
-    "vue-tsc": "^2.2.0"
+    "@antfu/eslint-config": "^9.0.0",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "@vue/tsconfig": "^0.9.1",
+    "eslint": "^9.39.4",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.14",
+    "vue-tsc": "^3.3.1"
   }
 }
