@@ -12,9 +12,9 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
       - name: Build
         env:
           VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
