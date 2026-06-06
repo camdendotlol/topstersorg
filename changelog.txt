@@ -1,3 +1,5 @@
+June 6, 2026: Fixed shadows on Firefox and Chrome.
+
 January 24, 2025:
 
 This update addresses some feedback about the mobile UI in yesterday's update.
