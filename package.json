@@ -11,9 +11,9 @@
     "lint-fix": "eslint . --fix"
   },
   "dependencies": {
-    "bootstrap-icons-vue": "^1.11.3",
     "@dragdroptouch/drag-drop-touch": "^2.0.3",
-    "html2canvas": "github:camdendotlol/html2canvas-smart-cors#prod",
+    "@zumer/snapdom": "^2.12.9",
+    "bootstrap-icons-vue": "^1.11.3",
     "pinia": "^3.0.4",
     "uuid": "^14.0.0",
     "vue": "^3.5.34"
