@@ -18,7 +18,7 @@ import {
 // To run the first time Topsters.org launches, or when we want to reset everything.
 export function initializeFirstRun(): void {
   const newUuid = appendChart({
-    timestamp: new Date().getTime(),
+    timestamp: Date.now(),
     data: initialState.chart,
   })
 
@@ -111,10 +111,12 @@ function inlineSafeBackgroundsPlugin() {
         const urls = [...new Set([...bg.matchAll(urlRe)].map(m => m[2]))]
         const map = new Map<string, string>()
         await Promise.all(urls.map(async (u) => {
-          if (u.startsWith('data:')) return
+          if (u.startsWith('data:'))
+            return
           try {
             map.set(u, await toDataUrl(u))
-          } catch {}
+          }
+          catch {}
         }))
         if (map.size === 0) {
           return
@@ -134,7 +136,8 @@ function inlineSafeImagesPlugin() {
 
       await Promise.all(imgs.map(async (img) => {
         const src = img.src
-        if (!src || src.startsWith('data:')) return
+        if (!src || src.startsWith('data:'))
+          return
         try {
           const res = await fetch(src, { mode: 'cors', credentials: 'omit' })
           const blob = await res.blob()
@@ -144,7 +147,8 @@ function inlineSafeImagesPlugin() {
             fr.onerror = reject
             fr.readAsDataURL(blob)
           })
-        } catch {}
+        }
+        catch {}
       }))
     },
   }
@@ -164,6 +168,73 @@ function chartCapturePlugin() {
   }
 }
 
+function safariTextShadowPlugin() {
+  const isSafari = /^(?:(?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent)
+
+  function parse(ts: string) {
+    const color = ts.match(/rgba?\([^)]*\)|#[0-9a-f]+/i)?.[0] ?? 'rgba(0,0,0,0.6)'
+    const nums = ts.replace(/rgba?\([^)]*\)/i, '').match(/-?\d+(?:\.\d+)?px/g) ?? []
+    const [x = '0px', y = '0px', blur = '0px'] = nums
+    return { color, x, y, blur }
+  }
+
+  return {
+    name: 'safari-text-shadow',
+    afterClone(context: any) {
+      if (!isSafari)
+        return
+      const origs = [context.element, ...context.element.querySelectorAll('*')] as HTMLElement[]
+      const clones = [context.clone, ...context.clone.querySelectorAll('*')] as HTMLElement[]
+
+      origs.forEach((orig, i) => {
+        const clone = clones[i]
+        if (!clone)
+          return
+
+        const ts = getComputedStyle(orig).textShadow
+        if (!ts || ts === 'none')
+          return
+
+        // Only handle elements that directly contain text (title, list items).
+        const text = [...clone.childNodes]
+          .filter(n => n.nodeType === Node.TEXT_NODE)
+          .map(n => n.textContent)
+          .join('')
+        if (!text.trim()) {
+          return
+        }
+
+        const { color, x, y, blur } = parse(ts)
+        clone.style.textShadow = 'none'
+        if (getComputedStyle(orig).position === 'static')
+          clone.style.position = 'relative'
+
+        const shadow = document.createElement('span')
+        shadow.textContent = text
+        shadow.setAttribute('aria-hidden', 'true')
+        Object.assign(shadow.style, {
+          position: 'absolute',
+          left: '0',
+          top: '0',
+          width: '100%',
+          height: '100%',
+          color,
+          transform: `translate(${x}, ${y})`,
+          filter: blur === '0px' ? '' : `blur(${blur})`,
+          font: 'inherit',
+          textAlign: 'inherit',
+          whiteSpace: 'inherit',
+          lineHeight: 'inherit',
+          pointerEvents: 'none',
+          zIndex: '-1',
+        } as Partial<CSSStyleDeclaration> as CSSStyleDeclaration)
+
+        clone.insertBefore(shadow, clone.firstChild)
+      })
+    },
+  }
+}
+
 export async function downloadChart(): Promise<void> {
   const { snapdom } = await import('@zumer/snapdom')
   const element = document.querySelector('#chart') as HTMLElement
@@ -175,11 +246,22 @@ export async function downloadChart(): Promise<void> {
   const rect = element.getBoundingClientRect()
   const ratio = element.offsetWidth ? rect.width / element.offsetWidth : 1
 
+  const MAX_EDGE = 4096
+  const naturalLong = Math.max(element.offsetWidth, element.offsetHeight)
+  const fitScale = Math.min(1, MAX_EDGE / naturalLong)
+
   const result = await snapdom(element, {
-    scale: ratio ? 1 / ratio : 1,
+    scale: (ratio ? 1 / ratio : 1) * fitScale,
+    dpr: 1,
     embedFonts: true,
+    outerShadows: true,
     useProxy: `${import.meta.env.VITE_BACKEND_URL}/api/proxy?url=`,
-    plugins: [chartCapturePlugin(), inlineSafeImagesPlugin(), inlineSafeBackgroundsPlugin()],
+    plugins: [
+      safariTextShadowPlugin(),
+      chartCapturePlugin(),
+      inlineSafeImagesPlugin(),
+      inlineSafeBackgroundsPlugin(),
+    ],
   })
 
   const blob = await result.toBlob({ type: 'png' })
@@ -201,7 +283,7 @@ function saveChartImage(url: string): void {
 
 export function createNewChart() {
   const newUuid = appendChart({
-    timestamp: new Date().getTime(),
+    timestamp: Date.now(),
     data: initialState.chart,
   })
 
