@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ComputedRef, CSSProperties } from 'vue'
 import type { Chart } from '../../../types'
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useStore } from '../../../store'
 import { BackgroundTypes } from '../../../types'
 import Row from './Row.vue'
@@ -10,11 +10,26 @@ import TitleList from './TitleList.vue'
 const store = useStore()
 
 const chartRef = ref<HTMLDivElement | null>(null)
+const hasScaled = ref(false)
+
+let resizeObserver: ResizeObserver | undefined
+let animationFrame: number | undefined
+
+function scheduleResize() {
+  if (animationFrame) {
+    cancelAnimationFrame(animationFrame)
+  }
+
+  animationFrame = requestAnimationFrame(() => {
+    onResize()
+  })
+}
 
 function onResize() {
   if (chartRef.value && chartRef.value.parentElement) {
+    const parentEl = chartRef.value.parentElement
     const windowHeight = document.documentElement.clientHeight
-    const containerWidth = chartRef.value.parentElement.offsetWidth
+    const containerWidth = parentEl.offsetWidth
 
     const chartHeight = chartRef.value.offsetHeight + 420
 
@@ -28,14 +43,15 @@ function onResize() {
 
     // set the parent container's height so you can scroll vertically
     // to see the whole chart on mobile
-    const parentEl = chartRef.value.parentElement
     parentEl.style.height = `${Math.floor(chartRef.value.offsetHeight * ratio + 90)}px`
+    hasScaled.value = true
   }
 }
 
 // re-scale the chart when the state changes
-watch([store, chartRef], () => {
-  onResize()
+watch([store, chartRef], async () => {
+  await nextTick()
+  scheduleResize()
   // { flush: 'post' } tells Vue to wait until the state is finished changing
   // before running the watch callback. otherwise, onResize runs before the
   // chart is finished updating and gets stuck one state update behind.
@@ -75,12 +91,36 @@ const chartStyle: ComputedRef<CSSProperties> = computed(() => ({
   ...getBackgroundStyle(store.chart),
 }))
 
-onMounted(() => {
-  window.onresize = onResize
+onMounted(async () => {
+  await nextTick()
+
+  scheduleResize()
+
+  window.addEventListener('resize', scheduleResize)
+
+  if (chartRef.value) {
+    resizeObserver = new ResizeObserver(() => {
+      scheduleResize()
+    })
+
+    resizeObserver.observe(chartRef.value)
+
+    if (chartRef.value.parentElement) {
+      resizeObserver.observe(chartRef.value.parentElement)
+    }
+  }
 })
 
 onUnmounted(() => {
-  window.onresize = null
+  window.removeEventListener('resize', scheduleResize)
+
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+  }
+
+  if (animationFrame) {
+    cancelAnimationFrame(animationFrame)
+  }
 })
 
 // whether to display the titles on the righthand side for tiered charts
@@ -102,6 +142,7 @@ const titleListContainerStyles: ComputedRef<CSSProperties> = computed(() => ({
   <div
     id="chart"
     ref="chartRef"
+    :class="{ 'is-scaled': hasScaled }"
     :style="chartStyle"
   >
     <p v-if="store.chart.title" class="chart-title" :style="chartTitleStyle">
@@ -152,7 +193,12 @@ const titleListContainerStyles: ComputedRef<CSSProperties> = computed(() => ({
   display: inline-block;
   position: absolute;
   transform-origin: top left;
+  visibility: hidden;
   top: 0;
+}
+
+#chart .is-scaled {
+  visibility: visible;
 }
 
 #chart .chart-title {
