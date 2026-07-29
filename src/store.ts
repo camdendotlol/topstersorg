@@ -1,6 +1,7 @@
-import type { BackgroundTypes, Chart, ChartItem, ItemData, Layout, Row, TitlePosition } from './types'
+import type { Chart, ChartItem, ItemData, Layout, Row, TitlePosition } from './types';
 import { defineStore } from 'pinia'
 import { calculateRows } from './helpers/chart'
+import { BackgroundTypes } from './types'
 
 export interface State {
   chart: Chart
@@ -17,7 +18,7 @@ export const initialState = {
     },
     backgroundUrl: '',
     backgroundColor: '#000000',
-    backgroundType: 'color',
+    backgroundType: BackgroundTypes.Color,
     showNumbers: false,
     showTitles: true,
     gap: 20,
