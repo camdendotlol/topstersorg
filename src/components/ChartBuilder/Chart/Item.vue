@@ -44,9 +44,9 @@ function handleDragStart(ev: DragEvent) {
     // match the item's scale to the chart
     const chart = document.getElementById('chart')
     if (chart) {
-      const chartTransform = chart.style.transform
-      const scaleRatio = chartTransform.slice(6, chartTransform.length - 1)
-      const scaledSize = 260 * Number.parseFloat(scaleRatio)
+      const scaleMatch = chart?.style.transform?.match(/scale\(([^)]+)\)/)
+      const scaleRatio = scaleMatch ? Number.parseFloat(scaleMatch[1]) : 1
+      const scaledSize = 260 * scaleRatio
       container.style.height = `${scaledSize}px`
       container.style.width = `${scaledSize}px`
 
@@ -54,6 +54,9 @@ function handleDragStart(ev: DragEvent) {
 
       if (appEl) {
         appEl.appendChild(container)
+
+        // clean up the drag image element after the drag ends
+        ev.target?.addEventListener('dragend', () => container.remove(), { once: true })
 
         ev.dataTransfer.effectAllowed = 'move'
         ev.dataTransfer.setData('application/json', dragData)
