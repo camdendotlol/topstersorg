@@ -62,10 +62,8 @@ function addToChart(item: Result): void {
   // Get the index of the first null chart slot
   const firstEmptyIndex = store.chart.items.indexOf(null)
 
-  const totalSlots = store.chart.size.x * store.chart.size.y
-
   // Only add an item if there's a visible slot
-  if (firstEmptyIndex < totalSlots) {
+  if (firstEmptyIndex < store.totalSlots) {
     const newItem = createChartItem(item)
     store.addItem({ item: newItem, index: firstEmptyIndex })
   }

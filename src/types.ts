@@ -9,6 +9,26 @@ export interface ChartSize {
   y: number
 }
 
+export interface Tier {
+  columns: number
+  rows: number
+}
+
+export interface LayoutPreset {
+  name: string
+  tiers: Tier[]
+}
+
+export enum LayoutTypes {
+  Grid = 'grid',
+  Tiered = 'tiered',
+}
+
+export enum TitlePositions {
+  Side = 'side',
+  Below = 'below',
+}
+
 export enum BackgroundTypes {
   Color = 'color',
   Image = 'image',
@@ -30,8 +50,10 @@ export interface Chart {
   title: string
   items: Array<ChartItem | null>
   size: ChartSize
+  tiers?: Tier[]
   showNumbers: boolean
   showTitles: boolean
+  titlePosition?: TitlePositions
   gap: number
   font?: string
   textColor?: string

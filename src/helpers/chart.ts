@@ -103,6 +103,10 @@ export async function downloadChart(): Promise<void> {
       ph.classList.remove('placeholder')
       ph.style.boxShadow = 'none'
     }
+
+    const { width, height } = chart.getBoundingClientRect()
+    chart.style.width = `${Math.ceil(width)}px`
+    chart.style.height = `${Math.ceil(height)}px`
   }
 
   const result = await html2Canvas.default(element, {

@@ -4,7 +4,7 @@ import { BIconX } from 'bootstrap-icons-vue'
 import { computed } from 'vue'
 import { useStore } from '../../../store'
 
-const props = defineProps(['item', 'index', 'title'])
+const props = defineProps(['item', 'index', 'title', 'number', 'size', 'captionSize'])
 
 const store = useStore()
 
@@ -32,11 +32,8 @@ function handleDragStart(ev: DragEvent) {
     container.classList.add('dnd-container')
     container.appendChild(dragImg)
 
-    // match the item's scale to the chart
-    const chart = document.getElementById('chart')
-    const scaleMatch = chart?.style.transform?.match(/scale\(([^)]+)\)/)
-    const scaleRatio = scaleMatch ? Number.parseFloat(scaleMatch[1]) : 1
-    const scaledSize = 260 * scaleRatio
+    // match the item's on-screen size, which includes the chart's scaling
+    const scaledSize = (ev.currentTarget as HTMLElement).getBoundingClientRect().width
     container.style.height = `${scaledSize}px`
     container.style.width = `${scaledSize}px`
 
@@ -67,6 +64,22 @@ function handleDrop(ev: DragEvent) {
   }
 }
 
+const sizeStyle: ComputedRef<CSSProperties> = computed(() => ({
+  height: `${props.size}px`,
+  width: `${props.size}px`,
+  minWidth: `${props.size}px`,
+}))
+
+const CAPTION_LINE_HEIGHT = 1.2
+
+const captionStyle: ComputedRef<CSSProperties> = computed(() => ({
+  width: `${props.size}px`,
+  height: `${Math.ceil(props.captionSize * CAPTION_LINE_HEIGHT * 2)}px`,
+  marginTop: `${Math.round(props.captionSize / 2)}px`,
+  fontSize: `${props.captionSize}px`,
+  lineHeight: CAPTION_LINE_HEIGHT,
+}))
+
 const imgStyle: ComputedRef<CSSProperties> = computed(() => ({
   borderRadius: store.chart.roundCorners ? '10px' : '',
   boxShadow: store.chart.shadows ? '2px 2px 4px rgba(0,0,0,0.6)' : '',
@@ -78,40 +91,59 @@ function deleteItem() {
 </script>
 
 <template>
-  <div
-    :key="props.item ? props.item.coverURL : props.index"
-    :class="`item ${props.item ? '' : 'placeholder'}`"
-    :data-index="props.index"
-    :title="props.title"
-    :draggable="props.item ? 'true' : 'false'"
-    :style="props.item ? undefined : imgStyle"
-    @dragstart="handleDragStart"
-    @dragover="allowDrop"
-    @drop="handleDrop"
-  >
-    <button
-      v-if="props.item"
-      class="delete-button"
-      data-html2canvas-ignore
-      title="Delete item"
-      @click="deleteItem"
+  <div class="item-cell">
+    <div
+      :key="props.item ? props.item.coverURL : props.index"
+      :class="`item ${props.item ? '' : 'placeholder'}`"
+      :data-index="props.index"
+      :title="props.title"
+      :draggable="props.item ? 'true' : 'false'"
+      :style="[sizeStyle, props.item ? undefined : imgStyle]"
+      @dragstart="handleDragStart"
+      @dragover="allowDrop"
+      @drop="handleDrop"
     >
-      <BIconX />
-    </button>
-    <img
-      v-if="item"
-      :src="item.coverURL"
-      class="item-img"
-      :style="imgStyle"
-    >
+      <button
+        v-if="props.item"
+        class="delete-button"
+        data-html2canvas-ignore
+        title="Delete item"
+        @click="deleteItem"
+      >
+        <BIconX />
+      </button>
+      <img
+        v-if="item"
+        :src="item.coverURL"
+        class="item-img"
+        :style="imgStyle"
+      >
+    </div>
+    <div v-if="props.captionSize" class="caption" :style="captionStyle">
+      <div class="caption-line">
+        <template v-if="props.item">
+          {{ store.chart.showNumbers ? `${props.number}. ` : '' }}{{ props.item.title }}
+        </template>
+      </div>
+      <div class="caption-line">
+        {{ props.item?.creator }}
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.caption {
+  overflow: hidden;
+  text-align: center;
+}
+
+.caption-line {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .item {
-  height: 260px;
-  width: 260px;
-  min-width: 260px;
   position: relative;
   display: flex;
   align-items: center;

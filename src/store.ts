@@ -1,5 +1,8 @@
+import type { RowLayout } from './helpers/layout'
+import type { Chart, ChartItem, Tier, TitlePositions } from './types'
 import { defineStore } from 'pinia'
-import { BackgroundTypes, type Chart, type ChartItem } from './types'
+import { getRowLayouts, getTotalSlots, layoutPresets } from './helpers/layout'
+import { BackgroundTypes, LayoutTypes } from './types'
 
 export interface State {
   chart: Chart
@@ -100,6 +103,17 @@ export const useStore = defineStore('store', {
         x: payload,
       } }
     },
+    setLayoutType(layoutType: LayoutTypes) {
+      if (layoutType === LayoutTypes.Grid) {
+        this.setTiers(undefined)
+      }
+      else if (!this.chart.tiers) {
+        this.setTiers(layoutPresets.find(preset => preset.name === 'Top 40').tiers)
+      }
+    },
+    setTiers(tiers: Tier[] | undefined) {
+      this.chart = { ...this.chart, tiers: tiers?.map(tier => ({ ...tier })) }
+    },
     changeGap(newGap: number) {
       this.chart = { ...this.chart, gap: newGap }
     },
@@ -111,6 +125,9 @@ export const useStore = defineStore('store', {
     },
     toggleTitles(newValue: boolean) {
       this.chart = { ...this.chart, showTitles: newValue }
+    },
+    setTitlePosition(titlePosition: TitlePositions) {
+      this.chart = { ...this.chart, titlePosition }
     },
     toggleNumbers(newValue: boolean) {
       this.chart = { ...this.chart, showNumbers: newValue }
@@ -132,6 +149,12 @@ export const useStore = defineStore('store', {
     },
   },
   getters: {
+    rows(state): RowLayout[] {
+      return getRowLayouts(state.chart)
+    },
+    totalSlots(state): number {
+      return getTotalSlots(state.chart)
+    },
     // Get the list of chart items, along with some computed metadata
     // that's generally useful throughout the application.
     items(state): Array<ItemData | null> {
