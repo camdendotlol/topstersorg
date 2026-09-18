@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import type { LayoutPreset } from '../../../types'
 import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { layoutPresets } from '../../../helpers/layout'
 import { useStore } from '../../../store'
-import { BackgroundTypes } from '../../../types'
+import { BackgroundTypes, LayoutTypes, TitlePositions } from '../../../types'
 import ColorInput from './ColorInput.vue'
 import RangeInput from './RangeInput.vue'
 import SelectInput from './SelectInput.vue'
@@ -10,6 +13,12 @@ import ToggleInput from './ToggleInput.vue'
 
 const store = useStore()
 const storeRef = storeToRefs(store)
+
+const layoutType = computed(() => storeRef.chart.value.tiers ? LayoutTypes.Tiered : LayoutTypes.Grid)
+
+function isSelectedPreset(preset: LayoutPreset) {
+  return JSON.stringify(preset.tiers) === JSON.stringify(storeRef.chart.value.tiers)
+}
 </script>
 
 <template>
@@ -27,26 +36,60 @@ const storeRef = storeToRefs(store)
       @handle-change="store.toggleTitles"
     />
     <div class="separator" aria-hidden />
-    <RangeInput
-      label="Width"
-      property="chartWidth"
-      :min="1"
-      :max="12"
-      :value="storeRef.chart.value.size.x"
-      :data-list-step-interval="1"
-      @handle-change="store.setWidth"
+    <template v-if="storeRef.chart.value.showTitles">
+      <SelectInput
+        label="Title Position"
+        property="titlePosition"
+        :options="Object.values(TitlePositions)"
+        :value="storeRef.chart.value.titlePosition ?? TitlePositions.Side"
+        @handle-change="store.setTitlePosition"
+      />
+      <div class="separator" aria-hidden />
+    </template>
+    <SelectInput
+      label="Layout"
+      property="layoutType"
+      :options="Object.values(LayoutTypes)"
+      :value="layoutType"
+      @handle-change="store.setLayoutType"
     />
     <div class="separator" aria-hidden />
-    <RangeInput
-      label="Height"
-      property="chartHeight"
-      :min="1"
-      :max="12"
-      :value="storeRef.chart.value.size.y"
-      :data-list-step-interval="1"
-      @handle-change="store.setHeight"
-    />
-    <div class="separator" aria-hidden />
+    <template v-if="layoutType === LayoutTypes.Grid">
+      <RangeInput
+        label="Width"
+        property="chartWidth"
+        :min="1"
+        :max="12"
+        :value="storeRef.chart.value.size.x"
+        :data-list-step-interval="1"
+        @handle-change="store.setWidth"
+      />
+      <div class="separator" aria-hidden />
+      <RangeInput
+        label="Height"
+        property="chartHeight"
+        :min="1"
+        :max="12"
+        :value="storeRef.chart.value.size.y"
+        :data-list-step-interval="1"
+        @handle-change="store.setHeight"
+      />
+      <div class="separator" aria-hidden />
+    </template>
+    <template v-if="layoutType === LayoutTypes.Tiered">
+      <div class="layout-settings">
+        <button
+          v-for="preset in layoutPresets"
+          :key="preset.name"
+          type="button"
+          :class="{ 'selected-layout': isSelectedPreset(preset) }"
+          @click="store.setTiers(preset.tiers)"
+        >
+          {{ preset.name }}
+        </button>
+      </div>
+      <div class="separator" aria-hidden />
+    </template>
     <SelectInput
       label="Background Type"
       property="backgroundType"
@@ -128,7 +171,7 @@ const storeRef = storeToRefs(store)
 }
 
 .layout-settings button {
-  height: 80px;
+  height: 48px;
   background: #393939;
   border: none;
   font-size: 0.8rem;
