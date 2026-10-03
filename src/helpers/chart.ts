@@ -25,6 +25,19 @@ export function initializeFirstRun(): void {
   setActiveChart(newUuid)
 }
 
+// Use the Last.fm image if there is one, otherwise fall back to the Cover Art Archive.
+export function getMusicCoverURL(imageURL: string, mbid: string): string {
+  if (imageURL) {
+    return imageURL
+  }
+
+  if (mbid) {
+    return `https://coverartarchive.org/release/${mbid}/front-500`
+  }
+
+  return ''
+}
+
 export function setImage(url: string): HTMLImageElement {
   const cover = new Image()
   cover.src = url
@@ -43,7 +56,7 @@ export function createChartItem(item: Result): ChartItem {
     const largestImageIndex = item.image.length - 1
     return {
       title: item.name,
-      coverURL: item.image[largestImageIndex]['#text'],
+      coverURL: getMusicCoverURL(item.image[largestImageIndex]['#text'], item.mbid),
       creator: item.artist,
     }
   }

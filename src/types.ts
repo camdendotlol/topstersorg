@@ -95,6 +95,7 @@ export interface MusicResult {
     '#text': string
     'size': string
   }[]
+  mbid: string
 }
 
 export interface GameResult {

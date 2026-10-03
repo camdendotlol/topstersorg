@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import type { ComputedRef, CSSProperties } from 'vue'
 import { BIconX } from 'bootstrap-icons-vue'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useStore } from '../../../store'
+import LoadingSpinner from '../../LoadingSpinner.vue'
 
 const props = defineProps(['item', 'index', 'title'])
 
 const store = useStore()
+
+const isLoading = ref(true)
+
+watch(() => props.item?.coverURL, () => {
+  isLoading.value = true
+})
 
 function allowDrop(ev: DragEvent) {
   ev.preventDefault()
@@ -98,11 +105,18 @@ function deleteItem() {
     >
       <BIconX />
     </button>
+    <LoadingSpinner
+      v-if="props.item && isLoading"
+      :size="60"
+      data-html2canvas-ignore
+    />
     <img
       v-if="item"
       :src="item.coverURL"
-      class="item-img"
+      :class="`item-img ${isLoading ? 'loading' : ''}`"
       :style="imgStyle"
+      @load="isLoading = false"
+      @error="isLoading = false"
     >
   </div>
 </template>
@@ -123,6 +137,10 @@ function deleteItem() {
   max-height: 100%;
   max-width: 100%;
   height: inherit;
+}
+
+.item-img.loading {
+  opacity: 0;
 }
 
 .item-img:hover {

@@ -7,7 +7,8 @@ import type {
   Result,
   TVResult,
 } from '../../../types'
-import { createChartItem } from '../../../helpers/chart'
+import { ref } from 'vue'
+import { createChartItem, getMusicCoverURL } from '../../../helpers/chart'
 import { useStore } from '../../../store'
 import {
   SearchTypes,
@@ -31,17 +32,26 @@ function filterBooks(results: BookResult[]): BookResult[] {
     .filter(result => result.author_name)
 }
 
-// remove music without a cover image
-function filterMusic(results: MusicResult[]): MusicResult[] {
+function getMusicResultCover(result: MusicResult): string {
+  return getMusicCoverURL(result.image[result.image.length - 1]['#text'], result.mbid)
+}
+
+const failedMusicCovers = ref(new Set<string>())
+
+function handleMusicCoverError(src: string): void {
+  failedMusicCovers.value.add(src)
+}
+
+function filterMusic(results: MusicResult[]): { result: MusicResult, cover: string, key: string }[] {
+  const coverCounts = new Map<string, number>()
+
   return results
-    .filter((result) => {
-      let coverFound = false
-      result.image.forEach((image) => {
-        if (image['#text'] !== '') {
-          coverFound = true
-        }
-      })
-      return coverFound
+    .map(result => ({ result, cover: getMusicResultCover(result) }))
+    .filter(({ cover }) => cover && !failedMusicCovers.value.has(cover))
+    .map(({ result, cover }) => {
+      const count = (coverCounts.get(cover) ?? 0) + 1
+      coverCounts.set(cover, count)
+      return { result, cover, key: count === 1 ? cover : `${cover}#${count}` }
     })
 }
 
@@ -99,12 +109,13 @@ function initDrag(event: DragEvent, result: Result): void {
     </ul>
     <ul v-else-if="resultsType === SearchTypes.Music">
       <li
-        v-for="(result, index) in filterMusic(results)"
-        :key="index"
+        v-for="{ result, cover, key } in filterMusic(results)"
+        :key="key"
       >
         <ResultItem
-          :image-data="{ src: result.image[result.image.length - 1]['#text'], alt: result.name }"
+          :image-data="{ src: cover, alt: result.name }"
           draggable="true"
+          @image-error="handleMusicCoverError"
           @click="addToChart(result)"
           @dragstart="(event) => initDrag(event, result)"
         />
@@ -185,14 +196,6 @@ ul {
 
 li {
   list-style-type: none;
-}
-
-li img {
-  width: 100%;
-}
-
-li img:hover {
-  cursor: pointer;
 }
 
 #empty-results-placeholder {

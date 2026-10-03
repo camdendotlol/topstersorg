@@ -4,7 +4,7 @@ import type { Ref } from 'vue'
 import type { ChartItem, LastfmChartResponseItem, Period } from '../../../types'
 import { ref } from 'vue'
 import { getLastfmChart } from '../../../api/lastfm'
-import { createNewChart, periodHeaders } from '../../../helpers/chart'
+import { createNewChart, getMusicCoverURL, periodHeaders } from '../../../helpers/chart'
 import { initialState, useStore } from '../../../store'
 
 const store = useStore()
@@ -32,8 +32,12 @@ async function importLastFmChart() {
   }
   const missingCovers: string[] = []
 
+  const getCoverURL = (item: LastfmChartResponseItem) => (
+    getMusicCoverURL(item.image.find(i => i.size === 'extralarge')['#text'], item.mbid)
+  )
+
   const filtered = results.filter((item: LastfmChartResponseItem) => {
-    const coverURL = item.image.find(i => i.size === 'extralarge')['#text']
+    const coverURL = getCoverURL(item)
 
     if (coverURL === '') {
       missingCovers.push(`${item.artist.name} - ${item.name}`)
@@ -46,7 +50,7 @@ async function importLastFmChart() {
   const newItems = Array.from({ length: 144 }).fill(null) as ChartItem[]
 
   filtered.forEach((item: LastfmChartResponseItem, idx) => {
-    const coverURL = item.image.find(i => i.size === 'extralarge')['#text']
+    const coverURL = getCoverURL(item)
 
     newItems[idx] = {
       title: item.name,
@@ -82,7 +86,7 @@ async function importLastFmChart() {
 
   if (missingCovers.length > 0) {
     alert(
-      `Couldn't add the following albums because they're missing cover art on Last.fm:\n\n${missingCovers.join('\n\n')}`,
+      `Couldn't add the following albums because they're missing cover art:\n\n${missingCovers.join('\n\n')}`,
     )
   }
 }
