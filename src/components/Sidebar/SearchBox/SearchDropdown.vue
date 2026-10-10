@@ -4,7 +4,7 @@ import type {
   Result,
   SearchResult,
 } from '../../../types'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { createChartItem } from '../../../helpers/chart'
 import { useStore } from '../../../store'
 import {
@@ -33,6 +33,10 @@ function filterBooks(results: BookResult[]): BookResult[] {
 
 // Covers that failed to load, e.g. a Cover Art Archive fallback that doesn't exist.
 const failedCovers = ref(new Set<string>())
+
+watch(() => props.results, () => {
+  failedCovers.value = new Set()
+})
 
 function handleCoverError(src: string): void {
   failedCovers.value.add(src)

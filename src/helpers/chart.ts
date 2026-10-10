@@ -28,18 +28,30 @@ export function setImage(url: string): HTMLImageElement {
   return cover
 }
 
-function waitForImage(img: HTMLImageElement): Promise<void> {
+function waitForImage(img: HTMLImageElement, timeoutMs = 15000): Promise<void> {
   if (img.complete) {
     return Promise.resolve()
   }
 
   return new Promise((resolve) => {
-    img.addEventListener('load', () => resolve(), { once: true })
-    img.addEventListener('error', () => resolve(), { once: true })
+    let timer: ReturnType<typeof setTimeout> | undefined
+
+    const done = () => {
+      clearTimeout(timer)
+      img.removeEventListener('load', done)
+      img.removeEventListener('error', done)
+      resolve()
+    }
+
+    timer = setTimeout(done, timeoutMs)
+    img.addEventListener('load', done)
+    img.addEventListener('error', done)
   })
 }
 
-export function imageExists(url: string, timeoutMs = 15000): Promise<boolean> {
+export type ImageCheck = 'loaded' | 'error' | 'timeout'
+
+export function checkImage(url: string, timeoutMs = 15000): Promise<ImageCheck> {
   return new Promise((resolve) => {
     const img = new Image()
 
@@ -48,16 +60,16 @@ export function imageExists(url: string, timeoutMs = 15000): Promise<boolean> {
       img.onerror = null
       // stop the pending request
       img.src = ''
-      resolve(false)
+      resolve('timeout')
     }, timeoutMs)
 
     img.onload = () => {
       clearTimeout(timer)
-      resolve(true)
+      resolve('loaded')
     }
     img.onerror = () => {
       clearTimeout(timer)
-      resolve(false)
+      resolve('error')
     }
     img.src = url
   })
@@ -98,7 +110,7 @@ export async function downloadChart(): Promise<void> {
     throw new Error('Chart not found! Something must have gone horribly wrong.')
   }
 
-  await Promise.all(Array.from(element.querySelectorAll('img'), waitForImage))
+  await Promise.all(Array.from(element.querySelectorAll('img'), img => waitForImage(img)))
 
   // Remove the scale transform - otherwise, html2canvas
   // will download a degraded quality version of the chart.

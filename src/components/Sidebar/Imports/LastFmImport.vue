@@ -1,10 +1,11 @@
 <!-- eslint-disable no-alert -->
 <script setup lang="ts">
 import type { Ref } from 'vue'
+import type { ImageCheck } from '../../../helpers/chart'
 import type { ChartItem, Period, SearchResult } from '../../../types'
 import { nextTick, ref } from 'vue'
 import { getUserTopMusic } from '../../../api/music'
-import { createNewChart, imageExists, periodHeaders } from '../../../helpers/chart'
+import { checkImage, createNewChart, periodHeaders } from '../../../helpers/chart'
 import { initialState, useStore } from '../../../store'
 import LoadingSpinner from '../../LoadingSpinner.vue'
 
@@ -37,6 +38,22 @@ async function importLastFmChart() {
   }
 }
 
+async function checkCovers(results: SearchResult[], concurrency = 6): Promise<ImageCheck[]> {
+  const checks: ImageCheck[] = Array.from({ length: results.length })
+  let next = 0
+
+  const worker = async () => {
+    while (next < results.length) {
+      const idx = next++
+      const cover = results[idx].cover
+      checks[idx] = cover ? await checkImage(cover) : 'error'
+    }
+  }
+
+  await Promise.all(Array.from({ length: concurrency }, worker))
+  return checks
+}
+
 async function runImport() {
   const username = lastFmUsername.value.value
 
@@ -59,13 +76,11 @@ async function runImport() {
 
   const missingCovers: string[] = []
 
-  // MBID-based Cover Art Archive URLs might not resolve to working links
-  const coverExists = await Promise.all(
-    results.map(item => item.cover ? imageExists(item.cover) : Promise.resolve(false)),
-  )
+  // MBID-based Cover Art Archive URLs might not resolve to working links.
+  const coverChecks = await checkCovers(results)
 
   const filtered = results.filter((item, idx) => {
-    if (!coverExists[idx]) {
+    if (coverChecks[idx] === 'error') {
       missingCovers.push(`${item.creator} - ${item.name}`)
       return false
     }
