@@ -31,9 +31,20 @@ async function importLastFmChart() {
     return null
   }
 
+  const missingCovers: string[] = []
+
+  const filtered = results.filter((item) => {
+    if (!item.cover) {
+      missingCovers.push(`${item.creator} - ${item.name}`)
+      return false
+    }
+
+    return true
+  })
+
   const newItems = Array.from({ length: 144 }).fill(null) as ChartItem[]
 
-  results.forEach((item, idx) => {
+  filtered.forEach((item, idx) => {
     newItems[idx] = {
       title: item.name,
       creator: item.creator,
@@ -63,8 +74,14 @@ async function importLastFmChart() {
     ...initialState.chart,
     title: `${username}'s ${periodHeaders[period]} Chart`,
     items: newItems,
-    size: getSize(results.length),
+    size: getSize(filtered.length),
   })
+
+  if (missingCovers.length > 0) {
+    alert(
+      `Couldn't add the following albums because they're missing cover art:\n\n${missingCovers.join('\n\n')}`,
+    )
+  }
 }
 </script>
 

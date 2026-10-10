@@ -42,7 +42,7 @@ function filterResults(results: SearchResult[]): { result: SearchResult, key: st
   const coverCounts = new Map<string, number>()
 
   return results
-    .filter(result => !failedCovers.value.has(result.cover))
+    .filter(result => result.cover && !failedCovers.value.has(result.cover))
     .map((result) => {
       const count = (coverCounts.get(result.cover) ?? 0) + 1
       coverCounts.set(result.cover, count)

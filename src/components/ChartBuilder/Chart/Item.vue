@@ -9,10 +9,10 @@ const props = defineProps(['item', 'index', 'title'])
 
 const store = useStore()
 
-const isLoading = ref(true)
+const isLoading = ref(Boolean(props.item?.coverURL))
 
-watch(() => props.item?.coverURL, () => {
-  isLoading.value = true
+watch(() => props.item?.coverURL, (coverURL) => {
+  isLoading.value = Boolean(coverURL)
 })
 
 function allowDrop(ev: DragEvent) {
