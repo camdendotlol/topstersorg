@@ -81,6 +81,12 @@ export async function downloadChart(): Promise<void> {
       ph.classList.remove('placeholder')
       ph.style.boxShadow = 'none'
     }
+
+    const loadingImages = doc.querySelectorAll('.item-img.loading')
+
+    for (let i = 0; i < loadingImages.length; i++) {
+      loadingImages[i].classList.remove('loading')
+    }
   }
 
   const result = await html2Canvas.default(element, {
