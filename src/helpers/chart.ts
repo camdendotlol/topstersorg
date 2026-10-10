@@ -9,10 +9,7 @@ import { appendChart, getActiveChart, setActiveChart } from './localStorage'
 import {
   isBookResult,
   isCustomResult,
-  isGameResult,
-  isMovieResult,
-  isMusicResult,
-  isTVResult,
+  isSearchResult,
 } from './typeGuards'
 
 // To run the first time Topsters.org launches, or when we want to reset everything.
@@ -23,19 +20,6 @@ export function initializeFirstRun(): void {
   })
 
   setActiveChart(newUuid)
-}
-
-// Use the Last.fm image if there is one, otherwise fall back to the Cover Art Archive.
-export function getMusicCoverURL(imageURL: string, mbid: string): string {
-  if (imageURL) {
-    return imageURL
-  }
-
-  if (mbid) {
-    return `https://coverartarchive.org/release/${mbid}/front-500`
-  }
-
-  return ''
 }
 
 export function setImage(url: string): HTMLImageElement {
@@ -52,30 +36,11 @@ export function createChartItem(item: Result): ChartItem {
       creator: item.author_name[0],
     }
   }
-  else if (isMusicResult(item)) {
-    const largestImageIndex = item.image.length - 1
-    return {
-      title: item.name,
-      coverURL: getMusicCoverURL(item.image[largestImageIndex]['#text'], item.mbid),
-      creator: item.artist,
-    }
-  }
-  else if (isGameResult(item)) {
+  else if (isSearchResult(item)) {
     return {
       title: item.name,
       coverURL: item.cover,
-    }
-  }
-  else if (isMovieResult(item)) {
-    return {
-      title: item.title,
-      coverURL: `https://image.tmdb.org/t/p/w185/${item.poster_path}`,
-    }
-  }
-  else if (isTVResult(item)) {
-    return {
-      title: item.name,
-      coverURL: `https://image.tmdb.org/t/p/w185/${item.poster_path}`,
+      creator: item.creator,
     }
   }
   else if (isCustomResult(item)) {

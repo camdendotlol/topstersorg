@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import type {
   BookResult,
-  GameResult,
-  MovieResult,
-  MusicResult,
   Result,
-  TVResult,
+  SearchResult,
 } from '../../../types'
 import { ref } from 'vue'
-import { createChartItem, getMusicCoverURL } from '../../../helpers/chart'
+import { createChartItem } from '../../../helpers/chart'
 import { useStore } from '../../../store'
 import {
   SearchTypes,
@@ -25,6 +22,8 @@ const props = defineProps<Props>()
 
 const store = useStore()
 
+const searchResultTypes = [SearchTypes.Music, SearchTypes.Games, SearchTypes.Movies, SearchTypes.Shows]
+
 // remove any without a cover and/or an author
 function filterBooks(results: BookResult[]): BookResult[] {
   return results
@@ -32,40 +31,23 @@ function filterBooks(results: BookResult[]): BookResult[] {
     .filter(result => result.author_name)
 }
 
-function getMusicResultCover(result: MusicResult): string {
-  return getMusicCoverURL(result.image[result.image.length - 1]['#text'], result.mbid)
+// Covers that failed to load, e.g. a Cover Art Archive fallback that doesn't exist.
+const failedCovers = ref(new Set<string>())
+
+function handleCoverError(src: string): void {
+  failedCovers.value.add(src)
 }
 
-const failedMusicCovers = ref(new Set<string>())
-
-function handleMusicCoverError(src: string): void {
-  failedMusicCovers.value.add(src)
-}
-
-function filterMusic(results: MusicResult[]): { result: MusicResult, cover: string, key: string }[] {
+function filterResults(results: SearchResult[]): { result: SearchResult, key: string }[] {
   const coverCounts = new Map<string, number>()
 
   return results
-    .map(result => ({ result, cover: getMusicResultCover(result) }))
-    .filter(({ cover }) => cover && !failedMusicCovers.value.has(cover))
-    .map(({ result, cover }) => {
-      const count = (coverCounts.get(cover) ?? 0) + 1
-      coverCounts.set(cover, count)
-      return { result, cover, key: count === 1 ? cover : `${cover}#${count}` }
+    .filter(result => !failedCovers.value.has(result.cover))
+    .map((result) => {
+      const count = (coverCounts.get(result.cover) ?? 0) + 1
+      coverCounts.set(result.cover, count)
+      return { result, key: count === 1 ? result.cover : `${result.cover}#${count}` }
     })
-}
-
-// remove games without a cover image
-function filterGames(results: GameResult[]): GameResult[] {
-  return results.filter(result => result.cover)
-}
-
-function filterMovies(results: MovieResult[]): MovieResult[] {
-  return results.filter(result => result.poster_path)
-}
-
-function filterTV(results: TVResult[]): TVResult[] {
-  return results.filter(result => result.poster_path)
 }
 
 function addToChart(item: Result): void {
@@ -107,54 +89,15 @@ function initDrag(event: DragEvent, result: Result): void {
         />
       </li>
     </ul>
-    <ul v-else-if="resultsType === SearchTypes.Music">
+    <ul v-else-if="searchResultTypes.includes(resultsType)">
       <li
-        v-for="{ result, cover, key } in filterMusic(results)"
+        v-for="{ result, key } in filterResults(results)"
         :key="key"
-      >
-        <ResultItem
-          :image-data="{ src: cover, alt: result.name }"
-          draggable="true"
-          @image-error="handleMusicCoverError"
-          @click="addToChart(result)"
-          @dragstart="(event) => initDrag(event, result)"
-        />
-      </li>
-    </ul>
-    <ul v-else-if="resultsType === SearchTypes.Games">
-      <li
-        v-for="(result, index) in filterGames(results)"
-        :key="index"
       >
         <ResultItem
           :image-data="{ src: result.cover, alt: result.name }"
           draggable="true"
-          @click="addToChart(result)"
-          @dragstart="(event) => initDrag(event, result)"
-        />
-      </li>
-    </ul>
-    <ul v-else-if="resultsType === SearchTypes.Movies">
-      <li
-        v-for="(result, index) in filterMovies(results)"
-        :key="index"
-      >
-        <ResultItem
-          :image-data="{ src: `https://image.tmdb.org/t/p/w185/${result.poster_path}`, alt: result.title }"
-          draggable="true"
-          @click="addToChart(result)"
-          @dragstart="(event) => initDrag(event, result)"
-        />
-      </li>
-    </ul>
-    <ul v-else-if="resultsType === SearchTypes.Shows">
-      <li
-        v-for="(result, index) in filterTV(results)"
-        :key="index"
-      >
-        <ResultItem
-          :image-data="{ src: `https://image.tmdb.org/t/p/w185/${result.poster_path}`, alt: result.name }"
-          draggable="true"
+          @image-error="handleCoverError"
           @click="addToChart(result)"
           @dragstart="(event) => initDrag(event, result)"
         />

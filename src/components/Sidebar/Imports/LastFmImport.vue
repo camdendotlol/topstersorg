@@ -1,10 +1,10 @@
 <!-- eslint-disable no-alert -->
 <script setup lang="ts">
 import type { Ref } from 'vue'
-import type { ChartItem, LastfmChartResponseItem, Period } from '../../../types'
+import type { ChartItem, Period, SearchResult } from '../../../types'
 import { ref } from 'vue'
-import { getLastfmChart } from '../../../api/lastfm'
-import { createNewChart, getMusicCoverURL, periodHeaders } from '../../../helpers/chart'
+import { getUserTopMusic } from '../../../api/music'
+import { createNewChart, periodHeaders } from '../../../helpers/chart'
 import { initialState, useStore } from '../../../store'
 
 const store = useStore()
@@ -21,41 +21,23 @@ async function importLastFmChart() {
   const periodDropdown = lastFmPeriodDropdown.value
   const period = periodDropdown.options[periodDropdown.selectedIndex].value as Period
 
-  let results: LastfmChartResponseItem[]
+  let results: SearchResult[]
 
   try {
-    results = await getLastfmChart(username, 'albums', period)
+    results = await getUserTopMusic(username, period)
   }
   catch {
     alert('Something went wrong when downloading your Last.fm data! Is your username spelled correctly?')
     return null
   }
-  const missingCovers: string[] = []
-
-  const getCoverURL = (item: LastfmChartResponseItem) => (
-    getMusicCoverURL(item.image.find(i => i.size === 'extralarge')['#text'], item.mbid)
-  )
-
-  const filtered = results.filter((item: LastfmChartResponseItem) => {
-    const coverURL = getCoverURL(item)
-
-    if (coverURL === '') {
-      missingCovers.push(`${item.artist.name} - ${item.name}`)
-      return false
-    }
-
-    return true
-  })
 
   const newItems = Array.from({ length: 144 }).fill(null) as ChartItem[]
 
-  filtered.forEach((item: LastfmChartResponseItem, idx) => {
-    const coverURL = getCoverURL(item)
-
+  results.forEach((item, idx) => {
     newItems[idx] = {
       title: item.name,
-      creator: item.artist.name,
-      coverURL,
+      creator: item.creator,
+      coverURL: item.cover,
     }
   })
 
@@ -81,14 +63,8 @@ async function importLastFmChart() {
     ...initialState.chart,
     title: `${username}'s ${periodHeaders[period]} Chart`,
     items: newItems,
-    size: getSize(filtered.length),
+    size: getSize(results.length),
   })
-
-  if (missingCovers.length > 0) {
-    alert(
-      `Couldn't add the following albums because they're missing cover art:\n\n${missingCovers.join('\n\n')}`,
-    )
-  }
 }
 </script>
 
