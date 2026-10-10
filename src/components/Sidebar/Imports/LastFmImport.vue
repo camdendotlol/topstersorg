@@ -1,18 +1,60 @@
 <!-- eslint-disable no-alert -->
 <script setup lang="ts">
 import type { Ref } from 'vue'
-import type { ChartItem, LastfmChartResponseItem, Period } from '../../../types'
-import { ref } from 'vue'
-import { getLastfmChart } from '../../../api/lastfm'
-import { createNewChart, periodHeaders } from '../../../helpers/chart'
+import type { ImageCheck } from '../../../helpers/chart'
+import type { ChartItem, Period, SearchResult } from '../../../types'
+import { nextTick, ref } from 'vue'
+import { getUserTopMusic } from '../../../api/music'
+import { checkImage, createNewChart, periodHeaders } from '../../../helpers/chart'
 import { initialState, useStore } from '../../../store'
+import LoadingSpinner from '../../LoadingSpinner.vue'
 
 const store = useStore()
 
 const lastFmUsername: Ref<HTMLInputElement> = ref(null)
 const lastFmPeriodDropdown: Ref<HTMLSelectElement> = ref(null)
 
+const isImporting = ref(false)
+
+// alert() blocks rendering, so wait for the overlay to
+// actually disappear from the screen before showing one.
+async function hideOverlay() {
+  isImporting.value = false
+  await nextTick()
+  await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))
+}
+
 async function importLastFmChart() {
+  if (isImporting.value)
+    return null
+
+  isImporting.value = true
+
+  try {
+    await runImport()
+  }
+  finally {
+    isImporting.value = false
+  }
+}
+
+async function checkCovers(results: SearchResult[], concurrency = 6): Promise<ImageCheck[]> {
+  const checks: ImageCheck[] = Array.from({ length: results.length })
+  let next = 0
+
+  const worker = async () => {
+    while (next < results.length) {
+      const idx = next++
+      const cover = results[idx].cover
+      checks[idx] = cover ? await checkImage(cover) : 'error'
+    }
+  }
+
+  await Promise.all(Array.from({ length: concurrency }, worker))
+  return checks
+}
+
+async function runImport() {
   const username = lastFmUsername.value.value
 
   if (!username)
@@ -21,22 +63,25 @@ async function importLastFmChart() {
   const periodDropdown = lastFmPeriodDropdown.value
   const period = periodDropdown.options[periodDropdown.selectedIndex].value as Period
 
-  let results: LastfmChartResponseItem[]
+  let results: SearchResult[]
 
   try {
-    results = await getLastfmChart(username, 'albums', period)
+    results = await getUserTopMusic(username, period)
   }
   catch {
+    await hideOverlay()
     alert('Something went wrong when downloading your Last.fm data! Is your username spelled correctly?')
     return null
   }
+
   const missingCovers: string[] = []
 
-  const filtered = results.filter((item: LastfmChartResponseItem) => {
-    const coverURL = item.image.find(i => i.size === 'extralarge')['#text']
+  // MBID-based Cover Art Archive URLs might not resolve to working links.
+  const coverChecks = await checkCovers(results)
 
-    if (coverURL === '') {
-      missingCovers.push(`${item.artist.name} - ${item.name}`)
+  const filtered = results.filter((item, idx) => {
+    if (coverChecks[idx] === 'error') {
+      missingCovers.push(`${item.creator} - ${item.name}`)
       return false
     }
 
@@ -45,13 +90,11 @@ async function importLastFmChart() {
 
   const newItems = Array.from({ length: 144 }).fill(null) as ChartItem[]
 
-  filtered.forEach((item: LastfmChartResponseItem, idx) => {
-    const coverURL = item.image.find(i => i.size === 'extralarge')['#text']
-
+  filtered.forEach((item, idx) => {
     newItems[idx] = {
       title: item.name,
-      creator: item.artist.name,
-      coverURL,
+      creator: item.creator,
+      coverURL: item.cover,
     }
   })
 
@@ -81,14 +124,23 @@ async function importLastFmChart() {
   })
 
   if (missingCovers.length > 0) {
+    await hideOverlay()
     alert(
-      `Couldn't add the following albums because they're missing cover art on Last.fm:\n\n${missingCovers.join('\n\n')}`,
+      `Couldn't add the following albums because they're missing cover art:\n\n${missingCovers.join('\n\n')}`,
     )
   }
 }
 </script>
 
 <template>
+  <Teleport to="body">
+    <div
+      v-if="isImporting"
+      class="import-overlay"
+    >
+      <LoadingSpinner :size="80" />
+    </div>
+  </Teleport>
   <form
     id="lastFmImportChart"
     @submit.prevent="importLastFmChart"
@@ -144,6 +196,7 @@ async function importLastFmChart() {
       id="lastfmImportButton"
       type="submit"
       class="import-button"
+      :disabled="isImporting"
     >
       Import from Last.fm
     </button>
@@ -151,6 +204,13 @@ async function importLastFmChart() {
 </template>
 
 <style scoped>
+.import-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
 #lastFmImportChart {
   display: flex;
   flex-flow: column;

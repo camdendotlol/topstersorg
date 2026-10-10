@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import type {
   BookResult,
-  GameResult,
-  MovieResult,
-  MusicResult,
   Result,
-  TVResult,
+  SearchResult,
 } from '../../../types'
+import { ref, watch } from 'vue'
 import { createChartItem } from '../../../helpers/chart'
 import { useStore } from '../../../store'
 import {
@@ -24,6 +22,8 @@ const props = defineProps<Props>()
 
 const store = useStore()
 
+const searchResultTypes = [SearchTypes.Music, SearchTypes.Games, SearchTypes.Movies, SearchTypes.Shows]
+
 // remove any without a cover and/or an author
 function filterBooks(results: BookResult[]): BookResult[] {
   return results
@@ -31,31 +31,27 @@ function filterBooks(results: BookResult[]): BookResult[] {
     .filter(result => result.author_name)
 }
 
-// remove music without a cover image
-function filterMusic(results: MusicResult[]): MusicResult[] {
+// Covers that failed to load, e.g. a Cover Art Archive fallback that doesn't exist.
+const failedCovers = ref(new Set<string>())
+
+watch(() => props.results, () => {
+  failedCovers.value = new Set()
+})
+
+function handleCoverError(src: string): void {
+  failedCovers.value.add(src)
+}
+
+function filterResults(results: SearchResult[]): { result: SearchResult, key: string }[] {
+  const coverCounts = new Map<string, number>()
+
   return results
-    .filter((result) => {
-      let coverFound = false
-      result.image.forEach((image) => {
-        if (image['#text'] !== '') {
-          coverFound = true
-        }
-      })
-      return coverFound
+    .filter(result => result.cover && !failedCovers.value.has(result.cover))
+    .map((result) => {
+      const count = (coverCounts.get(result.cover) ?? 0) + 1
+      coverCounts.set(result.cover, count)
+      return { result, key: count === 1 ? result.cover : `${result.cover}#${count}` }
     })
-}
-
-// remove games without a cover image
-function filterGames(results: GameResult[]): GameResult[] {
-  return results.filter(result => result.cover)
-}
-
-function filterMovies(results: MovieResult[]): MovieResult[] {
-  return results.filter(result => result.poster_path)
-}
-
-function filterTV(results: TVResult[]): TVResult[] {
-  return results.filter(result => result.poster_path)
 }
 
 function addToChart(item: Result): void {
@@ -97,53 +93,15 @@ function initDrag(event: DragEvent, result: Result): void {
         />
       </li>
     </ul>
-    <ul v-else-if="resultsType === SearchTypes.Music">
+    <ul v-else-if="searchResultTypes.includes(resultsType)">
       <li
-        v-for="(result, index) in filterMusic(results)"
-        :key="index"
-      >
-        <ResultItem
-          :image-data="{ src: result.image[result.image.length - 1]['#text'], alt: result.name }"
-          draggable="true"
-          @click="addToChart(result)"
-          @dragstart="(event) => initDrag(event, result)"
-        />
-      </li>
-    </ul>
-    <ul v-else-if="resultsType === SearchTypes.Games">
-      <li
-        v-for="(result, index) in filterGames(results)"
-        :key="index"
+        v-for="{ result, key } in filterResults(results)"
+        :key="key"
       >
         <ResultItem
           :image-data="{ src: result.cover, alt: result.name }"
           draggable="true"
-          @click="addToChart(result)"
-          @dragstart="(event) => initDrag(event, result)"
-        />
-      </li>
-    </ul>
-    <ul v-else-if="resultsType === SearchTypes.Movies">
-      <li
-        v-for="(result, index) in filterMovies(results)"
-        :key="index"
-      >
-        <ResultItem
-          :image-data="{ src: `https://image.tmdb.org/t/p/w185/${result.poster_path}`, alt: result.title }"
-          draggable="true"
-          @click="addToChart(result)"
-          @dragstart="(event) => initDrag(event, result)"
-        />
-      </li>
-    </ul>
-    <ul v-else-if="resultsType === SearchTypes.Shows">
-      <li
-        v-for="(result, index) in filterTV(results)"
-        :key="index"
-      >
-        <ResultItem
-          :image-data="{ src: `https://image.tmdb.org/t/p/w185/${result.poster_path}`, alt: result.name }"
-          draggable="true"
+          @image-error="handleCoverError"
           @click="addToChart(result)"
           @dragstart="(event) => initDrag(event, result)"
         />
@@ -185,14 +143,6 @@ ul {
 
 li {
   list-style-type: none;
-}
-
-li img {
-  width: 100%;
-}
-
-li img:hover {
-  cursor: pointer;
 }
 
 #empty-results-placeholder {

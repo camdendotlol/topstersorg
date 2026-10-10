@@ -39,11 +39,6 @@ export interface Chart {
   roundCorners: boolean
 }
 
-export interface IgdbItem {
-  name: string
-  cover: string
-}
-
 // Charts stored in localStorage
 export interface OldStoredChart {
   timestamp: number
@@ -88,28 +83,10 @@ export interface BookResult {
   cover_edition_key?: string
 }
 
-export interface MusicResult {
-  name: string
-  artist: string
-  image: {
-    '#text': string
-    'size': string
-  }[]
-}
-
-export interface GameResult {
+export interface SearchResult {
   name: string
   cover: string
-}
-
-export interface MovieResult {
-  title: string
-  poster_path: string
-}
-
-export interface TVResult {
-  name: string
-  poster_path: string
+  creator?: string
 }
 
 export interface CustomResult {
@@ -121,28 +98,7 @@ export interface CustomResult {
 
 export type Period = 'overall' | '7day' | '1month' | '3month' | '6month' | '12month'
 
-export type LastfmDataType = 'artists' | 'albums'
-
-export interface LastfmChartResponseItem {
-  'artist': {
-    url: string
-    name: string
-    mbid: string
-  }
-  'image': {
-    'size': 'small' | 'medium' | 'large' | 'extralarge'
-    '#text': string
-  }[]
-  'mbid': string
-  'url': string
-  'playcount': string
-  '@attr': {
-    rank: string
-  }
-  'name': string
-}
-
-export type Result = BookResult | MusicResult | GameResult | MovieResult | TVResult | CustomResult
+export type Result = BookResult | SearchResult | CustomResult
 
 export enum Tabs {
   AddItems = 'Add Items',

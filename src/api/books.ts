@@ -1,7 +1,7 @@
 import { errorMessages } from './errors'
 
-async function queryOpenLibrary(query: string): Promise<unknown[]> {
-  // Don't spam OL servers with an empty query
+async function queryBooks(query: string): Promise<unknown[]> {
+  // Don't spam Open Library servers with an empty query
   if (query === '') {
     return []
   }
@@ -27,4 +27,4 @@ async function queryOpenLibrary(query: string): Promise<unknown[]> {
   return jsonRes.docs
 }
 
-export default queryOpenLibrary
+export default queryBooks

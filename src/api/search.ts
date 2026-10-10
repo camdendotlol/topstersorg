@@ -1,14 +1,14 @@
-import type { IgdbItem } from '../types'
+import type { SearchResult } from '../types'
 import { errorMessages } from './errors'
 
-async function queryIGDB(query: string): Promise<IgdbItem[]> {
+async function queryBackendSearch(path: string, query: string): Promise<SearchResult[]> {
   if (query === '') {
     return []
   }
 
   const encodedQuery = encodeURIComponent(query)
 
-  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/igdb/search/${encodedQuery}`)
+  const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${path}/${encodedQuery}`)
 
   if (!res) {
     throw new Error(errorMessages.NoConnection)
@@ -21,4 +21,4 @@ async function queryIGDB(query: string): Promise<IgdbItem[]> {
   return await res.json()
 }
 
-export default queryIGDB
+export default queryBackendSearch

@@ -1,4 +1,4 @@
-import type { BookResult, CustomResult, GameResult, MovieResult, MusicResult, Result, SearchTypes, TVResult } from '../types'
+import type { BookResult, CustomResult, Result, SearchResult, SearchTypes } from '../types'
 
 export function isBookResult(item: Result): item is BookResult {
   if ((item as BookResult).cover_edition_key) {
@@ -9,35 +9,8 @@ export function isBookResult(item: Result): item is BookResult {
   }
 }
 
-export function isMusicResult(item: Result): item is MusicResult {
-  if ((item as MusicResult).artist) {
-    return true
-  }
-  else {
-    return false
-  }
-}
-
-export function isGameResult(item: Result): item is GameResult {
-  if ((item as GameResult).cover) {
-    return true
-  }
-  else {
-    return false
-  }
-}
-
-export function isMovieResult(item: Result): item is MovieResult {
-  if ((item as MovieResult).title && (item as MovieResult).poster_path) {
-    return true
-  }
-  else {
-    return false
-  }
-}
-
-export function isTVResult(item: Result): item is TVResult {
-  if ((item as TVResult).name && (item as TVResult).poster_path) {
+export function isSearchResult(item: Result): item is SearchResult {
+  if ((item as SearchResult).name && (item as SearchResult).cover) {
     return true
   }
   else {

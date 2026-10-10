@@ -9,10 +9,7 @@ import { appendChart, getActiveChart, setActiveChart } from './localStorage'
 import {
   isBookResult,
   isCustomResult,
-  isGameResult,
-  isMovieResult,
-  isMusicResult,
-  isTVResult,
+  isSearchResult,
 } from './typeGuards'
 
 // To run the first time Topsters.org launches, or when we want to reset everything.
@@ -31,6 +28,53 @@ export function setImage(url: string): HTMLImageElement {
   return cover
 }
 
+function waitForImage(img: HTMLImageElement, timeoutMs = 15000): Promise<void> {
+  if (img.complete) {
+    return Promise.resolve()
+  }
+
+  return new Promise((resolve) => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+
+    const done = () => {
+      clearTimeout(timer)
+      img.removeEventListener('load', done)
+      img.removeEventListener('error', done)
+      resolve()
+    }
+
+    timer = setTimeout(done, timeoutMs)
+    img.addEventListener('load', done)
+    img.addEventListener('error', done)
+  })
+}
+
+export type ImageCheck = 'loaded' | 'error' | 'timeout'
+
+export function checkImage(url: string, timeoutMs = 15000): Promise<ImageCheck> {
+  return new Promise((resolve) => {
+    const img = new Image()
+
+    const timer = setTimeout(() => {
+      img.onload = null
+      img.onerror = null
+      // stop the pending request
+      img.src = ''
+      resolve('timeout')
+    }, timeoutMs)
+
+    img.onload = () => {
+      clearTimeout(timer)
+      resolve('loaded')
+    }
+    img.onerror = () => {
+      clearTimeout(timer)
+      resolve('error')
+    }
+    img.src = url
+  })
+}
+
 export function createChartItem(item: Result): ChartItem {
   if (isBookResult(item)) {
     return {
@@ -39,30 +83,11 @@ export function createChartItem(item: Result): ChartItem {
       creator: item.author_name[0],
     }
   }
-  else if (isMusicResult(item)) {
-    const largestImageIndex = item.image.length - 1
-    return {
-      title: item.name,
-      coverURL: item.image[largestImageIndex]['#text'],
-      creator: item.artist,
-    }
-  }
-  else if (isGameResult(item)) {
+  else if (isSearchResult(item)) {
     return {
       title: item.name,
       coverURL: item.cover,
-    }
-  }
-  else if (isMovieResult(item)) {
-    return {
-      title: item.title,
-      coverURL: `https://image.tmdb.org/t/p/w185/${item.poster_path}`,
-    }
-  }
-  else if (isTVResult(item)) {
-    return {
-      title: item.name,
-      coverURL: `https://image.tmdb.org/t/p/w185/${item.poster_path}`,
+      creator: item.creator,
     }
   }
   else if (isCustomResult(item)) {
@@ -85,6 +110,8 @@ export async function downloadChart(): Promise<void> {
     throw new Error('Chart not found! Something must have gone horribly wrong.')
   }
 
+  await Promise.all(Array.from(element.querySelectorAll('img'), img => waitForImage(img)))
+
   // Remove the scale transform - otherwise, html2canvas
   // will download a degraded quality version of the chart.
   const onclone = (doc: Document) => {
@@ -102,6 +129,12 @@ export async function downloadChart(): Promise<void> {
 
       ph.classList.remove('placeholder')
       ph.style.boxShadow = 'none'
+    }
+
+    const loadingImages = doc.querySelectorAll('.item-img.loading')
+
+    for (let i = 0; i < loadingImages.length; i++) {
+      loadingImages[i].classList.remove('loading')
     }
   }
 
