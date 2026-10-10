@@ -28,6 +28,41 @@ export function setImage(url: string): HTMLImageElement {
   return cover
 }
 
+function waitForImage(img: HTMLImageElement): Promise<void> {
+  if (img.complete) {
+    return Promise.resolve()
+  }
+
+  return new Promise((resolve) => {
+    img.addEventListener('load', () => resolve(), { once: true })
+    img.addEventListener('error', () => resolve(), { once: true })
+  })
+}
+
+export function imageExists(url: string, timeoutMs = 15000): Promise<boolean> {
+  return new Promise((resolve) => {
+    const img = new Image()
+
+    const timer = setTimeout(() => {
+      img.onload = null
+      img.onerror = null
+      // stop the pending request
+      img.src = ''
+      resolve(false)
+    }, timeoutMs)
+
+    img.onload = () => {
+      clearTimeout(timer)
+      resolve(true)
+    }
+    img.onerror = () => {
+      clearTimeout(timer)
+      resolve(false)
+    }
+    img.src = url
+  })
+}
+
 export function createChartItem(item: Result): ChartItem {
   if (isBookResult(item)) {
     return {
@@ -62,6 +97,8 @@ export async function downloadChart(): Promise<void> {
   if (!element) {
     throw new Error('Chart not found! Something must have gone horribly wrong.')
   }
+
+  await Promise.all(Array.from(element.querySelectorAll('img'), waitForImage))
 
   // Remove the scale transform - otherwise, html2canvas
   // will download a degraded quality version of the chart.

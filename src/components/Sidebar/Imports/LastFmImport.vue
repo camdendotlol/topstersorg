@@ -2,17 +2,42 @@
 <script setup lang="ts">
 import type { Ref } from 'vue'
 import type { ChartItem, Period, SearchResult } from '../../../types'
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 import { getUserTopMusic } from '../../../api/music'
-import { createNewChart, periodHeaders } from '../../../helpers/chart'
+import { createNewChart, imageExists, periodHeaders } from '../../../helpers/chart'
 import { initialState, useStore } from '../../../store'
+import LoadingSpinner from '../../LoadingSpinner.vue'
 
 const store = useStore()
 
 const lastFmUsername: Ref<HTMLInputElement> = ref(null)
 const lastFmPeriodDropdown: Ref<HTMLSelectElement> = ref(null)
 
+const isImporting = ref(false)
+
+// alert() blocks rendering, so wait for the overlay to
+// actually disappear from the screen before showing one.
+async function hideOverlay() {
+  isImporting.value = false
+  await nextTick()
+  await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))
+}
+
 async function importLastFmChart() {
+  if (isImporting.value)
+    return null
+
+  isImporting.value = true
+
+  try {
+    await runImport()
+  }
+  finally {
+    isImporting.value = false
+  }
+}
+
+async function runImport() {
   const username = lastFmUsername.value.value
 
   if (!username)
@@ -27,14 +52,20 @@ async function importLastFmChart() {
     results = await getUserTopMusic(username, period)
   }
   catch {
+    await hideOverlay()
     alert('Something went wrong when downloading your Last.fm data! Is your username spelled correctly?')
     return null
   }
 
   const missingCovers: string[] = []
 
-  const filtered = results.filter((item) => {
-    if (!item.cover) {
+  // MBID-based Cover Art Archive URLs might not resolve to working links
+  const coverExists = await Promise.all(
+    results.map(item => item.cover ? imageExists(item.cover) : Promise.resolve(false)),
+  )
+
+  const filtered = results.filter((item, idx) => {
+    if (!coverExists[idx]) {
       missingCovers.push(`${item.creator} - ${item.name}`)
       return false
     }
@@ -78,6 +109,7 @@ async function importLastFmChart() {
   })
 
   if (missingCovers.length > 0) {
+    await hideOverlay()
     alert(
       `Couldn't add the following albums because they're missing cover art:\n\n${missingCovers.join('\n\n')}`,
     )
@@ -86,6 +118,14 @@ async function importLastFmChart() {
 </script>
 
 <template>
+  <Teleport to="body">
+    <div
+      v-if="isImporting"
+      class="import-overlay"
+    >
+      <LoadingSpinner :size="80" />
+    </div>
+  </Teleport>
   <form
     id="lastFmImportChart"
     @submit.prevent="importLastFmChart"
@@ -141,6 +181,7 @@ async function importLastFmChart() {
       id="lastfmImportButton"
       type="submit"
       class="import-button"
+      :disabled="isImporting"
     >
       Import from Last.fm
     </button>
@@ -148,6 +189,13 @@ async function importLastFmChart() {
 </template>
 
 <style scoped>
+.import-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
 #lastFmImportChart {
   display: flex;
   flex-flow: column;

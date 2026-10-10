@@ -57,6 +57,7 @@ watch(() => props.imageData.src, () => {
 }
 
 .result-item.loading {
+  pointer-events: none;
   aspect-ratio: 1;
   background-color: rgba(90, 90, 90, 0.6);
 }
